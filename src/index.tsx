@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+// // import "./lib/rainbow"
+// import "./lib/tomorrow-night.css"
+
+import "css-doodle"
 
 ReactDOM.render(
   <React.StrictMode>
