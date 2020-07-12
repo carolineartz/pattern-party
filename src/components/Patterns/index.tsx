@@ -11,6 +11,7 @@ import { Box } from "grommet"
 
 const Patterns = ({ firebase }: WithFirebaseProps) => {
   const [patterns, setPatterns] = React.useState<string[] | undefined>()
+  // const []
 
   const fetchPatterns = async () => {
     const pats = await firebase.patterns().get()
@@ -40,7 +41,7 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
     <>
       <GlobalDoodleStyles />
       <PatternGrid pad="medium">
-        {patterns && patterns.map((markup: string, i: number) => <Doodle key={`pat-${i}`} markup={markup} />)}
+        {patterns && patterns.map((markup: string, i: number) => <Doodle ident={`pat-${i}`} key={`pat-${i}`} markup={markup} />)}
       </PatternGrid>
     </>
   )
