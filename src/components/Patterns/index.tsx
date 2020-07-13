@@ -4,25 +4,32 @@ import styled, { createGlobalStyle } from "styled-components"
 import { Doodle } from "./doodle"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
 // import prettyFormat from 'pretty-format';
+import Prism from 'prismjs';
 
 import { Box } from "grommet"
 
-
+type PatternData = {
+  markup: string
+  id: string
+}
 
 const Patterns = ({ firebase }: WithFirebaseProps) => {
-  const [patterns, setPatterns] = React.useState<string[] | undefined>()
-  // const []
+  const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
+  const [activePatternId, setActivePatternId] = React.useState<string | undefined>()
 
   const fetchPatterns = async () => {
     const pats = await firebase.patterns().get()
     const foo = pats.docs
 
-    let patData: string[] = []
+    let patData: PatternData[] = []
 
     foo.forEach((bar) => {
       const markupString = bar.data().markup
 
-      patData.push(markupString)
+      patData.push({
+        id: bar.id,
+        markup: markupString
+      })
     })
 
     setPatterns(patData)
@@ -34,14 +41,28 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
     }
 
 
-    console.log("patterns", patterns)
+    // console.log("patterns", patterns)
   }, [patterns])
+
+  React.useEffect(() => {
+    Prism.highlightAll();
+  }, [activePatternId])
 
   return (
     <>
       <GlobalDoodleStyles />
       <PatternGrid pad="medium">
-        {patterns && patterns.map((markup: string, i: number) => <Doodle ident={`pat-${i}`} key={`pat-${i}`} markup={markup} />)}
+        {patterns && patterns.map((data: PatternData, i: number) => {
+          return (
+            <Doodle
+              ident={data.id}
+              key={`pat-${data.id}`}
+              markup={data.markup}
+              active={activePatternId === data.id}
+              setActive={setActivePatternId}
+            />
+          )
+        })}
       </PatternGrid>
     </>
   )
@@ -50,6 +71,16 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
 const GlobalDoodleStyles = createGlobalStyle`
   css-doodle {
     height: 100%;
+  }
+
+  span.inline-color {
+    display: inline-block;
+    height: 1.333ch;
+    width: 1.333ch;
+    margin: 0 .333ch;
+    box-sizing: border-box;
+    border: 1px solid white;
+    outline: 1px solid black;
   }
 `
 
