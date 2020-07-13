@@ -1,14 +1,10 @@
 import * as React from "react"
 
-// import Rainbow from "rainbow-code"
-// import "rainbow-code/themes/css/zenburnesque.css"
 import Prism from 'prismjs';
 import clipboard from "clipboard"
 import styled, { css } from "styled-components"
 
-import { Box, BoxProps } from "grommet"
-
-
+import { Box } from "grommet"
 
 type DoodleProps = {
   markup: string
@@ -18,7 +14,6 @@ type DoodleProps = {
 }
 
 export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodleProps) => {
-  // const [highlightedSource, setHighlightedSource] = React.useState<string | undefined>()
   const [highlighted, setHighlighted] = React.useState<boolean>(false)
   const sourceRef = React.useRef<HTMLPreElement | null>(null)
 
