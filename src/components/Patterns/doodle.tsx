@@ -20,9 +20,7 @@ type DoodleProps = {
 export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodleProps) => {
   // const [highlightedSource, setHighlightedSource] = React.useState<string | undefined>()
   const [highlighted, setHighlighted] = React.useState<boolean>(false)
-  const [addedColors, setColors] = React.useState<boolean>(false)
   const sourceRef = React.useRef<HTMLPreElement | null>(null)
-  // const colorizer = React.useRef<TreeWalker | undefined>()
 
   const handleClickPattern = () => {
     if (active) {
@@ -80,7 +78,6 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
     }
 
     if (highlighted) {
-      console.log("highlighted now")
       const colorizer = createTreeWalker(sourceRef.current)
       addColors(colorizer)
     }
@@ -145,7 +142,6 @@ function addColors(treeWalker: TreeWalker) {
 
   nodeList.forEach((node: Node) => {
     const parent = node.parentNode
-    console.log(parent)
     if (parent && !parent.querySelector(".inline-color")) {
       if (parent instanceof HTMLElement && parent.classList.contains("attr-value")) {
         const newNode = document.createElement("span")

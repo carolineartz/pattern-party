@@ -3,10 +3,7 @@ import * as React from "react"
 import styled, { createGlobalStyle } from "styled-components"
 import { Doodle } from "./doodle"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
-// import prettyFormat from 'pretty-format';
-import Prism from 'prismjs';
-
-import { Box } from "grommet"
+import { Box, BoxProps } from "grommet"
 
 type PatternData = {
   markup: string
@@ -16,6 +13,7 @@ type PatternData = {
 const Patterns = ({ firebase }: WithFirebaseProps) => {
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
   const [activePatternId, setActivePatternId] = React.useState<string | undefined>()
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
 
   const fetchPatterns = async () => {
     const pats = await firebase.patterns().get()
@@ -39,19 +37,18 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
     if (!patterns) {
       fetchPatterns()
     }
-
-
-    // console.log("patterns", patterns)
   }, [patterns])
 
   React.useEffect(() => {
-    Prism.highlightAll();
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({behavior: "smooth"})
+    }
   }, [activePatternId])
 
   return (
     <>
       <GlobalDoodleStyles />
-      <PatternGrid pad="medium">
+      <PatternGrid pad="medium" ref={containerRef}>
         {patterns && patterns.map((data: PatternData, i: number) => {
           return (
             <Doodle
@@ -84,7 +81,7 @@ const GlobalDoodleStyles = createGlobalStyle`
   }
 `
 
-const PatternGrid = styled(Box)`
+const PatternGrid = styled(Box)<BoxProps & { ref: any }>`
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

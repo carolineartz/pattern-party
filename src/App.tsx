@@ -4,7 +4,7 @@ import Patterns from "./components/Patterns"
 
 function App() {
   return (
-    <Grommet full theme={grommet}>
+    <Grommet theme={grommet}>
       <Box>
         <Patterns />
       </Box>
