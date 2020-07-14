@@ -3,8 +3,12 @@ import * as React from "react"
 import Prism from 'prismjs';
 import clipboard from "clipboard"
 import styled, { css } from "styled-components"
+import "styled-components/macro"
 
-import { Box } from "grommet"
+import { Box, Stack } from "grommet"
+import { ElevatedHoverBox } from "./../elevatedBox"
+
+import { Close } from "grommet-icons"
 
 type DoodleProps = {
   markup: string
@@ -16,6 +20,7 @@ type DoodleProps = {
 
 export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodleProps) => {
   const [highlighted, setHighlighted] = React.useState<boolean>(false)
+  const [showElevated, setShowElevated] = React.useState<boolean>(true)
   const sourceRef = React.useRef<HTMLPreElement | null>(null)
 
   const handleClickPattern = () => {
@@ -24,6 +29,11 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
     } else {
       setActive(ident)
     }
+  }
+
+  const handleClickRemovePattern = (evt: React.MouseEvent) => {
+    evt.stopPropagation()
+    console.log("clicked removed")
   }
 
   React.useEffect(() => {
@@ -82,8 +92,45 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
 
   return (
     <>
-      <DoodleContainer key={ident} active={active} markup={markup} elevation="small" onClick={handleClickPattern}>
-        <css-doodle grid="1" use="var(--pattern)" />
+      <DoodleContainer
+        id={`${ident}-container`}
+        css={`
+          overflow: hidden;
+          > div {
+            height: 100% !important;
+            div:first-child, & {
+              height: 100% !important;
+            }
+          }
+        `}
+        height="100%"
+        round="xsmall"
+        width="100%"
+        key={ident}
+        active={active}
+        markup={markup}
+        elevation="small"
+        onClick={handleClickPattern}
+        disableHoverElevation={!showElevated}
+      >
+        <Stack
+          anchor="top-right"
+          css="height: 100% !important;"
+        >
+          <css-doodle grid="1" use="var(--pattern)" />
+          <ElevatedHoverBox
+            margin="xxsmall"
+            elevation="medium"
+            pad="xxsmall"
+            background="white"
+            round="1.5px"
+            onClick={handleClickRemovePattern}
+            onMouseOver={() => setShowElevated(false)}
+            onMouseLeave={() => setShowElevated(true)}
+          >
+            <Close size="medium-small" color="text" />
+          </ElevatedHoverBox>
+        </Stack>
       </DoodleContainer>
       {active && <SVGMarkupContainer key={`${ident}-markup`}>
         <pre ref={sourceRef} className="language-svg" id={`code-block-${ident}`}>
@@ -101,7 +148,7 @@ type DoodleContainerProps = {
   markup: string
 }
 
-const DoodleContainer = styled(Box)<DoodleContainerProps>`
+const DoodleContainer = styled(ElevatedHoverBox)<DoodleContainerProps>`
   --pattern: ${props => "(background-image: @svg(" + props.markup + "));"};
   ${props => props.active && css`
     grid-column: 1;

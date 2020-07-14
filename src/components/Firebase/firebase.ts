@@ -32,6 +32,9 @@ class Firebase {
 
   patterns = () => this.db.collection("patterns")
   pattern = (id: string) => this.patterns().doc(id)
+
+  removed = () => this.db.collection("removed")
+  removedPattern = (id: string) => this.removed().doc(id)
 }
 
 export default Firebase;
