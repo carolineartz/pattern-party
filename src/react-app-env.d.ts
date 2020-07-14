@@ -1,9 +1,29 @@
 /// <reference types="react-scripts" />
 
-declare module "css-doodle" { }
+import {} from "react"
+import { CSSProp } from "styled-components"
+
+declare module "react" {
+  interface Attributes {
+    css?: CSSProp
+  }
+
+  namespace JSX {
+      interface IntrinsicElements {
+    "css-doodle": any;
+        "iframe": any;
+        "pre": any;
+        "code": any;
+  }
+  }
+}
+
+declare module "css-doodle" {}
 
 declare namespace JSX {
   interface IntrinsicElements {
     "css-doodle": any;
+    "iframe": any;
   }
 }
+

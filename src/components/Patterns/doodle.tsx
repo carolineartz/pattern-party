@@ -11,6 +11,7 @@ type DoodleProps = {
   ident: string
   setActive: (pat?: string) => void
   active: boolean
+  key: string
 }
 
 export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodleProps) => {
@@ -78,6 +79,7 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
     }
   }, [active, sourceRef.current, highlighted])
 
+
   return (
     <>
       <DoodleContainer key={ident} active={active} markup={markup} elevation="small" onClick={handleClickPattern}>
@@ -92,6 +94,8 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
   )
 })
 
+
+
 type DoodleContainerProps = {
   active: boolean
   markup: string
@@ -101,14 +105,14 @@ const DoodleContainer = styled(Box)<DoodleContainerProps>`
   --pattern: ${props => "(background-image: @svg(" + props.markup + "));"};
   ${props => props.active && css`
     grid-column: 1;
-    grid-row: 1 / 4;
+    grid-row: 1 / 3;
   `}
 `
 
 
 const SVGMarkupContainer = styled(Box)`
   grid-column: 2 / -1;
-  grid-row: 1 / 4;
+  grid-row: 1 / 3;
 `
 
 const createTreeWalker = (el: HTMLElement) => document.createTreeWalker(
