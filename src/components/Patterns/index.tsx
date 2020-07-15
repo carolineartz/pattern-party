@@ -2,18 +2,20 @@ import * as React from "react"
 
 import "styled-components/macro"
 import styled, { createGlobalStyle } from "styled-components"
-import { Doodle } from "./doodle"
+import { Pattern } from "./pattern"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
 import { Box, BoxProps, Button } from "grommet"
 import { CreatePatternIFrame } from "./create"
 import { Add, Checkmark, Close } from "grommet-icons"
+import Firebase from "./../Firebase"
+import { formatSVG } from "../../util";
 
 type PatternData = {
   markup: string
   id: string
 }
 
-const Patterns = ({ firebase }: WithFirebaseProps) => {
+const Patterns = ({ firebase }: { firebase: Firebase}) => {
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
   const [activePatternId, setActivePatternId] = React.useState<string | undefined>()
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
@@ -50,12 +52,27 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
         console.log(text)
         throw new Error("Uncable to save pattern. Make sure to copy inline svg code to clipboard before clicking save.");
       } else {
-        firebase.patterns().add({ markup: text })
+        console.log(formatSVG(text))
+        firebase.patterns().add({ markup: formatSVG(text) })
       }
     }).catch(err => {
       console.error('Failed to read clipboard contents: ', err);
     });
   }
+
+  React.useEffect(() => {
+    firebase.patterns()
+    .onSnapshot(function(snapshot) {
+        snapshot.docChanges().forEach(function(change) {
+          if (change.type === "added" || change.type === "removed") {
+              fetchPatterns()
+          }
+          else {
+            console.log("change", change);
+          }
+        });
+    });
+  }, [])
 
   React.useEffect(() => {
     if (!patterns) {
@@ -95,13 +112,13 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
           />
         </Box>
       </Box>
-      <PatternGrid pad="medium" ref={patternsContainerRef}>
+      <PatternGrid pad={{ horizontal: "medium" }} ref={patternsContainerRef}>
         <Box elevation="small" align="center" justify="center" onClick={handleClickCreate}>
-          <Add size="large" />
+          <Add size="large" color="text" />
         </Box>
         {patterns && patterns.map((data: PatternData, i: number) => {
           return (
-            <Doodle
+            <Pattern
               ident={data.id}
               key={`pat-${data.id}`}
               markup={data.markup}
@@ -115,10 +132,16 @@ const Patterns = ({ firebase }: WithFirebaseProps) => {
   )
 }
 
-
 const GlobalDoodleStyles = createGlobalStyle`
+  body {
+    margin: 0;
+  }
   css-doodle {
     height: 100%;
+  }
+
+  code[class*="language-"], pre[class*="language-"] {
+    font-size: 0.8em;
   }
 
   span.inline-color {
@@ -134,7 +157,7 @@ const GlobalDoodleStyles = createGlobalStyle`
 
 const PatternGrid = styled(Box)<BoxProps & { ref: any }>`
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: 1.5rem;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-auto-rows: minmax(150px, 25vh);
 `

@@ -1,36 +1,31 @@
-import React from 'react';
+import * as React from 'react'
 import Firebase from './firebase';
 
-const FirebaseContext = React.createContext<Firebase>(new Firebase());
+interface FirebaseState {
+  db: any
+  patterns: any
+  pattern: any
+  hidden: any
+  hiddenPattern: any
+}
 
-// export const withFirebase = (Component: React.ComponentClass) => (props: any) => (
-//   <FirebaseContext.Consumer>
-//     {(firebase: Firebase) => <Component {...props} firebase={firebase} />}
-//   </FirebaseContext.Consumer>
-// );
+export const FirebaseContext = React.createContext<Firebase>(new Firebase())
 
-// interface Props extends React.ConsumerProps<Firebase> {
-//   children: (value: Firebase) => React.ReactNode
-// }
+class FirebaseProvider extends React.Component<{}, FirebaseState> {
+  render() {
+    return (
+      <FirebaseContext.Provider value={{ ...this.state }}>
+        {this.props.children}
+      </FirebaseContext.Provider>
+    )
+  }
+}
 
-// type Props = React.ConsumerProps<any>
+const FirebaseContextConsumer = FirebaseContext.Consumer as any
+export const withFirebase = (Component:any) => (props:any) => (
+    <FirebaseContextConsumer>
+      {(firebase: Firebase) => <Component firebase={firebase} {...props} />}
+    </FirebaseContextConsumer>
+  );
 
-const Blah = FirebaseContext.Consumer as any
-
-// export function withFirebase<P extends Props, S = any>(Component: React.ComponentClass<P, S>): (props: P) => React.ComponentClass {
-//   return (props: P) => (
-//     <FirebaseContext.Consumer>
-//       {(firebase: Firebase) => <Component {...props} firebase={firebase} />}
-//     </FirebaseContext.Consumer>
-//   )
-// }
-
-export const withFirebase = (Component: any) => (props: any) => {
-  return <Blah>
-    {(firebase: Firebase) => <Component {...props} firebase={firebase} />}
-  </Blah>
-};
-
-export default FirebaseContext;
-
-
+export default FirebaseProvider;

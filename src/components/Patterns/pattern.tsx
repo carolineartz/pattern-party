@@ -6,11 +6,13 @@ import styled, { css } from "styled-components"
 import "styled-components/macro"
 
 import { Box, Stack } from "grommet"
-import { ElevatedHoverBox } from "./../elevatedBox"
+import { ElevatedHoverBox } from "../elevatedBox"
+import { DestroyDialog } from "./destroy"
 
 import { Close } from "grommet-icons"
+import { formatSVG } from "../../util";
 
-type DoodleProps = {
+type PatternProps = {
   markup: string
   ident: string
   setActive: (pat?: string) => void
@@ -18,9 +20,10 @@ type DoodleProps = {
   key: string
 }
 
-export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodleProps) => {
+export const Pattern = React.memo(({ markup, ident, active, setActive }: PatternProps) => {
   const [highlighted, setHighlighted] = React.useState<boolean>(false)
   const [showElevated, setShowElevated] = React.useState<boolean>(true)
+  const [showDestroyDialog, setShowDestroyDialog] = React.useState<boolean>(false)
   const sourceRef = React.useRef<HTMLPreElement | null>(null)
 
   const handleClickPattern = () => {
@@ -33,7 +36,7 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
 
   const handleClickRemovePattern = (evt: React.MouseEvent) => {
     evt.stopPropagation()
-    console.log("clicked removed")
+    setShowDestroyDialog(true)
   }
 
   React.useEffect(() => {
@@ -92,7 +95,7 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
 
   return (
     <>
-      <DoodleContainer
+      <PatternContainer
         id={`${ident}-container`}
         css={`
           overflow: hidden;
@@ -128,10 +131,17 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
             onMouseOver={() => setShowElevated(false)}
             onMouseLeave={() => setShowElevated(true)}
           >
-            <Close size="medium-small" color="text" />
+            <Close size="medium-small" color="text" onClick={() => setShowDestroyDialog(true)} />
           </ElevatedHoverBox>
         </Stack>
-      </DoodleContainer>
+      </PatternContainer>
+      {showDestroyDialog &&
+        <DestroyDialog
+        ident={ident}
+        markup={markup}
+        showDialog={setShowDestroyDialog}
+        />
+      }
       {active && <SVGMarkupContainer key={`${ident}-markup`}>
         <pre ref={sourceRef} className="language-svg" id={`code-block-${ident}`}>
           <code>{markup}</code>
@@ -143,13 +153,13 @@ export const Doodle = React.memo(({ markup, ident, active, setActive }: DoodlePr
 
 
 
-type DoodleContainerProps = {
+type PatternContainerProps = {
   active: boolean
   markup: string
 }
 
-const DoodleContainer = styled(ElevatedHoverBox)<DoodleContainerProps>`
-  --pattern: ${props => "(background-image: @svg(" + props.markup + "));"};
+const PatternContainer = styled(ElevatedHoverBox)<PatternContainerProps>`
+  --pattern: ${props => "(background-image: @svg(" + formatSVG(props.markup) + "));"};
   ${props => props.active && css`
     grid-column: 1;
     grid-row: 1 / 3;
