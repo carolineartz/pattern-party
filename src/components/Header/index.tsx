@@ -2,13 +2,18 @@ import * as React from "react"
 import "styled-components/macro"
 
 import { Header as GHeader, Box, Button, Text, Nav, Anchor } from "grommet"
-import { ReactComponent as Logo } from "./../../images/logo.svg"
+import { ReactComponent as Logo } from "./../../images/logo-p.svg"
 
 const Header = () => {
   return (
-    <GHeader pad={{horizontal: "small"}}>
+    <GHeader border={{
+      "color": "light-4",
+      "size": "xsmall",
+      "style": "solid",
+      "side": "bottom"
+    }}>
       <Brand />
-      <Nav direction="row">
+      <Nav direction="row" pad={{right: "small"}}>
         <Anchor as="div" href="#" label="Explore" />
         <Anchor as="div" href="#" label="Login" />
       </Nav>
@@ -18,8 +23,8 @@ const Header = () => {
 
 const Brand = () => {
   return (
-    <Box height={{ max: "72px" }} responsive>
-      <Logo height="100%" width="50%" />
+    <Box height={{ max: "62px" }} pad="small" responsive>
+      <Logo />
     </Box>
   )
 }
