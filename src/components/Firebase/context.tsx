@@ -1,17 +1,9 @@
 import * as React from 'react'
-import Firebase from './firebase';
+import Firebase, { IFirebase } from './firebase';
 
-interface FirebaseState {
-  db: any
-  patterns: any
-  pattern: any
-  hidden: any
-  hiddenPattern: any
-}
+export const FirebaseContext = React.createContext<IFirebase>(new Firebase())
 
-export const FirebaseContext = React.createContext<Firebase>(new Firebase())
-
-class FirebaseProvider extends React.Component<{}, FirebaseState> {
+class FirebaseProvider extends React.Component<{}, IFirebase> {
   render() {
     return (
       <FirebaseContext.Provider value={{ ...this.state }}>

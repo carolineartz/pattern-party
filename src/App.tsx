@@ -7,7 +7,7 @@ import Header from "./components/Header"
 const customTheme = deepFreeze(deepMerge(grommet, {
   global: {
     font: {
-      family: "Anonymous Pro, monospace"
+      family: "Montserrat, Anonymous Pro, monospace"
     },
     colors: {
       text: {
