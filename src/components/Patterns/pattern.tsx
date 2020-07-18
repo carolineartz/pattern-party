@@ -97,12 +97,6 @@ export const Pattern = React.memo(({ markup, ident, active, setActive }: Pattern
       setActive()
     } else {
       setActive(ident)
-      if (patternRef.current) {
-        const foo = patternRef.current.querySelector("css-doodle")
-        if (foo) {
-          animateClickPatternOption(foo)
-        }
-      }
     }
   }
 

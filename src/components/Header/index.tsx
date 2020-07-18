@@ -23,8 +23,9 @@ const Header = () => {
 
 const Brand = () => {
   return (
-    <Box height={{ max: "62px" }} pad="small" responsive>
-      <Logo />
+    <Box direction="row" responsive pad="xsmall"  justify="center" align="center" >
+      <Box height={{ max: "52px" }}><Logo /></Box>
+      <Text>PatternParty</Text>
     </Box>
   )
 }
