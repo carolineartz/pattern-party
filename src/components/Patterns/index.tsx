@@ -8,6 +8,8 @@ import { Box, BoxProps, Button } from "grommet"
 import { CreatePatternIFrame } from "./create"
 import { Add, Checkmark, Close } from "grommet-icons"
 import Firebase from "./../Firebase"
+import { PatternPreview } from './preview'
+
 import { formatSVG } from "../../util";
 
 type PatternData = {
@@ -18,6 +20,7 @@ type PatternData = {
 const Patterns = ({ firebase }: { firebase: Firebase}) => {
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
   const [activePatternId, setActivePatternId] = React.useState<string | undefined>()
+  const [activePattern, setActivePattern] = React.useState<PatternData | undefined>()
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
 
   const patternsContainerRef = React.useRef<HTMLDivElement | null>(null)
@@ -81,18 +84,26 @@ const Patterns = ({ firebase }: { firebase: Firebase}) => {
   }, [patterns])
 
   React.useEffect(() => {
+    if (patterns && activePatternId) {
+      setActivePattern(patterns.find((pat: PatternData) => pat.id === activePatternId))
+    }
+
     if (activePatternId && patternsContainerRef.current) {
       if (!showCreate) {
-        patternsContainerRef.current.scrollIntoView({behavior: "smooth"})
+        // patternsContainerRef.current.scrollIntoView({behavior: "smooth"})
       } else {
         setShowCreate(false)
       }
     }
 
     if (!activePatternId && iFrameContainerRef.current) {
-      iFrameContainerRef.current.scrollIntoView({behavior: "smooth"})
+      // iFrameContainerRef.current.scrollIntoView({behavior: "smooth"})
     }
-  }, [activePatternId, showCreate])
+  }, [patterns, activePatternId, showCreate])
+
+  // const activePattern = (pats: PatternData[]): PatternData | undefined => {
+  //   return pats.find((pat: PatternData) => pat.id === activePatternId)
+  // }
 
   return (
     <>
@@ -112,22 +123,25 @@ const Patterns = ({ firebase }: { firebase: Firebase}) => {
           />
         </Box>
       </Box>
-      <PatternGrid pad={{ horizontal: "medium" }} ref={patternsContainerRef}>
-        <Box elevation="small" align="center" justify="center" onClick={handleClickCreate}>
-          <Add size="large" color="text" />
-        </Box>
-        {patterns && patterns.map((data: PatternData, i: number) => {
-          return (
-            <Pattern
-              ident={data.id}
-              key={`pat-${data.id}`}
-              markup={data.markup}
-              active={activePatternId === data.id}
-              setActive={setActivePatternId}
-            />
-          )
-        })}
-      </PatternGrid>
+      {activePattern && <PatternPreview pattern={activePattern} onDismiss={() => setActivePattern(undefined)} /> }
+      <Box css="align-self: center; width: 100%;" width={{max: "1080px" }} pad={{ horizontal: "medium" }}>
+        <PatternGrid ref={patternsContainerRef}>
+          <Box elevation="small" align="center" justify="center" onClick={handleClickCreate}>
+            <Add size="large" color="text" />
+          </Box>
+          {patterns && patterns.map((data: PatternData, i: number) => {
+            return (
+              <Pattern
+                ident={data.id}
+                key={`pat-${data.id}`}
+                markup={data.markup}
+                active={activePatternId === data.id}
+                setActive={setActivePatternId}
+              />
+            )
+          })}
+        </PatternGrid>
+      </Box>
     </>
   )
 }

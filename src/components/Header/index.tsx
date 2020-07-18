@@ -13,9 +13,9 @@ const Header = () => {
       "side": "bottom"
     }}>
       <Brand />
-      <Nav direction="row" pad={{right: "small"}}>
-        <Anchor as="div" href="#" label="Explore" />
-        <Anchor as="div" href="#" label="Login" />
+      <Nav direction="row" pad={{right: "medium"}}>
+        <Anchor as="div" href="#" label={<Text color="text" weight="normal">Explore</Text>} />
+        <Anchor as="div" href="#" label={<Text color="text" weight="normal">Login</Text>} />
       </Nav>
     </GHeader>
   )

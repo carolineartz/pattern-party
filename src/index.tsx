@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// // import "./lib/rainbow"
-// import "./lib/tomorrow-night.css"
-
 import "css-doodle"
 
+
+{/* <React.StrictMode>
+  </React.StrictMode>, */}
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <App />,
   document.getElementById('root')
 );
 

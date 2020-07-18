@@ -2,7 +2,7 @@
   "plugins": [
     ["prismjs", {
         "languages": ["svg"],
-        "plugins": ["inline-color", "copy-to-clipboard", "highlight-keywords"],
+        "plugins": ["inline-color"],
         "theme": "coy",
         "css": true
     }]

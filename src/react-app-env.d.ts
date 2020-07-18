@@ -3,7 +3,9 @@
 import {} from "react"
 import { CSSProp } from "styled-components"
 
-declare module "condense-whitespace" {}
+declare module "react-google-button";
+declare module "mini-svg-data-uri";
+declare module "pizzaz";
 
 declare module "react" {
   interface Attributes {
