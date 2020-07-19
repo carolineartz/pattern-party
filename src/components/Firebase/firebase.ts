@@ -17,11 +17,17 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
+
+interface AuthUser extends firebase.User {
+  roles: Record<string, boolean>
+}
+
 export interface IFirebase {
   db: firebase.firestore.Firestore
   auth: firebase.auth.Auth
   googleProvider: firebase.auth.GoogleAuthProvider
 
+  onAuthUserListener: (next: (user: firebase.User) => any, fallback: Function) => firebase.Unsubscribe
   doSignInWithGoogle: () => Promise<firebase.auth.UserCredential>
   doSignOut: () => Promise<void>
 

@@ -1,17 +1,17 @@
 import React from 'react';
 
 import AuthUserContext from './context';
-import { withFirebase, WithFirebaseProps } from '../Firebase';
+import { withFirebase } from '../Firebase';
 
 type IAuthState = {
-  authUser: firebase.User | object | null
+  authUser: firebase.User | null
 }
 
-const withAuthentication = (Component: React.ComponentType<WithFirebaseProps>) => {
-  class WithAuthentication extends React.Component<WithFirebaseProps, IAuthState> {
+const withAuthentication = (Component: React.ComponentType<any>) => {
+  class WithAuthentication extends React.Component<any, IAuthState> {
     listener?: firebase.Unsubscribe
 
-    constructor(props: WithFirebaseProps) {
+    constructor(props: any) {
       super(props);
 
       const storedUser = localStorage.getItem('authUser')
@@ -22,7 +22,7 @@ const withAuthentication = (Component: React.ComponentType<WithFirebaseProps>) =
 
     componentDidMount() {
       this.listener = this.props.firebase.onAuthUserListener(
-        authUser => {
+        (authUser: IAuthState['authUser']) => {
           localStorage.setItem('authUser', JSON.stringify(authUser));
           this.setState({ authUser });
         },

@@ -3,7 +3,7 @@ import Firebase, { IFirebase } from './firebase';
 
 export const FirebaseContext = React.createContext<IFirebase>(new Firebase())
 
-class FirebaseProvider extends React.Component<{}, IFirebase> {
+class FirebaseProvider extends React.Component<any & {firebase: Firebase}, IFirebase> {
   render() {
     return (
       <FirebaseContext.Provider value={{ ...this.state }}>
@@ -14,7 +14,7 @@ class FirebaseProvider extends React.Component<{}, IFirebase> {
 }
 
 const FirebaseContextConsumer = FirebaseContext.Consumer as any
-export const withFirebase = (Component:any) => (props:any) => (
+export const withFirebase = (Component:any) => (props:any): JSX.Element => (
     <FirebaseContextConsumer>
       {(firebase: Firebase) => <Component firebase={firebase} {...props} />}
     </FirebaseContextConsumer>

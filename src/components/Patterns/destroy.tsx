@@ -9,6 +9,9 @@ import { formatSVG } from "../../util";
 type DestroyDialogProps = {
   ident: string
   markup: string,
+  onClickHide: any
+  onClickDestroy: any
+  onClickDismisss: any
   showDialog: (shouldShow: boolean) => void
 }
 

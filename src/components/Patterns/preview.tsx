@@ -21,7 +21,6 @@ const Preview = ({pattern, onDismiss, firebase}: PatternPreviewProps & WithFireb
 
 
   React.useEffect(() => {
-    // document.body && document.body.scrollIntoView({behavior: "smooth"})
     setHighlighted(false)
   }, [pattern])
 

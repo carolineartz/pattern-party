@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 import "css-doodle"
+import FirebaseProvider from './components/Firebase/context';
+import Firebase from "./components/Firebase"
 
-
-{/* <React.StrictMode>
-  </React.StrictMode>, */}
-
+{/* <FirebaseProvider value={new Firebase()}>
+  </FirebaseProvider>, */}
 ReactDOM.render(
     <App />,
   document.getElementById('root')

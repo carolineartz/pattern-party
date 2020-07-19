@@ -1,3 +1,5 @@
+const Pizzaz = require("./../../libs/pizzaz")
+
 export const createTreeWalker = (el: HTMLElement) => document.createTreeWalker(
   el,
   NodeFilter.SHOW_TEXT,
@@ -35,3 +37,30 @@ export function addColors(treeWalker: TreeWalker) {
   })
 }
 
+const pizzazArgs = {
+  size: 25,
+  buffer: 5,
+  spacing: 20,
+  speed: 1,
+  strokeWidth: 2.5
+}
+
+export const  animateClickPatternOption = (el: Element, markup: string) => {
+    let color = "rgba(240, 101, 122, 1.000)"
+    const regex = /fill="([r#].*?)"/gm;
+    const found = Array.from(markup.matchAll(regex)).map((x: RegExpMatchArray) => x[1]);
+    if (found.length) {
+      color = found[1] || found[0] || color
+    }
+    const pizazz = new Pizzaz({
+      stroke: color,
+      ...pizzazArgs
+    })
+
+    pizazz.play(el)
+  }
+
+
+export const formatSVG = (markup: string) => {
+  return markup.replace(/^((\s+)([^<])*")>/gm, (_match: string, offset: string) => offset + "/>");
+}

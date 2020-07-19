@@ -13,5 +13,20 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if request.time < timestamp.date(2020, 8, 9);
     }
+
+    function getRole(role) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[role]
+    }
+
+    // Anyone can view any image (no auth, publicly readable)
+    match /patterns/{communityPatterns=**} {
+      allow read; // public can view them
+      allow create: if request.auth != null // auth'd users can create them
+      allow delete: if getRole('admin') // admins can also delete them
+    }
+      // Only an individual user can read/write to their patterns, or an admin --- for now?
+    match /{userId}/{userData=**} {
+      allow read, write: if request.auth.uid == userId || getRole('admin');
+    }
   }
 }
