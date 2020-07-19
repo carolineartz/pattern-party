@@ -20,7 +20,7 @@ type HomePageProps = WithFirebaseProps & WithAuthProps
 const HomePage = ({ firebase, authUser }: WithFirebaseProps & WithAuthProps): JSX.Element => {
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
 
-  const fetchPatterns = async () => {
+  const fetchPatterns = React.useCallback(async () => {
     const data = await firebase.userPatterns(authUser.uid).get()
     const pats = data.docs
 
@@ -36,7 +36,8 @@ const HomePage = ({ firebase, authUser }: WithFirebaseProps & WithAuthProps): JS
     })
 
     setPatterns(patData)
-  }
+  }, [firebase, authUser])
+
   const [destroyDialogPattern, setDestroyDialogPattern] = React.useState<PatternData | null>(null)
 
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
@@ -50,24 +51,26 @@ const HomePage = ({ firebase, authUser }: WithFirebaseProps & WithAuthProps): JS
   }
 
   React.useEffect(() => {
-    firebase.userPatterns(authUser.uid)
-      .onSnapshot(function(snapshot) {
-          snapshot.docChanges().forEach(function(change) {
-            if (change.type === "added" || change.type === "removed") {
-                fetchPatterns()
-            }
-            else {
-              console.log("change", change);
-            }
-          });
-      });
-  }, [])
+    if (authUser) {
+      firebase.userPatterns(authUser.uid)
+        .onSnapshot(function(snapshot) {
+            snapshot.docChanges().forEach(function(change) {
+              if (change.type === "added" || change.type === "removed") {
+                  fetchPatterns()
+              }
+              else {
+                console.log("change", change);
+              }
+            });
+        });
+    }
+  }, [authUser, fetchPatterns, firebase])
 
   React.useEffect(() => {
-    if (!patterns) {
+    if (authUser && !patterns) {
       fetchPatterns()
     }
-  }, [patterns])
+  }, [patterns, authUser, fetchPatterns])
 
   return (
     <>

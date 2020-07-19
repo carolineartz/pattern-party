@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { AuthUserContext } from '../Session';
+import { AuthContext } from '../Session';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
 
 const Navigation = () => (
-  <AuthUserContext.Consumer>
+  <AuthContext.Consumer>
     {authUser =>
       authUser ? (
         <NavigationAuth authUser={authUser} />
@@ -15,7 +15,7 @@ const Navigation = () => (
         <NavigationNonAuth />
       )
     }
-  </AuthUserContext.Consumer>
+  </AuthContext.Consumer>
 );
 
 const NavigationAuth = ({ authUser }) => (

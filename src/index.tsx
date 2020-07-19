@@ -4,13 +4,14 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 import "css-doodle"
-import FirebaseProvider from './components/Firebase/context';
-import Firebase from "./components/Firebase"
+import AuthContextProvider from './components/Session/context';
+// import "json-circular-stringify"
 
 {/* <FirebaseProvider value={new Firebase()}>
   </FirebaseProvider>, */}
+
 ReactDOM.render(
-    <App />,
+  <AuthContextProvider value={null}><App /></AuthContextProvider>,
   document.getElementById('root')
 );
 

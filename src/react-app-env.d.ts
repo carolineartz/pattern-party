@@ -6,6 +6,7 @@ import { CSSProp } from "styled-components"
 declare module "react-google-button";
 declare module "mini-svg-data-uri";
 declare module "pizzaz";
+declare module "json-circular-stringify";
 
 declare module "react" {
   interface Attributes {

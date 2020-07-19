@@ -27,6 +27,7 @@
     "grommet": "^2.14.0",
     "grommet-icons": "^4.4.0",
     "install": "^0.13.0",
+    "json-circular-stringify": "^1.0.1",
     "mini-svg-data-uri": "^1.2.3",
     "npm": "^6.14.6",
     "prismjs": "^1.20.0",

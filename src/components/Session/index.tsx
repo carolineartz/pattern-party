@@ -1,11 +1,11 @@
-import AuthUserContext from './context';
-import withAuthentication from './withAuthentication';
-import withAuthorization from './withAuthorization';
+import AuthContext, { withAuthentication, withAuthorization } from './context';
+// import withAuthentication from './withAuthentication';
+// import withAuthorization from './withAuthorization';
 
 export {
-  AuthUserContext,
   withAuthentication,
-  withAuthorization
+  withAuthorization,
+  AuthContext
 };
 
 export type WithAuthProps = {

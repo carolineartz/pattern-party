@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Stack, Button } from 'grommet';
 import { animateClickPatternOption } from './util';
 import { CSSTransition } from "react-transition-group";
-import { Close, Gallery, Code } from "grommet-icons";
+import { Close, Gallery, Code, Save } from "grommet-icons";
 import { ElevatedHoverBox } from '../elevatedBox';
 import styled from "styled-components"
 import { formatSVG } from './util';
@@ -111,27 +111,50 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       icon={<Gallery size="small" color="text" />}
                       onClick={() => animateClick(props.onClickCopyDataUri)} />
                   </CSSTransition>
+                  { props.onClickSave &&
+                    <CSSTransition
+                      in={showOptions}
+                      timeout={300}
+                      classNames="appear-zoom"
+                      unmountOnExit
+                    >
+                      <Button
+                        title="Save to Patterns"
+                        primary
+                        color="white"
+                        hoverIndicator
+                        size="small"
+                        css={`
+                          padding: 6px;
+                          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);`}
+                        icon={<Gallery size="small" color="text" />}
+                        onClick={() => animateClick(props.onClickSave || (() => {}))}
+                      />
+                    </CSSTransition>
+                  }
                 </Box>
               </Box>
-              <CSSTransition
-                in={showOptions}
-                timeout={300}
-                classNames="appear-zoom"
-                unmountOnExit
-              >
-                <Button
-                  icon={<Close size="small" />}
-                  color="light-3"
-                  primary
-                  hoverIndicator
-                  onClick={props.onClickDestroy}
-                  css={`
-                  position: absolute;
-                  padding: 6px;
-                  top: -8px;
-                  right: -8px;
-                `} />
-              </CSSTransition>
+              { props.onClickDestroy &&
+                <CSSTransition
+                  in={showOptions}
+                  timeout={300}
+                  classNames="appear-zoom"
+                  unmountOnExit
+                >
+                  <Button
+                    icon={<Close size="small" />}
+                    color="light-3"
+                    primary
+                    hoverIndicator
+                    onClick={props.onClickDestroy}
+                    css={`
+                      position: absolute;
+                      padding: 6px;
+                      top: -8px;
+                      right: -8px;`}
+                  />
+                </CSSTransition>
+              }
             </Box>
           </Box>
         </Stack>

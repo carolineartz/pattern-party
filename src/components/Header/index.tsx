@@ -1,8 +1,13 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Button, Text, Nav, Anchor } from "grommet"
+import { Header as GHeader, Box, Button, Text, Nav, Anchor, RoutedAnchor, RoutedAnchorProps } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-p.svg"
+import { withRouter, Link } from 'react-router-dom';
+import * as ROUTES from "./../../constants/routes"
+// import { Link } from 'react-router-dom';
+
+type Foo = RoutedAnchorProps
 
 const Header = () => {
   return (
@@ -14,12 +19,20 @@ const Header = () => {
     }}>
       <Brand />
       <Nav direction="row" pad={{right: "medium"}}>
-        <Anchor as="div" href="#" label={<Text color="text" weight="normal">Explore</Text>} />
-        <Anchor as="div" href="#" label={<Text color="text" weight="normal">Login</Text>} />
+        <Link to={ROUTES.EXPLORE}>
+          <Text color="text" weight="normal">Explore</Text>
+        </Link>
+        <Link to={ROUTES.SIGN_IN}>
+          <Text color="text" weight="normal">Sign in</Text>
+        </Link>
+        <Link to={ROUTES.SIGN_OUT}>
+          <Text color="text" weight="normal">Sign out</Text>
+        </Link>
       </Nav>
     </GHeader>
   )
 }
+
 
 const Brand = () => {
   return (
@@ -58,4 +71,5 @@ const Brand = () => {
 //   )
 // }
 
-export default Header
+// {/* <RoutedAnchor path="/signin" label={<Text color="text" weight="normal">Login</Text>} /> */}
+export default withRouter(Header)

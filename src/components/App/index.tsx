@@ -7,38 +7,28 @@ import Header from "../Header"
 import ExplorePage from "./../Explore"
 import HomePage from "./../Home"
 import { SignInGoogle } from "./../SignIn/google"
-
+import SignOut from "./../SignOut"
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 
-import { withAuthentication } from '../Session';
+import { withAuthentication, WithAuthProps } from '../Session';
 
-const App = () => (
-  <Router>
+const App = ({ authUser }: WithAuthProps) => {
+  console.log("authUser - App", authUser)
+  return (<Router>
     <Grommet theme={theme}>
-      <GlobalStyles/>
+      <GlobalStyles />
       <Header />
 
-      <Route exact path={ROUTES.LANDING} component={ExplorePage} />
+      <Route exact path={ROUTES.LANDING} component={authUser ? HomePage : ExplorePage} />
       <Route path={ROUTES.SIGN_IN} component={SignInGoogle} />
+      <Route path={ROUTES.SIGN_OUT} component={SignOut} />
       <Route path={ROUTES.EXPLORE} component={ExplorePage} />
       <Route path={ROUTES.HOME} component={HomePage} />
+
       {/* <Route path={ROUTES.ACCOUNT} component={AdminPage} /> */}
     </Grommet>
-  </Router>
-);
+  </Router>)
+}
 
 export default withAuthentication(App);
-
-
-// export default () => {
-//   return (
-//     <Grommet theme={theme}>
-//       <GlobalStyles/>
-//       <Header />
-//       <Box>
-//         <Patterns />
-//       </Box>
-//     </Grommet>
-//   )
-// }

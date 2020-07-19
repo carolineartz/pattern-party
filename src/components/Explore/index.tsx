@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose } from 'recompose';
 
-import { withAuthentication, WithAuthProps } from '../Session';
+import { WithAuthProps } from '../Session';
 import { WithFirebaseProps, withFirebase } from '../Firebase';
 import { PatternGrid } from '../Patterns/grid'
 import { PatternListItem } from '../Patterns/patternListItem'
@@ -17,9 +17,11 @@ type PatternData = {
 type ExplorePageProps = WithFirebaseProps & WithAuthProps
 
 const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
+  console.log("rendering Exploore Page Component", authUser)
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
+  // const [patUser, setPatUser] = React.useState<firebase.User | null>(authUser)
 
-  const fetchPatterns = async () => {
+  const fetchPatterns =  React.useCallback(async () => {
     const data = await firebase.patterns().get()
     const pats = data.docs
 
@@ -35,7 +37,7 @@ const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
     })
 
     setPatterns(patData)
-  }
+  }, [firebase])
 
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
@@ -47,8 +49,12 @@ const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
     });
   }
 
+  const handleClickDestroyPattern = (patId: string) => {
+    firebase.pattern(patId).delete()
+  }
+
   const patternListItemProps = ({markup, id}: PatternData) => {
-    const base = {
+    let base: any = {
       key: `pat-${id}`,
       markup,
       onClickCopyMarkup: (evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(markup)),
@@ -56,7 +62,7 @@ const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
     }
 
     if (authUser) {
-      return {
+      base = {
         onClickSave: () => {
           firebase.userPatterns(authUser.uid).add({
             markup,
@@ -65,32 +71,40 @@ const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
         },
         ...base
       }
-    } else {
-      return base
     }
+
+    if (authUser && (authUser as any).roles.admin) {
+      base = {
+        onClickDestroy: () => handleClickDestroyPattern(id)
+        ,
+        ...base
+      }
+    }
+
+    return base
   }
 
-  React.useEffect(() => {
-    if (authUser) {
-      firebase.userPatterns(authUser.uid)
-        .onSnapshot(function(snapshot) {
-            snapshot.docChanges().forEach(function(change) {
-              if (change.type === "added" || change.type === "removed") {
-                  fetchPatterns()
-              }
-              else {
-                console.log("change", change);
-              }
-            });
-        });
-    }
-  }, [authUser])
+  // React.useEffect(() => {
+  //   if (authUser) {
+  //     firebase.userPatterns(authUser.uid)
+  //       .onSnapshot(function(snapshot) {
+  //           snapshot.docChanges().forEach(function(change) {
+  //             if (change.type === "added" || change.type === "removed") {
+  //                 fetchPatterns()
+  //             }
+  //             else {
+  //               console.log("change", change);
+  //             }
+  //           });
+  //       });
+  //   }
+  // }, [authUser, fetchPatterns, firebase])
 
   React.useEffect(() => {
     if (!patterns) {
       fetchPatterns()
     }
-  }, [patterns])
+  }, [patterns, fetchPatterns])
 
   console.log("patterns", patterns)
 
@@ -108,4 +122,4 @@ const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
   )
 }
 
-export default compose<ExplorePageProps, any>(withFirebase, withAuthentication)(ExplorePage);
+export default withFirebase(ExplorePage);

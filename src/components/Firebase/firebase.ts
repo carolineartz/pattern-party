@@ -66,6 +66,7 @@ class Firebase implements IFirebase {
     /* Social Sign In Method Provider */
 
     this.googleProvider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
   }
 
   // *** Auth API ***
@@ -78,21 +79,32 @@ class Firebase implements IFirebase {
 
   onAuthUserListener = (next: (user: firebase.User) => any, fallback: Function) =>
     this.auth.onAuthStateChanged((authUser: firebase.User | null) => {
-      if (authUser !== null) {
+      console.log("authUser", authUser)
+      if (authUser) {
         this.user(authUser.uid).get().then(snapshot => {
           const dbUser: firebase.firestore.DocumentData | undefined = snapshot.data();
-
-          if (!dbUser || !authUser) { return fallback() }
-
+          console.log("dbUser", dbUser)
+          if (!authUser) {
+            return fallback()
+          } else {
             // default empty roles
-            if (!dbUser.roles) {
+            if (dbUser && !dbUser.roles) {
               dbUser.roles = {};
             }
+            next({...authUser, ...(dbUser || {roles: {}})});
+          }
+            // let roles = {}
+            // // default empty roles
+            // if (!dbUser || !dbUser.roles) {
+            //   roles = {};
+            // } else {
+            //   roles = dbUser.roles
+            // }
 
             // merge auth and db user
-            next({...authUser, ...dbUser});
           });
       } else {
+        // debugger
         fallback();
       }
     });
