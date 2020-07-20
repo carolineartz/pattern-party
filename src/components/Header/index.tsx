@@ -10,7 +10,11 @@ import { withFirebase, WithFirebaseProps } from "./../Firebase"
 import * as ROUTES from "./../../constants/routes"
 import { compose } from "recompose";
 
-const Header = ({history, authUser, firebase}: WithRouterProps & WithAuthProps & WithFirebaseProps) => {
+type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {
+  onClickSignIn: Function
+}
+
+const Header = ({history, authUser, firebase, onClickSignIn}: HeaderProps) => {
   return (
     <GHeader border={{
       "color": "light-4",
@@ -37,9 +41,7 @@ const Header = ({history, authUser, firebase}: WithRouterProps & WithAuthProps &
         }
         {!authUser &&
           <Box>
-            <Link to={ROUTES.SIGN_IN}>
-              <Text color="text" weight="normal">Sign in</Text>
-            </Link>
+            <Anchor onClick={() => onClickSignIn()} label="Sign In" />
           </Box>
         }
       </Box>
@@ -58,6 +60,6 @@ const Brand = ({ history, children }: WithRouterProps) => {
 }
 
 
-export default compose<WithRouterProps & WithAuthProps & WithFirebaseProps, any>(withRouter, withFirebase, withAuthentication)(Header);
+export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
 
 // export default withRouter<WithRouterProps, any>(Header)

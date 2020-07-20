@@ -29,6 +29,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
   state = initialPatterns
 
+
   subscribeToCommunityPatterns = () => {
     const firebase: Firebase = this.props.firebase
 
@@ -66,7 +67,10 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
   }
 
   subscribeToUserPatterns = () => {
-    if (!this.props.authUser) { return; }
+    if (!this.props.authUser) {
+      this.setState({ userPatterns: [] })
+      return
+    }
 
     const firebase: Firebase = this.props.firebase
 
@@ -106,6 +110,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
   componentDidUpdate(prevProps: { authUser?: firebase.User }) {
     // signed out
     if (prevProps.authUser && !this.props.authUser && this.userPatternsListener) {
+      this.setState({ userPatterns: [] })
       this.userPatternsListener()
       this.userPatternsListener = undefined
     }

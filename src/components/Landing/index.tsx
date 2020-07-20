@@ -16,10 +16,10 @@ type PatternData = {
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const LandingPage = (props: LandingPageProps) => {
+const LandingPage = React.memo((props: LandingPageProps) => {
   console.log("Landing Page", props)
   const { firebase, authUser, patterns } = props
-  const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
+  const [ patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
   const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
 
   return (
@@ -55,6 +55,6 @@ const LandingPage = (props: LandingPageProps) => {
         />}
       </Box>
   )
-}
+})
 
 export default compose<LandingPageProps, any>(withAuthentication, withFirebase)(LandingPage);

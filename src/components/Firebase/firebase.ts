@@ -78,7 +78,7 @@ class Firebase implements IFirebase {
   // *** Merge Auth and DB User API *** //
 
   onAuthUserListener = (next: (user: firebase.User) => any, fallback: Function) =>
-    this.auth.onAuthStateChanged((authUser: firebase.User | null) => {
+    this.auth.onIdTokenChanged((authUser: firebase.User | null) => {
       console.log("authUser", authUser)
       if (authUser) {
         this.user(authUser.uid).get().then(snapshot => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { PatternGrid } from './Patterns/grid'
 import { PatternListItem } from './Patterns/patternListItem'
 import { formatSVG } from "./Patterns/util"
@@ -16,11 +16,7 @@ type PatternListProps = {
   key?: string
 }
 
-export const PatternList = ({
-  patterns,
-  onDestroy,
-  onSave
-}: PatternListProps): JSX.Element => {
+export const PatternList = React.memo(({ patterns, onDestroy, onSave}: PatternListProps) => {
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
 
@@ -32,13 +28,11 @@ export const PatternList = ({
   }
 
   const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternData) => {
-    debugger
     evt.stopPropagation()
     onSave && onSave(pattern)
   }
 
   return (
-
       <PatternGrid>
         {patterns.map((pattern: PatternData, i: number) => {
           return (
@@ -56,6 +50,6 @@ export const PatternList = ({
       </PatternGrid>
 
   )
-}
+})
 
 export default PatternList

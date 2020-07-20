@@ -25,13 +25,13 @@ const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
     })
   }
     return (
-      <Box fill="horizontal" direction="row" animation="slideDown">
-        <Box pad="small"><Logo /></Box>
-        <Box>
+      <Box fill="horizontal" pad="large" animation="slideDown" justify="center" align="center">
+        <Box direction="row" align="center" justify="center">
+          <Box pad="small"><Logo /></Box>
           <Text size="large">Sign in or create an account to start collecting patterns!</Text>
-          <Box pad="medium" align="center">
-            <GoogleButton onClick={handleClickSignIn} />
-          </Box>
+        </Box>
+        <Box pad="medium" align="center">
+          <GoogleButton onClick={handleClickSignIn} />
         </Box>
       </Box>
     )
