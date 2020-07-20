@@ -60,7 +60,6 @@ export const withAuthentication = (Component:any) => (props:any): JSX.Element =>
     </AuthContextConsumer>
 );
 
-
 export const withAuthorization = (condition: (user?: firebase.User) => boolean) => (Component: React.ComponentType<any>) => {
   class WithAuthorization extends React.Component<any & WithFirebaseProps & WithRouterProps, any> {
     listener?: firebase.Unsubscribe
@@ -88,7 +87,7 @@ export const withAuthorization = (condition: (user?: firebase.User) => boolean) 
     render() {
       return (
         <AuthContextConsumer>
-          {(authUser: firebase.User) => condition(authUser) ? <Component authUser={authUser} {...this.props} /> : <></>}
+          {(props: { authUser: firebase.User }) => condition(props.authUser) ? <Component authUser={props.authUser} {...this.props} /> : <></>}
         </AuthContextConsumer>
       );
     }

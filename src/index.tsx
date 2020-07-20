@@ -5,13 +5,14 @@ import * as serviceWorker from './serviceWorker';
 
 import "css-doodle"
 import AuthContextProvider from './components/Session/context';
-// import "json-circular-stringify"
-
-{/* <FirebaseProvider value={new Firebase()}>
-  </FirebaseProvider>, */}
+import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
 
 ReactDOM.render(
-  <AuthContextProvider value={null}><App /></AuthContextProvider>,
+  <AuthContextProvider value={null}>
+    <PatternsProvider value={initialPatterns}>
+      <App />
+    </PatternsProvider>
+  </AuthContextProvider>,
   document.getElementById('root')
 );
 

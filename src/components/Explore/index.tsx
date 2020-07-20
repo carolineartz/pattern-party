@@ -6,7 +6,8 @@ import { PatternList } from './../PatternList';
 import { DestroyDialog } from "./../Patterns/destroy"
 import {Box} from "grommet"
 
-type ExplorePageProps = WithAuthProps & WithFirebaseProps
+type ExplorePageProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
+
 type PatternData = {
   id: string
   markup: string
@@ -15,99 +16,47 @@ type PatternData = {
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const ExplorePage = ({ authUser, firebase }: ExplorePageProps) => {
-  const [loading, setLoading] = React.useState<LoadingState>("not-started")
-  const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
+const ExplorePage = (props: ExplorePageProps) => {
+  console.log("ExplorePage", props)
+  const { firebase, authUser, patterns } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
+  const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
 
-  React.useEffect(() => {
-    if (loading === "not-started") {
-      setLoading("loading")
-
-      firebase.patterns().get()
-        .then((data: firebase.firestore.QuerySnapshot) => {
-          const pats = data.docs
-          setPatterns(pats.map((pat) => {
-            const data = pat.data()
-            return ({
-              id: pat.id,
-              ...data
-            }) as PatternData
-          }))
-
-          setLoading("loaded")
-        }).catch((err) => {
-          console.log(err)
-          setLoading("error")
-        })
-    }
-
-    const unsubscribe = firebase.patterns().onSnapshot(function (snapshot) {
-      snapshot.docChanges().forEach(function (change) {
-        if (change.type === "added" || change.type === "removed") {
-          console.log(change.type, change)
-          // fetchPatterns()
-        }
-        else {
-          console.log("change", change);
-        }
-      });
-    });
-
-    return () => {
-      unsubscribe()
-    }
-  }, [firebase, loading])
-
-  const user = authUser && (authUser as any).authUser
-  const userIsAdmin = user && user.roles && user.roles.admin
-
-  if (patterns && loading === "loaded") {
-    return (
-      <>
-        <PatternList
-          key="pattern-list"
-          patterns={patterns}
-          onDestroy={userIsAdmin ? (pattern: PatternData) => {
-            setPatternForDestroy(pattern)
-          } : undefined}
-          onSave={user ? (pattern: PatternData) => {
-            debugger
-            // communityId: pattern.id,
-            if (user) {
-              firebase.userPatterns(user.uid).add({
-                markup: pattern.markup,
-                hidden: false
-              })
-            } else {
-              debugger
-            }
-          } : undefined}
-        />
-        {user && patternForDestroy &&
-          <DestroyDialog
-            key="destroy-dialog"
-            ident={patternForDestroy.id}
-            markup={patternForDestroy.markup}
-            onClickDestroy={() => {
-              firebase.pattern(patternForDestroy.id).delete()
-              setPatternForDestroy(null)
-            }}
-            onClickHide={() => {
-              firebase.pattern(patternForDestroy.id).set({hidden: true}, {merge: true})
-              setPatternForDestroy(null)
-            }}
-            closeDialog={() => setPatternForDestroy(null)}
-          />}
-        </>
-    )
-  } else {
-    return (<Box>{loading}</Box>)
-  }
+  return (
+    <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
+      <PatternList
+        patterns={patterns}
+        onDestroy={userIsAdmin ? (pattern: PatternData) => {
+          setPatternForDestroy(pattern)
+        } : undefined}
+        onSave={authUser ? (pattern: PatternData) => {
+          if (authUser) {
+            firebase.userPatterns(authUser.uid).add({
+              markup: pattern.markup,
+              hidden: false
+            })
+          }
+        } : undefined}
+      />
+      {authUser && patternForDestroy &&
+        <DestroyDialog
+          key="destroy-dialog"
+          ident={patternForDestroy.id}
+          markup={patternForDestroy.markup}
+          onClickDestroy={() => {
+            firebase.pattern(patternForDestroy.id).delete()
+            setPatternForDestroy(null)
+          }}
+          onClickHide={() => {
+            firebase.userPattern(authUser.uid, patternForDestroy.id).set({hidden: true}, {merge: true})
+            setPatternForDestroy(null)
+          }}
+          closeDialog={() => setPatternForDestroy(null)}
+        />}
+      </Box>
+  )
 }
 
 const condition = (authUser?: firebase.User) => !!authUser;
 
-export default (withFirebase(withAuthorization(condition)(ExplorePage)))
-// export default compose<ExplorePageProps, any>(withFirebase, withAuthorization(condition))(ExplorePage);
-
+export default compose<ExplorePageProps, any>(withAuthorization(condition), withFirebase)(ExplorePage);
