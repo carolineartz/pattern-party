@@ -68,13 +68,13 @@ export const withAuthorization = (condition: (user?: firebase.User) => boolean) 
       this.listener = this.props.firebase.onAuthUserListener(
         (authUser: IAuthState['authUser']) => {
           // need this?
-          if (!authUser) {
+          if (!authUser || !condition(authUser)) {
             this.props.history.push(ROUTES.LANDING);
           }
 
-          else if (!condition(authUser)) {
-            this.props.history.push(ROUTES.LANDING);
-          }
+          // else {
+          //   this.props.history.push(ROUTES.MY_PATTERNS)
+          // }
         },
         () => this.props.history.push(ROUTES.LANDING),
       );

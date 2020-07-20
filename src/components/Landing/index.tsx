@@ -17,29 +17,38 @@ type PatternData = {
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const LandingPage = (props: LandingPageProps) => {
-  console.log(props)
+  console.log("Landing Page", props)
   const { firebase, authUser, patterns } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
+  const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
       <PatternList
         patterns={patterns}
-        onDestroy={authUser ? (pattern: PatternData) => {
+        onDestroy={userIsAdmin ? (pattern: PatternData) => {
           setPatternForDestroy(pattern)
         } : undefined}
+        onSave={authUser ? (pattern: PatternData) => {
+          if (authUser) {
+            firebase.userPatterns(authUser.uid).add({
+              markup: pattern.markup,
+              hidden: false
+            })
+          }
+        } : undefined}
       />
-      {authUser && patternForDestroy &&
+      {userIsAdmin && patternForDestroy &&
         <DestroyDialog
           key="destroy-dialog"
           ident={patternForDestroy.id}
           markup={patternForDestroy.markup}
           onClickDestroy={() => {
-            firebase.userPattern(authUser.uid, patternForDestroy.id).delete()
+            firebase.pattern(patternForDestroy.id).delete()
             setPatternForDestroy(null)
           }}
           onClickHide={() => {
-            firebase.userPattern(authUser.uid, patternForDestroy.id).set({hidden: true}, {merge: true})
+            firebase.pattern(patternForDestroy.id).set({hidden: true}, {merge: true})
             setPatternForDestroy(null)
           }}
           closeDialog={() => setPatternForDestroy(null)}

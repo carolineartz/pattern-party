@@ -25,8 +25,8 @@ const Header = ({history, authUser}: WithRouterProps & WithAuthProps) => {
         {authUser &&
           <>
           <Box pad={{right: "small"}}>
-            <Link to={ROUTES.EXPLORE}>
-              <Text color="text" weight="normal">Explore</Text>
+            <Link to={ROUTES.MY_PATTERNS}>
+              <Text color="text" weight="normal">My Patterns</Text>
             </Link>
           </Box>
           <Box>

@@ -3,7 +3,7 @@ import { compose } from 'recompose';
 import { WithAuthProps, withAuthentication } from '../Session';
 import { withPatterns, WithPatternsProps } from "./../Patterns/context"
 import LandingPage from "./../Landing"
-import ExplorePage from "./../Explore"
+import ExplorePage from "../UserPatterns"
 
 type HomePageProps = WithAuthProps & WithPatternsProps & { location: any }
 
@@ -19,10 +19,12 @@ const HomePage = (props: HomePageProps) => {
   console.log(props)
   const { authUser, communityPatterns, userPatterns } = props
 
-  if (props.location.pathname === "/") {
-    return <LandingPage patterns={authUser ? userPatterns : communityPatterns} />
-  } else if (props.location.pathname === "/explore") {
+  if (props.location.pathname === "/" && authUser) {
     return <ExplorePage patterns={communityPatterns} />
+  } else if (props.location.pathname === "/") {
+    return <LandingPage patterns={communityPatterns} />
+  } else if (props.location.pathname === "/my-patterns") {
+    return <LandingPage patterns={userPatterns} />
   } else {
     return <></>
   }

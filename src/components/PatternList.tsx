@@ -40,10 +40,10 @@ export const PatternList = ({
   return (
 
       <PatternGrid>
-        {patterns.map((pattern: PatternData) => {
+        {patterns.map((pattern: PatternData, i: number) => {
           return (
             <PatternListItem
-              key={`pat-${pattern.id}`}
+              key={`pat-${pattern.id}-${i}`}
               ident={pattern.id}
               markup={pattern.markup}
               onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
