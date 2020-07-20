@@ -1,15 +1,16 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Nav } from "grommet"
+import { Header as GHeader, Box, Text, Anchor } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-p.svg"
 import { withRouter, Link } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
+import { withFirebase, WithFirebaseProps } from "./../Firebase"
 
 import * as ROUTES from "./../../constants/routes"
 import { compose } from "recompose";
 
-const Header = ({history, authUser}: WithRouterProps & WithAuthProps) => {
+const Header = ({history, authUser, firebase}: WithRouterProps & WithAuthProps & WithFirebaseProps) => {
   return (
     <GHeader border={{
       "color": "light-4",
@@ -30,9 +31,7 @@ const Header = ({history, authUser}: WithRouterProps & WithAuthProps) => {
             </Link>
           </Box>
           <Box>
-            <Link to={ROUTES.SIGN_OUT}>
-              <Text color="text" weight="normal">Sign out</Text>
-            </Link>
+            <Anchor onClick={firebase.doSignOut} label="Sign Out" />
           </Box>
           </>
         }
@@ -59,6 +58,6 @@ const Brand = ({ history, children }: WithRouterProps) => {
 }
 
 
-export default compose<WithRouterProps & WithAuthProps, any>(withRouter, withAuthentication)(Header);
+export default compose<WithRouterProps & WithAuthProps & WithFirebaseProps, any>(withRouter, withFirebase, withAuthentication)(Header);
 
 // export default withRouter<WithRouterProps, any>(Header)
