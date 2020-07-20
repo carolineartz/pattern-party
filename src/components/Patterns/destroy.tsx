@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import styled from "styled-components"
-import { withFirebase, WithFirebaseProps } from "./../Firebase"
+import { withFirebase } from "./../Firebase"
 import { Box, Layer, Button, Stack, BoxProps } from "grommet"
 import { Hide, Trash, Close } from "grommet-icons"
 import { formatSVG } from "../../util";
@@ -11,28 +11,28 @@ type DestroyDialogProps = {
   markup: string,
   onClickHide: any
   onClickDestroy: any
-  onClickDismisss: any
-  showDialog: (shouldShow: boolean) => void
+  closeDialog: () => void
+  // showDialog: (shouldShow: boolean) => void
 }
 
-class Dialog<T extends DestroyDialogProps> extends React.PureComponent<T & WithFirebaseProps> {
-  removePattern = () => {
-    this.props.firebase.pattern(this.props.ident).delete()
-    this.props.showDialog(false)
-  }
+class Dialog<T extends DestroyDialogProps> extends React.PureComponent<T> {
+  // removePattern = () => {
+  //   this.props.firebase.pattern(this.props.ident).delete()
+  //   this.props.closeDialog()
+  // }
 
-  handleClickHidePattern = () => {
-    this.removePattern()
-    this.props.firebase.hidden().add({ markup: formatSVG(this.props.markup) })
-    this.props.showDialog(false)
-  }
+  // handleClickHidePattern = () => {
+  //   this.props.firebase.pattern(this.props.ident).set({ hidden: true }, { merge: true })
+  //   this.props.closeDialog()
+  // }
 
   public render() {
-    const { ident, markup, firebase, showDialog } = this.props
+    const { markup, closeDialog, onClickDestroy, onClickHide } = this.props
+
     return (
     <Layer
-      onEsc={() => showDialog(false)}
-      onClickOutside={() => showDialog(false)}
+      onEsc={closeDialog}
+      onClickOutside={closeDialog}
     >
       <Stack anchor="top-right">
         <Box>
@@ -45,19 +45,19 @@ class Dialog<T extends DestroyDialogProps> extends React.PureComponent<T & WithF
             <Button
               label={<Box>Hide Pattern</Box>}
               color="text"
-              onClick={this.handleClickHidePattern}
+              onClick={onClickHide}
               icon={<Hide color="text" />}
             />
             <Button
               primary
               color="status-error"
               label={<Box>Really Delete!</Box>}
-              onClick={this.removePattern}
+              onClick={onClickDestroy}
               icon={<Trash color="white" />}
             />
           </Box>
         </Box>
-        <Button icon={<Close color="white" />} onClick={() => showDialog(false)} />
+        <Button icon={<Close color="white" />} onClick={closeDialog} />
       </Stack>
     </Layer>
     );

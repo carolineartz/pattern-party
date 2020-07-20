@@ -8,15 +8,15 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
 type IAuthState = {
-  authUser: firebase.User | null
+  authUser?: firebase.User | null
 }
-export const AuthContext = React.createContext<{ authUser: firebase.User | null }>({authUser: null});
+export const AuthContext = React.createContext<{ authUser: IAuthState['authUser'] }>({authUser: undefined});
 
 export class AuthContextProvider extends React.Component<any & { firebase: Firebase, authUser: firebase.User }, IAuthState> {
   listener?: firebase.Unsubscribe
 
   state = {
-    authUser: null
+    authUser: undefined
   }
 
   componentDidMount() {
@@ -24,6 +24,11 @@ export class AuthContextProvider extends React.Component<any & { firebase: Fireb
       this.listener = this.props.firebase.onAuthUserListener(
         (authUser: IAuthState['authUser']) => {
           console.log("authUser", authUser)
+
+          if (!authUser) {
+            debugger
+            this.setState({authUser: null})
+          }
           this.setState({authUser})
         },
         () => {
@@ -51,7 +56,7 @@ const AuthContextConsumer = AuthContext.Consumer as any
 
 export const withAuthentication = (Component:any) => (props:any): JSX.Element => (
     <AuthContextConsumer>
-      {(authUser: firebase.User) => <Component authUser={authUser} {...props} />}
+      {(state: IAuthState) => <Component authUser={state.authUser} {...props} />}
     </AuthContextConsumer>
 );
 

@@ -21,7 +21,7 @@ const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
   const [error, setError] = React.useState<string | null>(null)
   const handleClickSignIn = () => {
     firebase.doSignInWithGoogle().then(() => {
-      history.push(ROUTES.HOME)
+      history.push(ROUTES.LANDING)
     })
   }
     return (

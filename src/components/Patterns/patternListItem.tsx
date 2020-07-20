@@ -11,8 +11,10 @@ import "styled-components/macro"
 type PatternListItemProps = {
   markup: string
   key: string
+  ident: string
   onClickSave?: (evt: React.MouseEvent) => void
   onClickDestroy?: (evt: React.MouseEvent) => void
+  onClickHide?: (evt: React.MouseEvent) => void
   onClick?: (evt: React.MouseEvent) => void
   onClickCopyMarkup: (evt: React.MouseEvent) => void
   onClickCopyDataUri: (evt: React.MouseEvent) => void
@@ -86,7 +88,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       hoverIndicator
                       icon={<Code size="small" color="text" />}
                       size="small"
-                      onClick={() => animateClick(props.onClickCopyMarkup)}
+                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
                       css={`
                       padding: 6px;
                       box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
@@ -109,7 +111,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
                     `}
                       icon={<Gallery size="small" color="text" />}
-                      onClick={() => animateClick(props.onClickCopyDataUri)} />
+                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))} />
                   </CSSTransition>
                   { props.onClickSave &&
                     <CSSTransition
@@ -127,8 +129,13 @@ export const PatternListItem = (props: PatternListItemProps) => {
                         css={`
                           padding: 6px;
                           box-shadow: 0px 2px 4px rgba(0,0,0,0.20);`}
-                        icon={<Gallery size="small" color="text" />}
-                        onClick={() => animateClick(props.onClickSave || (() => {}))}
+                        icon={<Save size="small" color="text" />}
+                        onClick={(evt: React.MouseEvent) => {
+                          if (props.onClickSave) {
+                            console.log(props.onClickSave)
+                            animateClick(props.onClickSave.bind(null, evt))
+                          }
+                        }}
                       />
                     </CSSTransition>
                   }

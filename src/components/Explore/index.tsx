@@ -1,125 +1,113 @@
 import React from 'react';
 import { compose } from 'recompose';
+import { withFirebase, WithFirebaseProps } from '../Firebase';
+import { withAuthorization, WithAuthProps } from '../Session';
+import { PatternList } from './../PatternList';
+import { DestroyDialog } from "./../Patterns/destroy"
+import {Box} from "grommet"
 
-import { WithAuthProps } from '../Session';
-import { WithFirebaseProps, withFirebase } from '../Firebase';
-import { PatternGrid } from '../Patterns/grid'
-import { PatternListItem } from '../Patterns/patternListItem'
-import { formatSVG } from "../../util";
-import svgToMiniDataURI from "mini-svg-data-uri"
-import { Box, Text } from 'grommet';
-
+type ExplorePageProps = WithAuthProps & WithFirebaseProps
 type PatternData = {
   id: string
   markup: string
+  hidden?: boolean
 }
 
-type ExplorePageProps = WithFirebaseProps & WithAuthProps
+type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const ExplorePage = ({ firebase, authUser }: ExplorePageProps): JSX.Element => {
-  console.log("rendering Exploore Page Component", authUser)
+const ExplorePage = ({ authUser, firebase }: ExplorePageProps) => {
+  const [loading, setLoading] = React.useState<LoadingState>("not-started")
   const [patterns, setPatterns] = React.useState<PatternData[] | undefined>()
-  // const [patUser, setPatUser] = React.useState<firebase.User | null>(authUser)
-
-  const fetchPatterns =  React.useCallback(async () => {
-    const data = await firebase.patterns().get()
-    const pats = data.docs
-
-    let patData: PatternData[] = []
-
-    pats.forEach((pattern) => {
-      const markupString = pattern.data().markup
-
-      patData.push({
-        id: pattern.id,
-        markup: markupString
-      })
-    })
-
-    setPatterns(patData)
-  }, [firebase])
-
-  const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
-    evt.stopPropagation()
-
-    navigator.clipboard.writeText(content).then(text => {
-      console.log("Successfully copied SVG markup")
-    }).catch(err => {
-      console.error('Failed to write clipboard contents: ', err);
-    });
-  }
-
-  const handleClickDestroyPattern = (patId: string) => {
-    firebase.pattern(patId).delete()
-  }
-
-  const patternListItemProps = ({markup, id}: PatternData) => {
-    let base: any = {
-      key: `pat-${id}`,
-      markup,
-      onClickCopyMarkup: (evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(markup)),
-      onClickCopyDataUri: (evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(markup)))
-    }
-
-    if (authUser) {
-      base = {
-        onClickSave: () => {
-          firebase.userPatterns(authUser.uid).add({
-            markup,
-            hidden: false
-          })
-        },
-        ...base
-      }
-    }
-
-    if (authUser && (authUser as any).roles.admin) {
-      base = {
-        onClickDestroy: () => handleClickDestroyPattern(id)
-        ,
-        ...base
-      }
-    }
-
-    return base
-  }
-
-  // React.useEffect(() => {
-  //   if (authUser) {
-  //     firebase.userPatterns(authUser.uid)
-  //       .onSnapshot(function(snapshot) {
-  //           snapshot.docChanges().forEach(function(change) {
-  //             if (change.type === "added" || change.type === "removed") {
-  //                 fetchPatterns()
-  //             }
-  //             else {
-  //               console.log("change", change);
-  //             }
-  //           });
-  //       });
-  //   }
-  // }, [authUser, fetchPatterns, firebase])
+  const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
   React.useEffect(() => {
-    if (!patterns) {
-      fetchPatterns()
+    if (loading === "not-started") {
+      setLoading("loading")
+
+      firebase.patterns().get()
+        .then((data: firebase.firestore.QuerySnapshot) => {
+          const pats = data.docs
+          setPatterns(pats.map((pat) => {
+            const data = pat.data()
+            return ({
+              id: pat.id,
+              ...data
+            }) as PatternData
+          }))
+
+          setLoading("loaded")
+        }).catch((err) => {
+          console.log(err)
+          setLoading("error")
+        })
     }
-  }, [patterns, fetchPatterns])
 
-  console.log("patterns", patterns)
+    const unsubscribe = firebase.patterns().onSnapshot(function (snapshot) {
+      snapshot.docChanges().forEach(function (change) {
+        if (change.type === "added" || change.type === "removed") {
+          console.log(change.type, change)
+          // fetchPatterns()
+        }
+        else {
+          console.log("change", change);
+        }
+      });
+    });
 
-  return (
-    <>
-      { authUser ? <Box><Text>Explore Page</Text></Box> : <Box><Text>Public Home Page</Text></Box> }
-      <PatternGrid key="public-home-grid">
-        { patterns && patterns.map((pattern) => {
-          return (
-            <PatternListItem {...patternListItemProps(pattern)}/>
-          )
-        })}
-      </PatternGrid>
-    </>
-  )
+    return () => {
+      unsubscribe()
+    }
+  }, [firebase, loading])
+
+  const user = authUser && (authUser as any).authUser
+  const userIsAdmin = user && user.roles && user.roles.admin
+
+  if (patterns && loading === "loaded") {
+    return (
+      <>
+        <PatternList
+          key="pattern-list"
+          patterns={patterns}
+          onDestroy={userIsAdmin ? (pattern: PatternData) => {
+            setPatternForDestroy(pattern)
+          } : undefined}
+          onSave={user ? (pattern: PatternData) => {
+            debugger
+            // communityId: pattern.id,
+            if (user) {
+              firebase.userPatterns(user.uid).add({
+                markup: pattern.markup,
+                hidden: false
+              })
+            } else {
+              debugger
+            }
+          } : undefined}
+        />
+        {user && patternForDestroy &&
+          <DestroyDialog
+            key="destroy-dialog"
+            ident={patternForDestroy.id}
+            markup={patternForDestroy.markup}
+            onClickDestroy={() => {
+              firebase.pattern(patternForDestroy.id).delete()
+              setPatternForDestroy(null)
+            }}
+            onClickHide={() => {
+              firebase.pattern(patternForDestroy.id).set({hidden: true}, {merge: true})
+              setPatternForDestroy(null)
+            }}
+            closeDialog={() => setPatternForDestroy(null)}
+          />}
+        </>
+    )
+  } else {
+    return (<Box>{loading}</Box>)
+  }
 }
 
-export default withFirebase(ExplorePage);
+const condition = (authUser?: firebase.User) => !!authUser;
+
+export default (withFirebase(withAuthorization(condition)(ExplorePage)))
+// export default compose<ExplorePageProps, any>(withFirebase, withAuthorization(condition))(ExplorePage);
+
