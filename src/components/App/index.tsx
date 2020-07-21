@@ -18,6 +18,7 @@ const App = ({ authUser }: WithAuthProps) => {
       <Grommet theme={theme}>
         {!authUser && showSignIn &&
           <Layer
+            responsive={false}
             full="horizontal"
             position="top"
             onEsc={() => setShowSignIn(false)}
@@ -26,11 +27,13 @@ const App = ({ authUser }: WithAuthProps) => {
             <SignInGoogle />
           </Layer>
         }
+        {(!showSignIn || authUser) &&
+          <Layer responsive={false} full="horizontal" modal={false} position="top">
+            <Header onClickSignIn={() => setShowSignIn(true)} onClickSignOut={() => setShowSignIn(false)} />
+          </Layer>
+        }
         <GlobalStyles />
-        <Layer full="horizontal" modal={false} position="top">
-          <Header onClickSignIn={() => setShowSignIn(true)} />
-        </Layer>
-        <Box fill pad={{top: "xlarge"}}>
+        <Box fill margin={{top: "large"}} pad={{top: "xlarge"}}>
           <Route exact path={ROUTES.LANDING} component={PatternsPage} />
           <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
         </Box>

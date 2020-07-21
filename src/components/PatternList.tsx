@@ -34,22 +34,21 @@ export const PatternList = React.memo(({ patterns, onDestroy, onSave}: PatternLi
   }
 
   return (
-      <PatternGrid>
-        {patterns.map((pattern: PatternData, i: number) => {
-          return (
-            <PatternListItem
-              key={`pat-${pattern.id}-${i}`}
-              ident={pattern.id}
-              markup={pattern.markup}
-              onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
-              onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
-              onClickSave={onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
-              onClickDestroy={onDestroy ? () => onDestroy(pattern) : undefined}
-            />
-          )
-        })}
-      </PatternGrid>
-
+    <>
+      {patterns.map((pattern: PatternData, i: number) => {
+        return (
+          <PatternListItem
+            key={`pat-${pattern.id}-${i}`}
+            ident={pattern.id}
+            markup={pattern.markup}
+            onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
+            onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
+            onClickSave={onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
+            onClickDestroy={onDestroy ? () => onDestroy(pattern) : undefined}
+          />
+        )
+      })}
+    </>
   )
 })
 

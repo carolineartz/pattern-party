@@ -1,7 +1,7 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Anchor } from "grommet"
+import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-p.svg"
 import { withRouter, Link } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
@@ -12,9 +12,10 @@ import { compose } from "recompose";
 
 type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {
   onClickSignIn: Function
+  onClickSignOut: Function
 }
 
-const Header = ({history, authUser, firebase, onClickSignIn}: HeaderProps) => {
+const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut}: HeaderProps) => {
   return (
     <GHeader border={{
       "color": "light-4",
@@ -29,14 +30,31 @@ const Header = ({history, authUser, firebase, onClickSignIn}: HeaderProps) => {
       <Box direction="row" gap="small" pad={{ right: "medium" }}>
         {authUser &&
           <>
-          <Box pad={{right: "small"}}>
-            <Link to={ROUTES.MY_PATTERNS}>
-              <Text color="text" weight="normal">My Patterns</Text>
-            </Link>
-          </Box>
-          <Box>
-            <Anchor onClick={firebase.doSignOut} label="Sign Out" />
-          </Box>
+          <Button
+            plain
+            css={`
+              border-bottom: 3px solid;
+              border-bottom-width: ${history.location.pathname === ROUTES.MY_PATTERNS ? '3px' : '0'}
+            `}
+            onClick={() => {
+              if (history.location.pathname !== ROUTES.MY_PATTERNS) {
+                history.push(ROUTES.MY_PATTERNS)
+              }
+            }}
+            label={<Box>My Patterns</Box>}
+            />
+            <Menu
+              label={<UserIcon character={(authUser.displayName || "?").charAt(0)} />}
+              items={[
+                {
+                  label: 'Sign Out',
+                  onClick: () => {
+                    onClickSignOut()
+                    firebase.doSignOut()
+                  }
+                },
+              ]}
+            />
           </>
         }
         {!authUser &&
@@ -53,8 +71,22 @@ const Header = ({history, authUser, firebase, onClickSignIn}: HeaderProps) => {
 const Brand = ({ history, children }: WithRouterProps) => {
   return (
     <Box direction="row" responsive pad="xsmall" justify="center" align="center" onClick={() => {
-      history.push(ROUTES.LANDING)
+      if (history.location.pathname !== ROUTES.LANDING) {
+        history.push(ROUTES.LANDING)
+      }
     }}>{children}
+    </Box>
+  )
+}
+
+type UserIconProps = {
+  character: string
+}
+
+const UserIcon = ({ character }: UserIconProps) => {
+  return (
+    <Box background="brand" round align="center" justify="center" height="50px" width="50px">
+      <Text color="white">{character}</Text>
     </Box>
   )
 }

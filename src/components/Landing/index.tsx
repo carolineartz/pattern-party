@@ -3,6 +3,7 @@ import { compose } from 'recompose';
 import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { withAuthentication, WithAuthProps } from '../Session';
 import { PatternList } from './../PatternList';
+import { PatternGrid } from "./../Patterns/grid"
 import { DestroyDialog } from "./../Patterns/destroy"
 import {Box} from "grommet"
 
@@ -24,20 +25,22 @@ const LandingPage = React.memo((props: LandingPageProps) => {
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
-      <PatternList
-        patterns={patterns}
-        onDestroy={userIsAdmin ? (pattern: PatternData) => {
-          setPatternForDestroy(pattern)
-        } : undefined}
-        onSave={authUser ? (pattern: PatternData) => {
-          if (authUser) {
-            firebase.userPatterns(authUser.uid).add({
-              markup: pattern.markup,
-              hidden: false
-            })
-          }
-        } : undefined}
-      />
+      <PatternGrid>
+        <PatternList
+          patterns={patterns}
+          onDestroy={userIsAdmin ? (pattern: PatternData) => {
+            setPatternForDestroy(pattern)
+          } : undefined}
+          onSave={authUser ? (pattern: PatternData) => {
+            if (authUser) {
+              firebase.userPatterns(authUser.uid).add({
+                markup: pattern.markup,
+                hidden: false
+              })
+            }
+          } : undefined}
+        />
+      </PatternGrid>
       {userIsAdmin && patternForDestroy &&
         <DestroyDialog
           key="destroy-dialog"
