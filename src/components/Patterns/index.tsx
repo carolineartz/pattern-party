@@ -15,7 +15,7 @@ type PatternData = {
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const PatternsPage = (props: PatternsPageProps) => {
+const PatternsPage = React.memo((props: PatternsPageProps) => {
   console.log("Patterns Page", props)
   const { communityPatterns, userPatterns } = props
 
@@ -26,6 +26,6 @@ const PatternsPage = (props: PatternsPageProps) => {
   } else {
     return <></>
   }
-}
+})
 
 export default compose<PatternsPageProps, any>(withPatterns)(PatternsPage);

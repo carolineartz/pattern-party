@@ -29,6 +29,36 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
   state = initialPatterns
 
+  fetchInitialPatterns = async (user?: firebase.User) => {
+    const firebase: Firebase = this.props.firebase
+    let pats: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+
+    if (user) {
+      pats = await firebase.userPatterns(user.uid).get()
+    }
+    else {
+      pats = await firebase.patterns().get()
+    }
+
+    const docs = pats.docs
+
+    let patData: PatternData[] = []
+
+    docs.forEach((pattern) => {
+      const data = pattern.data()
+
+      patData.push({
+        id: pattern.id,
+        markup: data.markup,
+        hidden: data.hidden || false
+      })
+    })
+
+    this.setState({
+      userPatterns: user ? patData : this.state.userPatterns,
+      communityPatterns: user ? this.state.communityPatterns : patData
+    })
+  }
 
   subscribeToCommunityPatterns = () => {
     const firebase: Firebase = this.props.firebase
@@ -41,6 +71,10 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
           switch (change.type) {
             case "added":
+              if (this.state.communityPatterns.find((pData: PatternData) => id === pData.id)) {
+                return
+              }
+
               this.setState({
                 communityPatterns: [
                   { markup: data.markup, id, hidden: data.hidden || false },
@@ -82,6 +116,9 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
           switch (change.type) {
             case "added":
+              if (this.state.userPatterns.find((pData: PatternData) => id === pData.id)) {
+                return
+              }
               this.setState({
                 userPatterns: [
                   { markup: data.markup, id, hidden: data.hidden || false },
@@ -117,15 +154,15 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
     // signed in
     if (!prevProps.authUser && this.props.authUser && !this.userPatternsListener) {
-      this.subscribeToUserPatterns()
+      this.fetchInitialPatterns(this.props.authUser).then(this.subscribeToUserPatterns)
     }
   }
 
   componentDidMount() {
-    this.subscribeToCommunityPatterns()
+    this.fetchInitialPatterns().then(this.subscribeToCommunityPatterns)
 
     if (this.props.authUser) {
-      this.subscribeToUserPatterns()
+      this.fetchInitialPatterns(this.props.authUser).then(this.subscribeToUserPatterns)
     }
   }
 
