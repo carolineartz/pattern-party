@@ -8,6 +8,7 @@ export const CreatePatternIFrame = () => {
   return (
     <Box height="70vh" width="100%">
       <iframe
+        title="Doodad.Dev"
         src="https://doodad.dev/pattern-generator/"
         seamless
         frameBorder={0}

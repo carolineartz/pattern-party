@@ -16,7 +16,7 @@ type PatternData = {
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const UserPatterns = (props: UserPatternsProps) => {
+const UserPatterns = React.memo((props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
   const { firebase, authUser, patterns } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
@@ -46,7 +46,7 @@ const UserPatterns = (props: UserPatternsProps) => {
         />}
       </Box>
   )
-}
+})
 
 const condition = (authUser?: firebase.User) => !!authUser;
 

@@ -12,20 +12,9 @@ type DestroyDialogProps = {
   onClickHide: any
   onClickDestroy: any
   closeDialog: () => void
-  // showDialog: (shouldShow: boolean) => void
 }
 
 class Dialog<T extends DestroyDialogProps> extends React.PureComponent<T> {
-  // removePattern = () => {
-  //   this.props.firebase.pattern(this.props.ident).delete()
-  //   this.props.closeDialog()
-  // }
-
-  // handleClickHidePattern = () => {
-  //   this.props.firebase.pattern(this.props.ident).set({ hidden: true }, { merge: true })
-  //   this.props.closeDialog()
-  // }
-
   public render() {
     const { markup, closeDialog, onClickDestroy, onClickHide } = this.props
 

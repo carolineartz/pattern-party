@@ -2,7 +2,7 @@ import React from 'react';
 
 import { theme } from "./theme"
 import { GlobalStyles } from './globalStyles';
-import { Grommet, Layer } from "grommet"
+import { Grommet, Layer, Box } from "grommet"
 import Header from "../Header"
 import PatternsPage from "./../Patterns"
 import { SignInGoogle } from "./../SignIn/google"
@@ -16,20 +16,24 @@ const App = ({ authUser }: WithAuthProps) => {
   return (
     <Router>
       <Grommet theme={theme}>
-        {showSignIn &&
+        {!authUser && showSignIn &&
           <Layer
             full="horizontal"
-          position="top"
-          onEsc={() => setShowSignIn(false)}
-          onClickOutside={() => setShowSignIn(false)}
+            position="top"
+            onEsc={() => setShowSignIn(false)}
+            onClickOutside={() => setShowSignIn(false)}
           >
             <SignInGoogle />
           </Layer>
         }
         <GlobalStyles />
-        <Header onClickSignIn={() => setShowSignIn(true)} />
-        <Route exact path={ROUTES.LANDING} component={PatternsPage} />
-        <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
+        <Layer full="horizontal" modal={false} position="top">
+          <Header onClickSignIn={() => setShowSignIn(true)} />
+        </Layer>
+        <Box fill pad={{top: "xlarge"}}>
+          <Route exact path={ROUTES.LANDING} component={PatternsPage} />
+          <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
+        </Box>
       </Grommet>
     </Router>
   )
