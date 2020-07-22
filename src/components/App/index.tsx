@@ -46,8 +46,9 @@ const App = ({ authUser }: WithAuthProps) => {
           </Layer>
         }
         { authUser && <CreatePattern showCreate={showCreate} setShowCreate={setShowCreate} /> }
-        <Box fill margin={{top: "large"}}>
+        <Box fill>
           <Route exact path={ROUTES.LANDING} component={PatternsPage} />
+          <Route exact path={ROUTES.EXPLORE} component={PatternsPage} />
           <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
         </Box>
       </Grommet>

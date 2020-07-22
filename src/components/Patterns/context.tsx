@@ -1,14 +1,7 @@
 import React from 'react';
 import { withAuthentication } from "../Session"
 
-import Firebase, {withFirebase} from "./../Firebase"
-
-type PatternData = {
-  id: string
-  markup: string
-  hidden?: boolean
-  createdAt?: firebase.firestore.Timestamp
-}
+import Firebase, { withFirebase } from "./../Firebase"
 
 type IPatternsState = {
   communityPatterns: PatternData[],
@@ -51,7 +44,8 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
       patData.push({
         id: pattern.id,
         markup: data.markup,
-        hidden: data.hidden || false
+        hidden: data.hidden || false,
+        featured: data.featured || false
       })
     })
 
@@ -78,7 +72,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
               this.setState({
                 communityPatterns: [
-                  { markup: data.markup, id, hidden: data.hidden || false },
+                  { markup: data.markup, id, hidden: data.hidden || false, featured: data.featured || false },
                   ...this.state.communityPatterns
                 ]
               })

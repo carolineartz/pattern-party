@@ -1,7 +1,7 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
+import { Header as GHeader, Box, Text, Anchor, Menu, Button, Avatar } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
@@ -46,7 +46,7 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
             label={<Box>My Patterns</Box>}
             />
             <Menu
-              label={<UserIcon character={(authUser.displayName || "?").charAt(0)} />}
+              label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
               items={[
                 {
                   label: 'Sign Out',

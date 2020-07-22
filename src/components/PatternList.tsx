@@ -5,13 +5,6 @@ import { formatSVG } from "./Patterns/util"
 import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
 
-type PatternData = {
-  id: string
-  markup: string
-  hidden?: boolean
-  createdAt?: firebase.firestore.Timestamp
-}
-
 type PatternListProps = {
   patterns: PatternData[]
   onDestroy?: (pat: PatternData) => void

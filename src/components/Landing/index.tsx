@@ -6,16 +6,9 @@ import { withAuthentication, WithAuthProps } from '../Session';
 import { PatternList } from './../PatternList';
 import { PatternGrid } from "./../Patterns/grid"
 import { DestroyDialog } from "./../Patterns/destroy"
-import {Box} from "grommet"
+import { Box } from "grommet"
 
-type LandingPageProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
-
-type PatternData = {
-  id: string
-  markup: string
-  hidden?: boolean
-  createdAt?: firebase.firestore.Timestamp
-}
+type LandingPageProps = WithAuthProps & WithFirebaseProps & { patterns: PatternData[] } & { location: any }
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 

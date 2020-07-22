@@ -90,8 +90,11 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       size="small"
                       onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
                       css={`
-                      padding: 6px;
-                      box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+                        padding: 6px;
+                        box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+                        &:hover {
+                          background-color: #EDEDED;
+                        }
                     `} />
                   </CSSTransition>
                   <CSSTransition
@@ -107,9 +110,12 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       hoverIndicator
                       size="small"
                       css={`
-                      padding: 6px;
-                      box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
-                    `}
+                        padding: 6px;
+                        box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+                        &:hover {
+                          background-color: #EDEDED;
+                        }
+                      `}
                       icon={<Gallery size="small" color="text" />}
                       onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))} />
                   </CSSTransition>
@@ -128,7 +134,11 @@ export const PatternListItem = (props: PatternListItemProps) => {
                         size="small"
                         css={`
                           padding: 6px;
-                          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);`}
+                          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+                          &:hover {
+                            background-color: #EDEDED;
+                          }
+                        `}
                         icon={<Save size="small" color="text" />}
                         onClick={(evt: React.MouseEvent) => {
                           if (props.onClickSave) {
@@ -158,7 +168,11 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       position: absolute;
                       padding: 6px;
                       top: -8px;
-                      right: -8px;`}
+                      right: -8px;
+                      &:hover {
+                        background-color: #DADADA;
+                      }
+                    `}
                   />
                 </CSSTransition>
               }

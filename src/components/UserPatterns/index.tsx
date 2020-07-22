@@ -9,13 +9,6 @@ import { Box } from "grommet"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
 
-type PatternData = {
-  id: string
-  markup: string
-  hidden?: boolean
-  createdAt?: firebase.firestore.Timestamp
-}
-
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const UserPatterns = React.memo((props: UserPatternsProps) => {
@@ -24,11 +17,8 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
   return (
-    <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
+    <>
       <PatternGrid>
-        {/* <Box elevation="small" align="center" justify="center" onClick={() => props.setShowCreate(true)}>
-          <Add size="large" color="text" />
-        </Box> */}
         <PatternList
           patterns={patterns}
           onDestroy={authUser ? (pattern: PatternData) => {
@@ -51,7 +41,7 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
           }}
           closeDialog={() => setPatternForDestroy(null)}
         />}
-      </Box>
+      </>
   )
 })
 
