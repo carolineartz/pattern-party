@@ -5,7 +5,6 @@ import { withAuthorization, WithAuthProps } from '../Session';
 import { PatternList } from '../PatternList';
 import { PatternGrid } from "./../Patterns/grid"
 import { DestroyDialog } from "../Patterns/destroy"
-import { Box } from "grommet"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
 

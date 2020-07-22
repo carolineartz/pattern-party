@@ -1,12 +1,11 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Anchor, Menu, Button, Avatar, ButtonProps } from "grommet"
+import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
-import { Add } from "grommet-icons"
 
 import * as ROUTES from "./../../constants/routes"
 import { compose } from "recompose";
@@ -109,19 +108,4 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
   )
 }
 
-type UserIconProps = {
-  character: string
-}
-
-const UserIcon = ({ character }: UserIconProps) => {
-  return (
-    <Box background="brand" round align="center" justify="center" height="50px" width="50px">
-      <Text color="white">{character}</Text>
-    </Box>
-  )
-}
-
-
 export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
-
-// export default withRouter<WithRouterProps, any>(Header)

@@ -9,7 +9,7 @@ import { Box, Text, Heading } from "grommet"
 import * as ROUTES from '../../constants/routes';
 import { DestroyDialog } from "./destroy"
 import { PatternGrid } from "./../Patterns/grid"
-import Firebase, { withFirebase, WithFirebaseProps } from '../Firebase';
+import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { PatternList } from './../PatternList';
 import "styled-components/macro"
 
