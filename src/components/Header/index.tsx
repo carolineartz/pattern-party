@@ -2,7 +2,7 @@ import * as React from "react"
 import "styled-components/macro"
 
 import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
-import { ReactComponent as Logo } from "./../../images/logo-p.svg"
+import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
@@ -27,7 +27,6 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
     }}>
       <Brand history={history}>
         <Box height={{ max: "52px" }}><Logo /></Box>
-        <Text>PatternParty</Text>
       </Brand>
       <Box direction="row" gap="small" pad={{ right: "medium" }}>
         {authUser &&

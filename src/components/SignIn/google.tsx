@@ -8,7 +8,7 @@ import { compose } from 'recompose';
 import { Box, Text } from "grommet"
 import * as ROUTES from "./../../constants/routes"
 import GoogleButton from 'react-google-button'
-import { ReactComponent as Logo } from "./../../images/logo-p.svg"
+import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 
 
 type WithRouterProps = {
