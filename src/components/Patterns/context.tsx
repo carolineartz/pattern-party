@@ -6,7 +6,8 @@ import Firebase, {withFirebase} from "./../Firebase"
 type PatternData = {
   id: string
   markup: string
-  hidden: boolean
+  hidden?: boolean
+  createdAt?: firebase.firestore.Timestamp
 }
 
 type IPatternsState = {
@@ -34,10 +35,10 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
     let pats: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
 
     if (user) {
-      pats = await firebase.userPatterns(user.uid).get()
+      pats = await firebase.userPatterns(user.uid).orderBy("createdAt", "desc").get()
     }
     else {
-      pats = await firebase.patterns().get()
+      pats = await firebase.patterns().orderBy("createdAt", "desc").get()
     }
 
     const docs = pats.docs

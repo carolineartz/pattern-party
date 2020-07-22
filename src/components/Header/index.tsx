@@ -3,9 +3,10 @@ import "styled-components/macro"
 
 import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-p.svg"
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
 import { withFirebase, WithFirebaseProps } from "./../Firebase"
+import { Add } from "grommet-icons"
 
 import * as ROUTES from "./../../constants/routes"
 import { compose } from "recompose";
@@ -13,9 +14,10 @@ import { compose } from "recompose";
 type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {
   onClickSignIn: Function
   onClickSignOut: Function
+  onClickCreate: Function
 }
 
-const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut}: HeaderProps) => {
+const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onClickCreate}: HeaderProps) => {
   return (
     <GHeader border={{
       "color": "light-4",
@@ -30,6 +32,7 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut}: He
       <Box direction="row" gap="small" pad={{ right: "medium" }}>
         {authUser &&
           <>
+          <Button icon={<Add />} onClick={() => onClickCreate()} />
           <Button
             plain
             css={`

@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
+import { firestore } from "firebase"
 import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { withAuthentication, WithAuthProps } from '../Session';
 import { PatternList } from './../PatternList';
@@ -13,6 +14,7 @@ type PatternData = {
   id: string
   markup: string
   hidden?: boolean
+  createdAt?: firebase.firestore.Timestamp
 }
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
@@ -35,7 +37,8 @@ const LandingPage = React.memo((props: LandingPageProps) => {
             if (authUser) {
               firebase.userPatterns(authUser.uid).add({
                 markup: pattern.markup,
-                hidden: false
+                hidden: false,
+                createdAt: firestore.Timestamp.now()
               })
             }
           } : undefined}

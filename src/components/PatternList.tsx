@@ -8,6 +8,8 @@ import svgToMiniDataURI from "mini-svg-data-uri"
 type PatternData = {
   id: string
   markup: string
+  hidden?: boolean
+  createdAt?: firebase.firestore.Timestamp
 }
 
 type PatternListProps = {

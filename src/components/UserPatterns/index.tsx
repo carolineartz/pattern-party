@@ -6,7 +6,6 @@ import { PatternList } from '../PatternList';
 import { PatternGrid } from "./../Patterns/grid"
 import { DestroyDialog } from "../Patterns/destroy"
 import { Box } from "grommet"
-import { Add } from "grommet-icons"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
 
@@ -14,6 +13,7 @@ type PatternData = {
   id: string
   markup: string
   hidden?: boolean
+  createdAt?: firebase.firestore.Timestamp
 }
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
@@ -21,19 +21,14 @@ type LoadingState = "not-started" | "loading" | "loaded" | "error"
 const UserPatterns = React.memo((props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
   const { firebase, authUser, patterns } = props
-  const [showCreate, setShowCreate] = React.useState<boolean>(false)
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
-
-  const handleClickCreate = () => {
-    setShowCreate(true)
-  }
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
       <PatternGrid>
-        <Box elevation="small" align="center" justify="center" onClick={handleClickCreate}>
+        {/* <Box elevation="small" align="center" justify="center" onClick={() => props.setShowCreate(true)}>
           <Add size="large" color="text" />
-        </Box>
+        </Box> */}
         <PatternList
           patterns={patterns}
           onDestroy={authUser ? (pattern: PatternData) => {
