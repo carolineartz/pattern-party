@@ -1,7 +1,7 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Anchor, Menu, Button, Avatar } from "grommet"
+import { Header as GHeader, Box, Text, Anchor, Menu, Button, Avatar, ButtonProps } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
@@ -28,22 +28,26 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
       <Brand history={history}>
         <Box height={{ max: "52px" }}><Logo /></Box>
       </Brand>
-      <Box direction="row" gap="small" pad={{ right: "medium" }}>
+      <Box direction="row" gap="medium" pad={{ right: "medium" }}>
+        <NavButton
+          active={history.location.pathname === ROUTES.EXPLORE}
+          onClick={() => {
+            if (history.location.pathname !== ROUTES.EXPLORE) {
+              history.push(ROUTES.EXPLORE)
+            }
+          }}
+          text="Explore"
+        />
         {authUser &&
           <>
-          <Button icon={<Add />} onClick={() => onClickCreate()} />
-          <Button
-            plain
-            css={`
-              border-bottom: 3px solid;
-              border-bottom-width: ${history.location.pathname === ROUTES.MY_PATTERNS ? '3px' : '0'}
-            `}
-            onClick={() => {
-              if (history.location.pathname !== ROUTES.MY_PATTERNS) {
-                history.push(ROUTES.MY_PATTERNS)
-              }
-            }}
-            label={<Box>My Patterns</Box>}
+            <NavButton
+              active={history.location.pathname === ROUTES.MY_PATTERNS}
+              onClick={() => {
+                if (history.location.pathname !== ROUTES.MY_PATTERNS) {
+                  history.push(ROUTES.MY_PATTERNS)
+                }
+              }}
+              text="My Patterns"
             />
             <Menu
               label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
@@ -60,9 +64,10 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
           </>
         }
         {!authUser &&
-          <Box>
-            <Anchor onClick={() => onClickSignIn()} label="Sign In" />
-          </Box>
+          <NavButton
+            onClick={() => onClickSignIn()}
+            text="Sign In"
+          />
         }
       </Box>
     </GHeader>
@@ -78,6 +83,29 @@ const Brand = ({ history, children }: WithRouterProps) => {
       }
     }}>{children}
     </Box>
+  )
+}
+
+type NavButtonProps = ButtonProps & {
+  onClick: (evt: React.MouseEvent<HTMLButtonElement>) => void
+  text: string
+}
+
+const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
+  return (
+    <Button
+      plain
+      label={
+        <Box
+          css={`
+            border-bottom: 3px solid;
+            border-bottom-width: ${active ? '3px' : '0'}
+          `}>
+          {text}
+        </Box>
+      }
+      {...restProps}
+    />
   )
 }
 

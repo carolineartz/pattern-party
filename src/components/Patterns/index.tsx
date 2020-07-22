@@ -81,41 +81,6 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   )
 })
 
-// type DestroyProps = {
-//   firebase: Firebase
-//   user?: firebase.User
-//   patternForDestroy: PatternData
-//   setPatternForDestroy: (pat: PatternData | null) => void
-// }
-
-// const Remove = withFirebase(({ firebase, patternForDestroy, setPatternForDestroy }: DestroyProps) => (
-//   <DestroyDialog
-//     key="destroy-dialog"
-//     ident={patternForDestroy.id}
-//     markup={patternForDestroy.markup}
-//     onClickDestroy={() => {
-//       if (user) {
-//         firebase.userPattern(user.uid, patternForDestroy.id).delete()
-//       } else {
-//         firebase.pattern(patternForDestroy.id)
-//       }
-
-//       setPatternForDestroy(null)
-//     }}
-//     onClickHide={() => {
-//       if (user) {
-//         firebase.userPattern(user.uid, patternForDestroy.id).set({hidden: true, show: false}, {merge: true})
-//       } else {
-//         firebase.pattern(patternForDestroy.id).set({hidden: true, show: false}, {merge: true})
-//       }
-
-//       setPatternForDestroy(null)
-//     }}
-//     closeDialog={() => setPatternForDestroy(null)}
-//   />
-// ))
-
-
 const TextBlock = ({ text, children }: { text: string, children?: React.ReactNode }) => (
   <Box pad="large">
     <Heading level={1} color="text">{text}</Heading>
