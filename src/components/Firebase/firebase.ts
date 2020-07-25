@@ -31,18 +31,13 @@ export interface IFirebase {
   doSignInWithGoogle: () => Promise<firebase.auth.UserCredential>
   doSignOut: () => Promise<void>
 
-  users: () => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
   user: (uid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
 
-  patterns: () => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
-  pattern: (pid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+  patterns: (limit: number) => firebase.firestore.Query<PatternData>
+  pattern: (pid: string) => firebase.firestore.DocumentReference<PatternData>
 
-  userPatterns: (uid: string) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
-  userPattern: (uid: string, upid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
-
-  // FIXME: remove me
-  hidden: () => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
-  hiddenPattern: (hp: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+  userPatterns: (uid: string, limit: number) => firebase.firestore.Query<PatternData>
+  userPattern: (uid: string, upid: string) => firebase.firestore.DocumentReference<PatternData>
 }
 
 class Firebase implements IFirebase {
@@ -93,37 +88,62 @@ class Firebase implements IFirebase {
             }
             next({...authUser, ...(dbUser || {roles: {}})});
           }
-            // let roles = {}
-            // // default empty roles
-            // if (!dbUser || !dbUser.roles) {
-            //   roles = {};
-            // } else {
-            //   roles = dbUser.roles
-            // }
-
-            // merge auth and db user
-          });
+        });
       } else {
-        // debugger
         fallback();
       }
     });
 
   // *** User API ***
   user = (uid :string) => this.db.doc(`users/${uid}`);
-  users = () => this.db.collection('users');
 
   // *** User Patterns API ***
-  userPatterns = (uid: string) => this.user(uid).collection("patterns")
-  userPattern = (uid: string, upid: string) => this.user(uid).collection("patterns").doc(upid)
+  userPatterns = (uid: string, limit = 10) =>
+    this.user(uid).collection("patterns").withConverter(patternConverter)
+      .orderBy("createdAt", "desc")
+      .limit(limit)
+
+  userPattern = (uid: string, upid: string) =>
+    this.user(uid).collection("patterns").withConverter(patternConverter)
+      .doc(upid)
+
+  featuredPatterns = () => this.db.collection("patterns").orderBy("createdAt", "desc").where("featured", "==", true)
 
   // *** Community Patterns API ***
-  patterns = () => this.db.collection("patterns")
-  pattern = (pid: string) => this.patterns().doc(pid)
+  patterns = (limit = 10) =>
+    this.db.collection("patterns").withConverter(patternConverter)
+      .orderBy("createdAt", "desc")
+      .limit(limit)
 
-  // *** Hidden Patterns API ***
-  hidden = () => this.db.collection("hidden")
-  hiddenPattern = (hid: string) => this.hidden().doc(hid)
+  pattern = (pid: string) =>
+    this.db.collection("patterns").withConverter(patternConverter)
+      .doc(pid)
 }
+
+
+export const patternConverter: firebase. firestore. FirestoreDataConverter<PatternData> = {
+  toFirestore(pattern: PatternData): firebase.firestore.DocumentData {
+    return {
+      markup: pattern.markup,
+      createdAt: pattern.createdAt!,
+      hidden: pattern.hidden || false,
+      featured: pattern.featured || false,
+    };
+  },
+  fromFirestore(
+    snapshot: firebase.firestore.QueryDocumentSnapshot,
+    options: firebase.firestore.SnapshotOptions
+  ): PatternData {
+    const data = snapshot.data(options)!;
+    return {
+      id: snapshot.id,
+      markup: data.markup,
+      createdAt: data.createdAt,
+      hidden: data.hiddenn || false,
+      featured: data.featured || false,
+    }
+  }
+};
+
 
 export default Firebase;
