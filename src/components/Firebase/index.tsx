@@ -8,3 +8,5 @@ export { FirebaseContext, withFirebase };
 export type WithFirebaseProps = { firebase: Firebase, children: React.ReactNode }
 export type DatabaseStatus = "connected" | "disconnected" | "unknown";
 export type AuthUser = firebase.User
+
+export const LIMIT = 10

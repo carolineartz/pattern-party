@@ -21,38 +21,34 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   console.log("Patterns Page", props)
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
-  const { communityPatterns, userPatterns } = props
-  const featuredPatterns = communityPatterns.filter((pData: PatternData) => Boolean(pData.featured))
+  const { community: communityPatterns, user: userPatterns } = props
+  const featuredPatterns = communityPatterns.patterns.filter((pData: PatternData) => Boolean(pData.featured))
 
   const isFeaturedPatterns = props.location.pathname === ROUTES.LANDING
   const isUserPatterns = props.location.pathname === ROUTES.MY_PATTERNS
   const user = props.authUser as any
   const userIsAdmin = user && user.roles && user.roles.admin
 
-  return (
-    <>
-      {isUserPatterns ?
-        <UserPatternsText key="text-user-patterns" /> :
-        isFeaturedPatterns ?
-          <FeaturedText key="text-featured" /> :
-          <ExploreText key="text-explore" />
-      }
-      <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
-        {isUserPatterns ?
-          <UserPatterns key="patterns-user" patterns={userPatterns} /> :
+  if (isUserPatterns) {
+    return <UserPatterns key="patterns-user" patternCollection={userPatterns} />
+  } else {
+    return (
+      <>
+        { isFeaturedPatterns ? <FeaturedText key="text-featured" /> : <ExploreText key="text-explore" /> }
+         <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
           <PatternGrid
             colMinWidth={isFeaturedPatterns ? '380px' : undefined}
             rowMinHeight={isFeaturedPatterns ? '300px' : undefined}
             rowMaxHeight={isFeaturedPatterns ? '33vh' : undefined}
           >
             <PatternList
-              patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns}
+              patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns.patterns}
               onDestroy={userIsAdmin ? (pattern: PatternData) => {
                 setPatternForDestroy(pattern)
               } : undefined}
               onSave={props.authUser ? (pattern: PatternData) => {
                 if (props.authUser) {
-                  props.firebase.userPatterns(props.authUser.uid).add({
+                  props.firebase.userPatternCollection(props.authUser.uid).add({
                     markup: pattern.markup,
                     hidden: false,
                     createdAt: firestore.Timestamp.now()
@@ -60,8 +56,8 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
                 }
               } : undefined}
             />
-          </PatternGrid>}
-        </Box>
+          </PatternGrid>
+         </Box>
         { !isUserPatterns && userIsAdmin && patternForDestroy &&
           <DestroyDialog
             key="destroy-dialog"
@@ -77,8 +73,9 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
             }}
             closeDialog={() => setPatternForDestroy(null)}
           />}
-    </>
-  )
+      </>
+    )
+  }
 })
 
 const TextBlock = ({ text, children }: { text: string, children?: React.ReactNode }) => (
@@ -98,8 +95,5 @@ const ExploreText = () => (
   </TextBlock>
 )
 
-const UserPatternsText = () => (
-  <TextBlock text="My Patterns"  />
-)
 
 export default compose<PatternsPageProps, any>(withAuthentication, withFirebase, withPatterns)(PatternsPage);

@@ -26,7 +26,6 @@ export class AuthContextProvider extends React.Component<any & { firebase: Fireb
           console.log("authUser", authUser)
 
           if (!authUser) {
-            debugger
             this.setState({authUser: null})
           }
           this.setState({authUser})
@@ -76,7 +75,9 @@ export const withAuthorization = (condition: (user?: firebase.User) => boolean) 
           //   this.props.history.push(ROUTES.MY_PATTERNS)
           // }
         },
-        () => this.props.history.push(ROUTES.LANDING),
+        () => {
+          this.props.history.push(ROUTES.LANDING)
+        },
       );
     }
 

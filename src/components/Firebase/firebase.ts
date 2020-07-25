@@ -33,9 +33,12 @@ export interface IFirebase {
 
   user: (uid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
 
+  patternCollection: () => firebase.firestore.CollectionReference
   patterns: (limit: number) => firebase.firestore.Query<PatternData>
+  featuredPatterns: (limit: number) => firebase.firestore.Query<PatternData>
   pattern: (pid: string) => firebase.firestore.DocumentReference<PatternData>
 
+  userPatternCollection: (uid: string) => firebase.firestore.CollectionReference
   userPatterns: (uid: string, limit: number) => firebase.firestore.Query<PatternData>
   userPattern: (uid: string, upid: string) => firebase.firestore.DocumentReference<PatternData>
 }
@@ -97,30 +100,34 @@ class Firebase implements IFirebase {
   // *** User API ***
   user = (uid :string) => this.db.doc(`users/${uid}`);
 
-  // *** User Patterns API ***
-  userPatterns = (uid: string, limit = 10) =>
-    this.user(uid).collection("patterns").withConverter(patternConverter)
-      .orderBy("createdAt", "desc")
-      .limit(limit)
-
-  userPattern = (uid: string, upid: string) =>
-    this.user(uid).collection("patterns").withConverter(patternConverter)
-      .doc(upid)
-
-  featuredPatterns = () => this.db.collection("patterns").orderBy("createdAt", "desc").where("featured", "==", true)
 
   // *** Community Patterns API ***
+  patternCollection = () => this.db.collection("patterns")
   patterns = (limit = 10) =>
-    this.db.collection("patterns").withConverter(patternConverter)
+    this.patternCollection()
+      .withConverter(patternConverter)
       .orderBy("createdAt", "desc")
       .limit(limit)
 
   pattern = (pid: string) =>
-    this.db.collection("patterns").withConverter(patternConverter)
+    this.db.collection("patterns")
+      .withConverter(patternConverter)
       .doc(pid)
+  featuredPatterns = (limit = 10) => this.patterns(limit).where("featured", "==", true)
+
+  // *** User Patterns API ***
+  userPatternCollection = (uid: string) => this.user(uid).collection("patterns")
+  userPatterns = (uid: string, limit = 10) =>
+    this.userPatternCollection(uid)
+      .withConverter(patternConverter)
+      .orderBy("createdAt", "desc")
+      .limit(limit)
+  userPattern = (uid: string, upid: string) =>
+    this.user(uid).collection("patterns")
+      .withConverter(patternConverter)
+      .doc(upid)
+
 }
-
-
 export const patternConverter: firebase. firestore. FirestoreDataConverter<PatternData> = {
   toFirestore(pattern: PatternData): firebase.firestore.DocumentData {
     return {
@@ -144,6 +151,4 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
     }
   }
 };
-
-
 export default Firebase;

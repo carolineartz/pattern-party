@@ -28,14 +28,14 @@ const Create = React.memo(({ authUser, firebase, showCreate, setShowCreate }: Cr
 
         if (authUser) {
           // save to the user patterns
-          firebase.userPatterns(authUser.uid).add({
+          firebase.userPatternCollection(authUser.uid).add({
             hidden: false,
             markup: formatSVG(text),
             createdAt: firestore.Timestamp.now()
           })
 
           // also create a community pattern item
-          firebase.patterns().add({
+          firebase.patternCollection().add({
             hidden: false,
             markup: formatSVG(text),
             createdAt: firestore.Timestamp.now()
