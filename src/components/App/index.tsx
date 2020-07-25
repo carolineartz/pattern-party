@@ -8,6 +8,7 @@ import PatternsPage from "./../Patterns"
 import { SignInGoogle } from "./../SignIn/google"
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { CreatePattern } from "./../Patterns/create"
+import Footer from "./../Footer"
 
 import * as ROUTES from '../../constants/routes';
 
@@ -51,6 +52,7 @@ const App = ({ authUser }: WithAuthProps) => {
           <Route exact path={ROUTES.EXPLORE} component={PatternsPage} />
           <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
         </Box>
+        <Footer />
       </Grommet>
     </Router>
   )
