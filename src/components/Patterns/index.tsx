@@ -11,7 +11,9 @@ import { DestroyDialog } from "./destroy"
 import { PatternGrid } from "./../Patterns/grid"
 import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { PatternList } from './../PatternList';
+
 import "styled-components/macro"
+import { ScrollablePatternList } from '../ScrollablePatternList';
 
 type PatternsPageProps = WithFirebaseProps & WithAuthProps & WithPatternsProps & { location: any }
 
@@ -21,7 +23,7 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   console.log("Patterns Page", props)
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
-  const { community: communityPatterns, user: userPatterns } = props
+  const { community: communityPatterns, user: userPatterns, fetchPatterns } = props
   const featuredPatterns = communityPatterns.patterns.filter((pData: PatternData) => Boolean(pData.featured))
 
   const isFeaturedPatterns = props.location.pathname === ROUTES.LANDING
@@ -41,7 +43,7 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
             rowMinHeight={isFeaturedPatterns ? '300px' : undefined}
             rowMaxHeight={isFeaturedPatterns ? '33vh' : undefined}
           >
-            <PatternList
+            <ScrollablePatternList
               patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns.patterns}
               onDestroy={userIsAdmin ? (pattern: PatternData) => {
                 setPatternForDestroy(pattern)
@@ -55,6 +57,8 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
                   })
                 }
               } : undefined}
+              fetch={fetchPatterns.bind(null, undefined, communityPatterns.startAfter)}
+              more={communityPatterns.more}
             />
           </PatternGrid>
          </Box>

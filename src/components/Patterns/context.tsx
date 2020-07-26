@@ -1,21 +1,23 @@
 import React from 'react';
 import { withAuthentication } from "../Session"
+import uniqBy from "lodash.uniqby"
 
 import Firebase, { withFirebase, LIMIT } from "./../Firebase"
 
+const DEFAULT_FETCH = () => Promise.resolve()
 export type PatternCollectionState = {
   patterns: PatternData[],
   more: boolean,
-  fetch: () => Promise<void>
+  startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>
 }
 
 const initialPatternCollectionState = {
   patterns: [],
-  more: false,
-  fetch: () => Promise.resolve()
+  more: true,
 }
 
 type IPatternsState = {
+  fetchPatterns: (user?: firebase.User, startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => Promise<PatternData[]>
   community: PatternCollectionState,
   user?: PatternCollectionState
 }
@@ -23,6 +25,7 @@ type IPatternsState = {
 export type WithPatternsProps = IPatternsState
 
 export const initialPatterns: IPatternsState = {
+  fetchPatterns: () => Promise.resolve([]),
   community: initialPatternCollectionState,
   user: undefined
 }
@@ -35,7 +38,8 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
   state = initialPatterns
 
-  fetchPatterns = async (user?: firebase.User, startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => {
+  fetchPatterns = async (user?: firebase.User, startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>): Promise<PatternData[]> => {
+    console.log("lastVisible", startAfter)
     const firebase: Firebase = this.props.firebase
 
     const initialQuery = user ? firebase.userPatterns(user.uid) : firebase.patterns()
@@ -46,28 +50,34 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
     }
 
     const snapshots = await query.get()
-    const isMore = snapshots.docs.length < LIMIT
+    const isMore = snapshots.docs.length >= LIMIT
     const lastVisible = snapshots.docs[snapshots.docs.length - 1]
+
+    let pats: PatternData[]
 
     if (user) {
       const currentPats = this.state.user ? this.state.user.patterns : []
+      pats = uniqBy([...currentPats, ...snapshots.docs.map(pd => pd.data())], 'id')
       this.setState({
         user: {
-          patterns: [...currentPats, ...snapshots.docs.map(pd => pd.data())],
+          patterns: pats,
           more: isMore,
-          fetch: () => this.fetchPatterns(user, lastVisible)
+          startAfter: lastVisible
         }
       })
     } else {
       const currentPats = this.state.community.patterns
+      pats = uniqBy([...currentPats, ...snapshots.docs.map(pd => pd.data())], 'id')
       this.setState({
         community: {
-          patterns: [...currentPats, ...snapshots.docs.map(pd => pd.data())],
+          patterns:  pats,
           more: isMore,
-          fetch: () => this.fetchPatterns(undefined, lastVisible)
+          startAfter: lastVisible
         }
       })
     }
+
+    return pats
   }
 
   subscribeToCommunityPatterns = () => {
@@ -88,7 +98,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
               this.setState({
                 community: {
                   ...this.state.community,
-                  patterns: [data,...this.state.community.patterns],
+                  patterns: uniqBy([data,...this.state.community.patterns], 'id'),
                 }
               })
               // console.log("community pattern was added", change)
@@ -124,7 +134,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
               this.setState({
                 user: {
                   ...user,
-                  patterns: [data, ...user.patterns]
+                  patterns: uniqBy([data, ...user.patterns], 'id')
                 }
               })
               // console.log("user pattern was added", change)
@@ -149,10 +159,12 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
   }
 
   componentDidMount() {
-    this.fetchPatterns().then(this.subscribeToCommunityPatterns)
+    this.subscribeToCommunityPatterns()
+    // this.fetchPatterns().then(this.subscribeToCommunityPatterns)
 
     if (this.props.authUser) {
-      this.fetchPatterns(this.props.authUser).then(this.subscribeToUserPatterns)
+      this.subscribeToUserPatterns()
+      // this.fetchPatterns(this.props.authUser).then(this.subscribeToUserPatterns)
     }
   }
 
@@ -176,6 +188,6 @@ export const PatternsConsumer = PatternsContext.Consumer as any
 
 export const withPatterns = (Component:any) => (props:any): JSX.Element => (
   <PatternsConsumer>
-    {(state: IPatternsState) => <Component user={state.user} community={state.community} {...props} />}
+    {(state: IPatternsState) => <Component fetchPatterns={state.fetchPatterns} user={state.user} community={state.community} {...props} />}
   </PatternsConsumer>
 );

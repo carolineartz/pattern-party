@@ -151,4 +151,5 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
     }
   }
 };
+
 export default Firebase;
