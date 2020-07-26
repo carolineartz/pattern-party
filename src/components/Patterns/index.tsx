@@ -23,7 +23,7 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   console.log("Patterns Page", props)
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
-  const { community: communityPatterns, user: userPatterns, fetchPatterns } = props
+  const { community: communityPatterns, user: userPatterns,  } = props
   const featuredPatterns = communityPatterns.patterns.filter((pData: PatternData) => Boolean(pData.featured))
 
   const isFeaturedPatterns = props.location.pathname === ROUTES.LANDING
@@ -42,8 +42,9 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
             colMinWidth={isFeaturedPatterns ? '380px' : undefined}
             rowMinHeight={isFeaturedPatterns ? '300px' : undefined}
             rowMaxHeight={isFeaturedPatterns ? '33vh' : undefined}
-          >
+          > { props.fetchCommunityPatterns && props.setCommunityPatterns &&
             <ScrollablePatternList
+              setMore={props.setHasMoreCommunityPatterns}
               patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns.patterns}
               onDestroy={userIsAdmin ? (pattern: PatternData) => {
                 setPatternForDestroy(pattern)
@@ -57,9 +58,12 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
                   })
                 }
               } : undefined}
-              fetch={fetchPatterns.bind(null, undefined, communityPatterns.startAfter)}
-              more={communityPatterns.more}
+              cursor={props.community.startAfter}
+              setPatterns={props.setCommunityPatterns}
+              fetchPatterns={props.fetchCommunityPatterns}
+              more={props.hasMoreCommunityPatterns}
             />
+            }
           </PatternGrid>
          </Box>
         { !isUserPatterns && userIsAdmin && patternForDestroy &&

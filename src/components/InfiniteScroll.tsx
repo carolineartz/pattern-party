@@ -1,20 +1,35 @@
 
 import React from 'react';
 import { Box } from "grommet"
+import "styled-components/macro"
+import uniqBy from "lodash.uniqby"
 
-type InfiniteScrollProps = {
-  items: any[],
-  fetch: any,
+type InfiniteScrollProps<D> = {
+  items: D[]
   more: boolean
-  renderFn: (item: any, i: number) => JSX.Element
+  renderFn: (item: D, i: number) => JSX.Element
+  cursor?: firebase.firestore.QueryDocumentSnapshot<D>
+  fetch: (startAfter?: firebase.firestore.QueryDocumentSnapshot<D>) => Promise<DataResponse<D>>
+  set: (data: DataResponse<D>) => void
+  setMore: (hasMore: boolean) => void
 }
-export const InfiniteScroll = (props: InfiniteScrollProps) => {
-  console.log(props)
-  const { items, fetch, more, renderFn } = props
-  const [element, setElement] = React.useState<HTMLDivElement | null>(null);
-  // const [loading, setLoading] = React.useState(false);
 
-  const page = React.useRef(1);
+const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
+  console.log("InfiniteScroll props ", props)
+  const { items: initialItems, renderFn, set: updateItems, cursor: initialCursor, fetch: fetchItems, more: initialMore, setMore } = props
+  const [element, setElement] = React.useState<HTMLDivElement | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const [hasMore, setHasMore] = React.useState<boolean>(initialMore)
+  const [done, setDone] = React.useState<boolean>(!initialMore)
+  // const [cursor, setCursor] = React.useState<firebase.firestore.QueryDocumentSnapshot<D> | undefined>(initialCursor)
+  const [items, setItems] = React.useState<D[]>(initialItems)
+  // const [localItems, setLocalItems] = React.useState<D[]>([])
+
+  const localItems = React.useRef<D[]>(initialItems)
+  const cursor = React.useRef<firebase.firestore.QueryDocumentSnapshot<D> | undefined>(initialCursor);
+
+  // const page = React.useRef(1);
   const prevY = React.useRef(0);
   const observer = React.useRef(
     new IntersectionObserver(
@@ -23,7 +38,15 @@ export const InfiniteScroll = (props: InfiniteScrollProps) => {
         const y = firstEntry.boundingClientRect.y;
 
         if (prevY.current > y) {
-          setTimeout(() => loadMore(), 1000); // 1 sec delay
+          const fn = () => {
+            console.log("done", done)
+            if (!done) {
+              loadMore()
+            } else {
+              console.log("no more")
+            }
+          }
+          setTimeout(fn, 1000); // 1 sec delay
         }
 
         prevY.current = y;
@@ -32,31 +55,81 @@ export const InfiniteScroll = (props: InfiniteScrollProps) => {
     )
   );
 
-  const fetchData = React.useCallback(async (pageNumber: number) => {
-    const foo = await fetch()
-    debugger
-  }, []);
+  const fetchData = React.useCallback(async startAfter => {
+    if (done) {
+      console.log("DONE IN FETCH DATA", hasMore, done)
+      setHasMore(false)
+      setMore(false)
+      return Promise.resolve({})
+    }
+
+    else {
+      setLoading(true);
+      // debugger
+      try {
+        const res = await fetchItems(startAfter)
+
+        console.log(res)
+
+        if (!res.more) {
+          setDone(true)
+        }
+        // const { status, data } = res;
+
+        setLoading(false);
+        return res;
+      } catch (e) {
+        setLoading(false);
+        return e;
+      }
+    }
+
+  }, [fetchItems, done, setHasMore, hasMore, initialMore, setDone]);
 
   const handleInitial = React.useCallback(
-    async page => {
-      console.log(page)
-      debugger
-      fetchData(page)
+    async after => {
+      console.log(after)
+      const res: { items: D[], lastVisible: firebase.firestore.QueryDocumentSnapshot<D>, more: boolean} = await fetchData(after)
+
+      if (res.items) {
+
+        if (!done) {
+          setDone(!res.more)
+        }
+
+        cursor.current = res.lastVisible
+
+        setItems((currentItems: D[]) => {
+          return uniqBy([...currentItems, ...res.items], 'id')
+        })
+
+        localItems.current = localItems.current.concat(res.items)
+      } else {
+        setMore(false)
+      }
     },
-    [fetchData]
+    [fetchData, setItems, setHasMore, done]
   );
 
   const loadMore = () => {
-    page.current++;
-
-    if (more) {
-      handleInitial(page.current);
+    if (!hasMore) {
+      debugger
+    }
+    if (initialMore && hasMore) {
+      handleInitial(cursor.current);
     }
   };
 
   React.useEffect(() => {
-    handleInitial(page.current);
-  }, [handleInitial]);
+    if (initialMore && hasMore) {
+      handleInitial(cursor.current);
+    }
+
+    return () => {
+      debugger
+      updateItems({more: !done, items: localItems.current, lastVisible: cursor.current})
+    }
+  }, [handleInitial, hasMore, initialMore]);
 
   React.useEffect(() => {
     const currentElement = element;
@@ -74,28 +147,13 @@ export const InfiniteScroll = (props: InfiniteScrollProps) => {
     };
   }, [element]);
 
+  console.log(localItems.current)
   return (
     <>
       {items.map(renderFn)}
-      <Box ref={setElement}></Box>
+      {hasMore && <Box ref={setElement}>{loading && <Box>Loading ...</Box>}</Box>}
     </>
   );
 }
 
-    // <div className="appStyle">
-    //   {images && (
-    //     <ul className="imageGrid">
-    //       {images.map((image, index) => (
-    //         <li key={index} className="imageContainer">
-    //           <img src={image.download_url} alt={image.author} className="imageStyle" />
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   )}
-
-    //   {loading && <li>Loading ...</li>}
-
-    //   <div ref={setElement} className="buttonContainer">
-    //     <button className="buttonStyle">Load More</button>
-    //   </div>
-    // </div>
+export const InfiniteScroll = React.memo(InfiniteScrollWrapped)

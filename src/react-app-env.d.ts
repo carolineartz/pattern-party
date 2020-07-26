@@ -8,10 +8,14 @@ declare module "mini-svg-data-uri";
 declare module "pizzaz";
 declare module "json-circular-stringify";
 
+// import React, { memo } from "react"
+
 declare module "react" {
   interface Attributes {
     css?: CSSProp
   }
+
+  function memo<A, B>(Component: (props: A) => B): (props: A) => ReactElement | null
 
   namespace JSX {
       interface IntrinsicElements {

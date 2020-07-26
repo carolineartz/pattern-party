@@ -4,18 +4,24 @@ import { PatternListItem } from './Patterns/patternListItem'
 import { formatSVG } from "./Patterns/util"
 import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
-import { InfiniteScroll } from './InfiniteScroll';
+import {InfiniteScroll} from './InfiniteScroll';
+
+
+// const Scroller = InfiniteScroll<PatternData>
 
 type PatternListProps = {
   patterns: PatternData[]
+  setMore: (hasMore: boolean) => void
+  more: boolean
   onDestroy?: (pat: PatternData) => void
   onSave?: (data: PatternData) => void
-  fetch: any,
-  more: boolean
+  cursor?: firebase.firestore.QueryDocumentSnapshot<PatternData>
+  fetchPatterns: (startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => Promise<PatternDataResponse>
+  setPatterns: (data: PatternDataResponse) => void
   key?: string
 }
 
-export const ScrollablePatternList = React.memo(({ patterns, onDestroy, onSave, fetch, more}: PatternListProps) => {
+export const ScrollablePatternList = React.memo(({onDestroy, ...props}: PatternListProps) => {
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
 
@@ -28,7 +34,7 @@ export const ScrollablePatternList = React.memo(({ patterns, onDestroy, onSave, 
 
   const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternData) => {
     evt.stopPropagation()
-    onSave && onSave(pattern)
+    props.onSave && props.onSave(pattern)
   }
 
   const renderPattern = (pattern: PatternData, i: number) => (
@@ -38,17 +44,20 @@ export const ScrollablePatternList = React.memo(({ patterns, onDestroy, onSave, 
       markup={pattern.markup}
       onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
       onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
-      onClickSave={onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
+      onClickSave={props.onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
       onClickDestroy={onDestroy ? () => onDestroy(pattern) : undefined}
     />
   )
 
   return (
     <InfiniteScroll
+      setMore={props.setMore}
+      more={props.more}
       renderFn={renderPattern}
-      more={more}
-      items={patterns}
-      fetch={fetch}
+      cursor={props.cursor}
+      items={props.patterns}
+      fetch={props.fetchPatterns}
+      set={props.setPatterns}
     />
   )
 })
