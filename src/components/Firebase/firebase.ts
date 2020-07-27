@@ -113,7 +113,7 @@ class Firebase implements IFirebase {
     this.db.collection("patterns")
       .withConverter(patternConverter)
       .doc(pid)
-  featuredPatterns = (limit = 10) => this.patterns(limit).where("featured", "==", true)
+  featuredPatterns = (limit = 10) => this.patternCollection().withConverter(patternConverter).where("featured", "==", true)
 
   // *** User Patterns API ***
   userPatternCollection = (uid: string) => this.user(uid).collection("patterns")

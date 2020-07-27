@@ -22,6 +22,7 @@ type IPatternsState = {
   user?: PatternCollectionState,
   hasMoreCommunityPatterns: boolean
   hasMoreUserPatterns: boolean
+  featuredPatterns: PatternData[]
   fetchUserPatterns?: (startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => Promise<PatternDataResponse>
   fetchCommunityPatterns?: (startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => Promise<PatternDataResponse>
   setCommunityPatterns?: (data: PatternDataResponse) => void
@@ -36,6 +37,7 @@ export const initialPatterns: IPatternsState = {
   community: initialPatternCollectionState,
   hasMoreCommunityPatterns: true,
   hasMoreUserPatterns: true,
+  featuredPatterns: [],
   setHasMoreUserPatterns: (hasMore: boolean) => {},
   setHasMoreCommunityPatterns: (hasMore: boolean) => {}
 }
@@ -62,6 +64,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
       setUserPatterns: this.setUserPatterns,
       hasMoreCommunityPatterns: true,
       hasMoreUserPatterns: true,
+      featuredPatterns: [],
       setHasMoreCommunityPatterns: this.setHasMoreCommunityPatterns,
       setHasMoreUserPatterns: this.setHasMoreUserPatterns
     }
@@ -135,6 +138,17 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
         items: snapshots.docs.map(pd => pd.data())
       }
     }
+  }
+
+  getFeaturedPatterns = async () => {
+    console.log("calling getFeaturedPatterns")
+    const firebase: Firebase = this.props.firebase
+
+    const snapshots = await firebase.featuredPatterns().get()
+
+    this.setState({
+      featuredPatterns: snapshots.docs.map(pd => pd.data())
+    })
   }
 
   subscribeToCommunityPatterns = () => {
@@ -235,6 +249,8 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
   }
 
   componentDidMount() {
+    this.getFeaturedPatterns()
+
     this.subscribeToCommunityPatterns()
     // this.fetchPatterns().then(this.subscribeToCommunityPatterns)
 
@@ -276,6 +292,7 @@ export const withPatterns = (Component:any) => (props:any): JSX.Element => (
         setHasMoreCommunityPatterns={state.setHasMoreCommunityPatterns}
         hasMoreUserPatterns={state.hasMoreUserPatterns}
         setHasMoreUserPatterns={state.setHasMoreUserPatterns}
+        featuredPatterns={state.featuredPatterns}
         {...props}
       />}
   </PatternsConsumer>
