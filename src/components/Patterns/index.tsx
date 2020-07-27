@@ -12,7 +12,6 @@ import { PatternGrid } from "./../Patterns/grid"
 import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { PatternList } from './../PatternList';
 
-import "styled-components/macro"
 import { ScrollablePatternList } from '../ScrollablePatternList';
 
 type PatternsPageProps = WithFirebaseProps & WithAuthProps & WithPatternsProps & { location: any }
@@ -30,8 +29,18 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   const user = props.authUser as any
   const userIsAdmin = user && user.roles && user.roles.admin
 
-  if (isUserPatterns) {
-    return <UserPatterns key="patterns-user" patternCollection={userPatterns} />
+  if (isUserPatterns && userPatterns && props.setUserPatterns && props.fetchUserPatterns) {
+    return (
+      <UserPatterns
+        key="patterns-user"
+        startAfter={userPatterns.startAfter}
+        patterns={userPatterns.patterns}
+        setHasMoreUserPatterns={props.setHasMoreUserPatterns}
+        setUserPatterns={props.setUserPatterns}
+        fetchUserPatterns={props.fetchUserPatterns}
+        hasMoreUserPatterns={props.hasMoreUserPatterns}
+      />
+    )
   } else {
     return (
       <>

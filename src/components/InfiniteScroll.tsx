@@ -67,6 +67,7 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
       setLoading(true);
       // debugger
       try {
+        debugger
         const res = await fetchItems(startAfter)
 
         console.log(res)

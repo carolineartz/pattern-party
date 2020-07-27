@@ -6,31 +6,46 @@ import { PatternList } from '../PatternList';
 import { PatternGrid } from "./../Patterns/grid"
 import { DestroyDialog } from "../Patterns/destroy"
 import {PatternCollectionState} from "./../Patterns/context"
-
+import { ScrollablePatternList } from '../ScrollablePatternList';
 import { Box, Heading } from "grommet"
+import "styled-components/macro"
+import Patterns from '../Patterns';
 
-type UserPatternsProps = WithAuthProps & WithFirebaseProps & { patternCollection?: PatternCollectionState}
+type UserPatternsProps = WithAuthProps & WithFirebaseProps & {
+  patterns: PatternData[]
+  startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>
+  setHasMoreUserPatterns: (hasMore: boolean) => void
+  setUserPatterns: (data: PatternDataResponse) => void
+  fetchUserPatterns: (startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternData>) => Promise<PatternDataResponse>
+  hasMoreUserPatterns: boolean
+}
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const UserPatterns = React.memo((props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
-  const { firebase, authUser, patternCollection } = props
+  const { firebase, authUser } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
 
   return (
     <>
       <UserPatternsText key="text-user-patterns" />
-      <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
-        <PatternGrid>
-          <PatternList
-            patterns={patternCollection ? patternCollection.patterns : []}
-            onDestroy={authUser ? (pattern: PatternData) => {
-              setPatternForDestroy(pattern)
-            } : undefined}
-          />
-        </PatternGrid>
-      </Box>
+      {props.patterns.length &&
+        <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
+          <PatternGrid>
+            <ScrollablePatternList
+              setMore={props.setHasMoreUserPatterns}
+              patterns={props.patterns}
+              onDestroy={authUser ? (pattern: PatternData) => {
+                setPatternForDestroy(pattern)
+              } : undefined}
+              cursor={props.startAfter}
+              setPatterns={props.setUserPatterns}
+              fetchPatterns={props.fetchUserPatterns}
+              more={props.hasMoreUserPatterns}
+            />
+          </PatternGrid>
+        </Box>}
       {authUser && patternForDestroy &&
         <DestroyDialog
           key="destroy-dialog"
