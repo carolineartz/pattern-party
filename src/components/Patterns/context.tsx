@@ -83,7 +83,6 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
   }
 
   setCommunityPatterns = (resp: PatternDataResponse) => {
-    debugger
     this.setState({
       hasMoreCommunityPatterns: resp.more,
       user: this.state.user,

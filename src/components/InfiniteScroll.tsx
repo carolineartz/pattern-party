@@ -46,7 +46,7 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
               console.log("no more")
             }
           }
-          setTimeout(fn, 1000); // 1 sec delay
+          setTimeout(fn, 500); // 1 sec delay
         }
 
         prevY.current = y;
@@ -65,9 +65,9 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
 
     else {
       setLoading(true);
-      // debugger
+
       try {
-        debugger
+
         const res = await fetchItems(startAfter)
 
         console.log(res)
@@ -104,7 +104,7 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
           return uniqBy([...currentItems, ...res.items], 'id')
         })
 
-        localItems.current = localItems.current.concat(res.items)
+        localItems.current = uniqBy(localItems.current.concat(res.items), 'id')
       } else {
         setMore(false)
       }
@@ -114,7 +114,7 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
 
   const loadMore = () => {
     if (!hasMore) {
-      debugger
+
     }
     if (initialMore && hasMore) {
       handleInitial(cursor.current);
@@ -127,7 +127,7 @@ const InfiniteScrollWrapped = <D extends{}>(props: InfiniteScrollProps<D>) => {
     }
 
     return () => {
-      debugger
+
       updateItems({more: !done, items: localItems.current, lastVisible: cursor.current})
     }
   }, [handleInitial, hasMore, initialMore]);

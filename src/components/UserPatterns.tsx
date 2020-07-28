@@ -1,15 +1,15 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { withFirebase, WithFirebaseProps } from '../Firebase';
-import { withAuthorization, WithAuthProps } from '../Session';
-import { PatternList } from '../PatternList';
-import { PatternGrid } from "./../Patterns/grid"
-import { DestroyDialog } from "../Patterns/destroy"
-import {PatternCollectionState} from "./../Patterns/context"
-import { ScrollablePatternList } from '../ScrollablePatternList';
+import { withFirebase, WithFirebaseProps } from './Firebase';
+import { withAuthorization, WithAuthProps } from './Session';
+import { PatternList } from './PatternList';
+import { PatternGrid } from "./Patterns/grid"
+import { DestroyDialog } from "./Patterns/destroy"
+import {PatternCollectionState} from "./Patterns/context"
+import { ScrollablePatternList } from './ScrollablePatternList';
 import { Box, Heading } from "grommet"
 import "styled-components/macro"
-import Patterns from '../Patterns';
+import Patterns from './Patterns';
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps & {
   patterns: PatternData[]

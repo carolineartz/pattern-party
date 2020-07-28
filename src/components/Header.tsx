@@ -4,10 +4,10 @@ import "styled-components/macro"
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
 import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
-import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
-import { withFirebase, WithFirebaseProps } from "./../Firebase"
+import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
+import { withFirebase, WithFirebaseProps } from "./Firebase"
 
-import * as ROUTES from "./../../constants/routes"
+import * as ROUTES from "../constants/routes"
 import { compose } from "recompose";
 
 type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {

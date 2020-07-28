@@ -5,7 +5,7 @@ import { GlobalStyles } from './globalStyles';
 import { Grommet, Layer, Box } from "grommet"
 import Header from "../Header"
 import PatternsPage from "./../Patterns"
-import { SignInGoogle } from "./../SignIn/google"
+import { SignInGoogle } from "./../SignIn"
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { CreatePattern } from "./../Patterns/create"
 import Footer from "./../Footer"

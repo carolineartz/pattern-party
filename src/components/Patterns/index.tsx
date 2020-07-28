@@ -11,6 +11,7 @@ import { DestroyDialog } from "./destroy"
 import { PatternGrid } from "./../Patterns/grid"
 import { withFirebase, WithFirebaseProps } from '../Firebase';
 import { PatternList } from './../PatternList';
+import uniqBy from "lodash.uniqby"
 
 import { ScrollablePatternList } from '../ScrollablePatternList';
 
@@ -28,6 +29,13 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   const isUserPatterns = props.location.pathname === ROUTES.MY_PATTERNS
   const user = props.authUser as any
   const userIsAdmin = user && user.roles && user.roles.admin
+
+  const localCommunityIems = React.useRef<PatternData[]>(communityPatterns.patterns)
+
+  React.useEffect(() => {
+    localCommunityIems.current = uniqBy(localCommunityIems.current.concat(communityPatterns.patterns), 'id')
+  }, [communityPatterns.patterns])
+
 
   if (isUserPatterns && userPatterns && props.setUserPatterns && props.fetchUserPatterns) {
     return (
@@ -97,6 +105,13 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
             markup={patternForDestroy.markup}
             onClickDestroy={() => {
               props.firebase.pattern(patternForDestroy.id).delete()
+              console.log("pats", communityPatterns.patterns)
+              const newPats = communityPatterns.patterns.filter((pat) => pat.id !== patternForDestroy.id)
+              console.log("new pats", newPats)
+              props.setCommunityPatterns && props.setCommunityPatterns({
+                ...communityPatterns,
+                items: localCommunityIems.current.filter((pat) => pat.id !== patternForDestroy.id)
+              })
               setPatternForDestroy(null)
             }}
             onClickHide={() => {
