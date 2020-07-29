@@ -7140,6 +7140,11 @@ immer@1.10.0:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
 
+immer@^7.0.7:
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.7.tgz#9dfe713d49bf871cc59aedfce59b1992fa37a977"
+  integrity sha512-Q8yYwVADJXrNfp1ZUAh4XDHkcoE3wpdpb4mC5abDSajs2EbW8+cGdPyAnglMyLnm7EF6ojD2xBFX7L5i4TIytw==
+
 import-cwd@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"
@@ -11970,6 +11975,11 @@ react-scripts@3.4.1:
   optionalDependencies:
     fsevents "2.1.2"
 
+react-tracked@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-tracked/-/react-tracked-1.4.1.tgz#fcfa2a6b686ecdda5158cd55c012804e8e24bf6c"
+  integrity sha512-gfQjOtyKBpgt137N199SKjRYhC2Nfs4fRu5nMAJO96U2daJGW1SKIRhWZzm0z0kRWaBN+htAtNVs2aPTMe5Kvg==
+
 react-transition-group@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
@@ -14163,6 +14173,11 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-reducer-async@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/use-reducer-async/-/use-reducer-async-2.0.1.tgz#260bf141f6f0cfcefe4a777519bf5fcedced278d"
+  integrity sha512-bO0+d658kP4vD6wahKqcsf+bl5YzJZbrQYsssxOtvLAkqsclmQcjpkp9BoRKSdIL1j3ZzszvzQ/GeXQeD1x/Rw==
 
 use@^3.1.0:
   version "3.1.1"
