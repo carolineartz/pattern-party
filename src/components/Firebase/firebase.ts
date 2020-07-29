@@ -34,13 +34,13 @@ export interface IFirebase {
   user: (uid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
 
   patternCollection: () => firebase.firestore.CollectionReference
-  patterns: (limit: number) => firebase.firestore.Query<PatternData>
-  featuredPatterns: (limit: number) => firebase.firestore.Query<PatternData>
-  pattern: (pid: string) => firebase.firestore.DocumentReference<PatternData>
+  patterns: (limit: number) => firebase.firestore.Query<PatternType>
+  featuredPatterns: (limit: number) => firebase.firestore.Query<PatternType>
+  pattern: (pid: string) => firebase.firestore.DocumentReference<PatternType>
 
   userPatternCollection: (uid: string) => firebase.firestore.CollectionReference
-  userPatterns: (uid: string, limit: number) => firebase.firestore.Query<PatternData>
-  userPattern: (uid: string, upid: string) => firebase.firestore.DocumentReference<PatternData>
+  userPatterns: (uid: string, limit: number) => firebase.firestore.Query<PatternType>
+  userPattern: (uid: string, upid: string) => firebase.firestore.DocumentReference<PatternType>
 }
 
 class Firebase implements IFirebase {
@@ -128,8 +128,8 @@ class Firebase implements IFirebase {
       .doc(upid)
 
 }
-export const patternConverter: firebase. firestore. FirestoreDataConverter<PatternData> = {
-  toFirestore(pattern: PatternData): firebase.firestore.DocumentData {
+export const patternConverter: firebase. firestore. FirestoreDataConverter<PatternType> = {
+  toFirestore(pattern: PatternType): firebase.firestore.DocumentData {
     return {
       markup: pattern.markup,
       createdAt: pattern.createdAt!,
@@ -140,7 +140,7 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
   fromFirestore(
     snapshot: firebase.firestore.QueryDocumentSnapshot,
     options: firebase.firestore.SnapshotOptions
-  ): PatternData {
+  ): PatternType {
     const data = snapshot.data(options)!;
     return {
       id: snapshot.id,
