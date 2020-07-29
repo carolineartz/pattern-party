@@ -4,26 +4,29 @@ import { theme } from "./theme"
 import { GlobalStyles } from './globalStyles';
 import { Grommet, Layer, Box } from "grommet"
 import Header from "../Header"
-import PatternsPage from "./../Patterns"
 import { SignInGoogle } from "./../SignIn"
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { CreatePattern } from "./../Patterns/create"
 import Footer from "./../Footer"
+import { useTrackedState } from './../../state';
+import UserPatternsPage from "./../UserPatterns"
+import CommunityPatternsPage from "./../CommunityPatterns"
 
 import * as ROUTES from '../../constants/routes';
 
-import { withAuthentication, WithAuthProps } from '../Session';
+// import { withAuthentication, WithAuthProps } from '../Session';
 
-const App = ({ authUser }: WithAuthProps) => {
+const App = () => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
+  const state = useTrackedState();
 
   return (
     <Router>
       <Grommet theme={theme}>
         <GlobalStyles />
 
-        {!authUser && showSignIn &&
+        {!state.authUser && showSignIn &&
           <Layer
             responsive={false}
             full="horizontal"
@@ -34,7 +37,7 @@ const App = ({ authUser }: WithAuthProps) => {
             <SignInGoogle />
           </Layer>
         }
-        {(!showSignIn || authUser) &&
+        {(!showSignIn || state.authUser) &&
           <Layer responsive={false} full="horizontal" modal={false} position="top">
             <Header
               onClickSignIn={() => setShowSignIn(true)}
@@ -46,11 +49,11 @@ const App = ({ authUser }: WithAuthProps) => {
             />
           </Layer>
         }
-        { authUser && <CreatePattern showCreate={showCreate} setShowCreate={setShowCreate} /> }
+        { state.authUser && <CreatePattern showCreate={showCreate} setShowCreate={setShowCreate} /> }
         <Box fill>
-          <Route exact path={ROUTES.LANDING} component={PatternsPage} />
-          <Route exact path={ROUTES.EXPLORE} component={PatternsPage} />
-          <Route path={ROUTES.MY_PATTERNS} component={PatternsPage} />
+          <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
+          <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
+          <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
         </Box>
         <Footer />
       </Grommet>
@@ -58,4 +61,4 @@ const App = ({ authUser }: WithAuthProps) => {
   )
 }
 
-export default withAuthentication(App);
+export default App

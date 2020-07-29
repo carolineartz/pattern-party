@@ -9,7 +9,6 @@ import {PatternCollectionState} from "./Patterns/context"
 import { ScrollablePatternList } from './ScrollablePatternList';
 import { Box, Heading } from "grommet"
 import "styled-components/macro"
-import Patterns from './Patterns';
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps & {
   patterns: PatternData[]

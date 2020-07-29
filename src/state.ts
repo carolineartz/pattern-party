@@ -1,15 +1,9 @@
-import { useState, Reducer } from 'react';
-// import firebase from "firebase"
-// import Firebase from "./components/Firebase"
-import { useReducerAsync, AsyncActionHandlers } from 'use-reducer-async';
-import { createContainer } from 'react-tracked';
-import produce from "immer"
-import firebase from "./components/Firebase"
+import { Reducer } from 'react';
 import { firestore } from "firebase"
-
-
-// type Firebase = typeof firebase
-
+import produce from "immer"
+import { createContainer } from 'react-tracked';
+import { useReducerAsync, AsyncActionHandlers } from 'use-reducer-async';
+import firebase from "./components/Firebase"
 
 const DEFAULT_LIMIT = 10
 
@@ -20,7 +14,7 @@ export type VisibilityFilterType =
 
 type OwnerType = 'user' | 'community'
 type CollectionType = OwnerType | 'featured'
-type PatternId = [string, OwnerType]
+export type PatternId = [string, OwnerType]
 
 export type PatternType = {
   id: string
@@ -222,7 +216,6 @@ type AsyncAction =
   | AsyncActionSubscribeToAuth
   | AsyncActionLoginUser
   | AsyncActionLogoutUser
-
 
 const asyncActionHandlers: AsyncActionHandlers<
   Reducer<State, Action>,

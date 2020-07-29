@@ -6,13 +6,16 @@ import * as serviceWorker from './serviceWorker';
 import "css-doodle"
 import AuthContextProvider from './components/Session/context';
 import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
+import { Provider } from './state';
 
+  // <AuthContextProvider value={null}>
+  //   <PatternsProvider value={initialPatterns}>
+  //   </PatternsProvider>
+  // </AuthContextProvider>,
 ReactDOM.render(
-  <AuthContextProvider value={null}>
-    <PatternsProvider value={initialPatterns}>
-      <App />
-    </PatternsProvider>
-  </AuthContextProvider>,
+  <Provider>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );
 

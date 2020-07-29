@@ -6,9 +6,9 @@ import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
 
 type PatternListProps = {
-  patterns: PatternData[]
-  onDestroy?: (pat: PatternData) => void
-  onSave?: (data: PatternData) => void
+  patterns: PatternType[]
+  onDestroy?: (pat: PatternType) => void
+  onSave?: (data: PatternType) => void
   key?: string
 }
 
@@ -23,14 +23,14 @@ export const PatternList = React.memo(({ patterns, onDestroy, onSave}: PatternLi
     });
   }
 
-  const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternData) => {
+  const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternType) => {
     evt.stopPropagation()
     onSave && onSave(pattern)
   }
 
   return (
     <>
-      {patterns.map((pattern: PatternData, i: number) => {
+      {patterns.map((pattern: PatternType, i: number) => {
         return (
           <PatternListItem
             key={`pat-${pattern.id}-${i}`}
