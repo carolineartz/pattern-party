@@ -1,25 +1,14 @@
 import React from 'react';
+import "styled-components/macro"
 
 import { PatternList } from './PatternList';
 import { PatternGrid } from "./Patterns/grid"
 import { DestroyDialog } from "./Patterns/destroy"
 import { Box, Heading, Text } from "grommet"
-import "styled-components/macro"
 import * as ROUTES from '../constants/routes';
 
 import { useDispatch, useTrackedState } from './../state';
-
 import {communityPatterns, featuredPatterns} from "./../util"
-// type UserPatternsProps = WithAuthProps & WithFirebaseProps & {
-//   patterns: PatternType[]
-//   startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternType>
-//   setHasMoreUserPatterns: (hasMore: boolean) => void
-//   setUserPatterns: (data: PatternTypeResponse) => void
-//   fetchUserPatterns: (startAfter?: firebase.firestore.QueryDocumentSnapshot<PatternType>) => Promise<PatternTypeResponse>
-//   hasMoreUserPatterns: boolean
-// }
-
-// type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 type CommunityPatternProps = {
   location: any
@@ -46,22 +35,25 @@ const CommunityPatterns = (props: CommunityPatternProps) => {
 
   return (
     <>
-      <ExploreText key="text-explore-patterns" />
+    <Box pad="large">
+      <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
+      {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
+    </Box>
       {communityPatterns(patterns).length &&
         <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
           <PatternGrid>
             <PatternList
-            patterns={isFeaturedPatterns ? featuredPatterns(patterns) : communityPatterns(patterns)}
-            onDestroy={userIsAdmin ? (pattern: PatternType) => {
-              setPatternForDestroy(pattern)
-            } : undefined}
-            onSave={authUser && ready ? (pattern: PatternType) => {
-              dispatch({ type: 'CREATE_PATTERN', markup: pattern.markup, owner: "community" })
-              debugger
-            } : undefined}
+              patterns={isFeaturedPatterns ? featuredPatterns(patterns) : communityPatterns(patterns)}
+              onClickDestroy={userIsAdmin ? (pattern: PatternType) => {
+                setPatternForDestroy(pattern)
+              } : undefined}
+              onClickSave={authUser && ready ? (pattern: PatternType) => {
+                dispatch({ type: 'CREATE_PATTERN', markup: pattern.markup, owner: "community" })
+                debugger
+              } : undefined}
             />
         </PatternGrid>
-        {loading && <Box>loadig!</Box>}
+        {loading && <Box>loading!</Box>}
         </Box>}
       {userIsAdmin && patternForDestroy &&
         <DestroyDialog
@@ -81,22 +73,5 @@ const CommunityPatterns = (props: CommunityPatternProps) => {
       </>
   )
 }
-
-const ExploreText = () => (
-  <TextBlock text="Explore Patterns">
-    <Text>Browse patterns by community members.</Text>
-  </TextBlock>
-)
-
-const TextBlock = ({ text, children }: { text: string, children?: React.ReactNode }) => (
-  <Box pad="large">
-    <Heading level={1} color="text">{text}</Heading>
-    {children}
-  </Box>
-)
-
-// const condition = (authUser?: firebase.User) => !!authUser;
-
-// withFirebase(export default compose<CommunityPatternsProps, any>(withAuthorization(condition), withFirebase)(CommunityPatterns);
 
 export default CommunityPatterns

@@ -1,21 +1,19 @@
 import * as React from 'react';
 import styled from "styled-components"
-import { PatternListItem } from './Patterns/patternListItem'
-import { formatSVG } from "./Patterns/util"
-import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
+import { Box, BoxProps } from "grommet"
+import { formatSVG } from "./Patterns/util"
+import { PatternListItem } from './Patterns/patternListItem'
 
 type PatternListProps = {
   patterns: PatternType[]
-  onDestroy?: (pat: PatternType) => void
-  onSave?: (data: PatternType) => void
-  key?: string
+  onClickDestroy?: (pat: PatternType) => void
+  onClickSave?: (data: PatternType) => void
 }
 
-export const PatternList = ({ patterns, onDestroy, onSave}: PatternListProps) => {
+export const PatternList = ({ patterns, onClickDestroy, onClickSave}: PatternListProps) => {
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
-
     navigator.clipboard.writeText(content).then(text => {
       console.log("Successfully copied SVG markup")
     }).catch(err => {
@@ -25,7 +23,7 @@ export const PatternList = ({ patterns, onDestroy, onSave}: PatternListProps) =>
 
   const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternType) => {
     evt.stopPropagation()
-    onSave && onSave(pattern)
+    onClickSave && onClickSave(pattern)
   }
 
   return (
@@ -38,8 +36,8 @@ export const PatternList = ({ patterns, onDestroy, onSave}: PatternListProps) =>
             markup={pattern.markup}
             onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
             onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
-            onClickSave={onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
-            onClickDestroy={onDestroy ? () => onDestroy(pattern) : undefined}
+            onClickSave={onClickSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
+            onClickDestroy={onClickDestroy ? () => onClickDestroy(pattern) : undefined}
           />
         )
       })}

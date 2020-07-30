@@ -1,5 +1,5 @@
 import { deepFreeze, deepMerge } from 'grommet/utils';
-import { grommet, ThemeType } from "grommet"
+import { grommet } from "grommet"
 
 export const theme = deepFreeze(deepMerge(grommet, {
   global: {

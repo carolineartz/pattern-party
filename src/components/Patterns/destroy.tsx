@@ -14,7 +14,7 @@ type DestroyDialogProps = {
 }
 
 class Dialog<T extends DestroyDialogProps> extends React.PureComponent<T> {
-  public render() {
+  render() {
     const { markup, closeDialog, onClickDestroy, onClickHide } = this.props
 
     return (

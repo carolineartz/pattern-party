@@ -14,8 +14,6 @@ import CommunityPatternsPage from "./../CommunityPatterns"
 
 import * as ROUTES from '../../constants/routes';
 
-// import { withAuthentication, WithAuthProps } from '../Session';
-
 const App = () => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)

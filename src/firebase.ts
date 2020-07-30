@@ -17,10 +17,9 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
-
-interface AuthUser extends firebase.User {
-  roles: Record<string, boolean>
-}
+// interface AuthUser extends firebase.User {
+//   roles: Record<string, boolean>
+// }
 
 export interface IFirebase {
   db: firebase.firestore.Firestore
@@ -77,6 +76,7 @@ class Firebase implements IFirebase {
 
   onAuthUserListener = (next: (user: firebase.User) => any, fallback: Function) =>
     this.auth.onIdTokenChanged((authUser: firebase.User | null) => {
+      debugger
       console.log("authUser", authUser)
       if (authUser) {
         this.user(authUser.uid).get().then(snapshot => {

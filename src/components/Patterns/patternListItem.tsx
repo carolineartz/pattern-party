@@ -25,8 +25,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
   const patternRef = React.useRef<HTMLDivElement | null>(null);
 
   const animateClick = (fn: Function) => {
-    const foo = fn();
-    debugger
+    fn()
     if (patternRef.current) {
       animateClickPatternOption(patternRef.current, props.markup);
     }
@@ -36,13 +35,13 @@ export const PatternListItem = (props: PatternListItemProps) => {
     <Box ref={patternRef}>
       <PatternContainer
         css={`
-            [class*='StyledStackLayer'] {
-              height: 100%;
-            }
-            > div {
-              height: 100%;
-            }
-          `}
+          [class*='StyledStackLayer'] {
+            height: 100%;
+          }
+          > div {
+            height: 100%;
+          }
+        `}
         height="100%"
         round="xsmall"
         width="100%"

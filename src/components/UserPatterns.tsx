@@ -1,9 +1,9 @@
 import React from 'react';
+import "styled-components/macro"
+import { Box, Heading } from "grommet"
 import { PatternList } from './PatternList';
 import { PatternGrid } from "./Patterns/grid"
 import { DestroyDialog } from "./Patterns/destroy"
-import { Box, Heading } from "grommet"
-import "styled-components/macro"
 import { useDispatch, useTrackedState } from './../state';
 
 import { userPatterns } from "./../util"
@@ -14,20 +14,21 @@ type UserPatternsProps = {
 
 const UserPatterns = (props: UserPatternsProps) => {
   const dispatch = useDispatch();
-  const state = useTrackedState();
+  const { authUser, patterns } = useTrackedState();
 
-  const { authUser, patterns } = state
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
 
   return (
     <>
-      <UserPatternsText key="text-user-patterns" />
+      <Box pad="large">
+        <Heading level={1} color="text">My Patterns</Heading>
+      </Box>
       {userPatterns(patterns).length &&
         <Box pad={{horizontal: "medium", bottom: "medium"}} width={{max: "1080px"}} margin="auto" css='width: 100%'>
           <PatternGrid>
             <PatternList
               patterns={userPatterns(patterns)}
-              onDestroy={authUser ? (pattern: PatternType) => {
+              onClickDestroy={authUser ? (pattern: PatternType) => {
                 setPatternForDestroy(pattern)
               } : undefined}
             />
@@ -51,18 +52,6 @@ const UserPatterns = (props: UserPatternsProps) => {
       </>
   )
 }
-
-const UserPatternsText = () => (
-  <TextBlock text="My Patterns"  />
-)
-
-
-const TextBlock = ({ text, children }: { text: string, children?: React.ReactNode }) => (
-  <Box pad="large">
-    <Heading level={1} color="text">{text}</Heading>
-    {children}
-  </Box>
-)
 
 export default UserPatterns
 
