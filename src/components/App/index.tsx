@@ -19,6 +19,7 @@ import * as ROUTES from '../../constants/routes';
 const App = () => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
+
   const state = useTrackedState();
   const dispatch = useDispatch()
   const { firebase, authUser } = state
