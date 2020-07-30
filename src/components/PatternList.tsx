@@ -12,7 +12,7 @@ type PatternListProps = {
   key?: string
 }
 
-export const PatternList = React.memo(({ patterns, onDestroy, onSave}: PatternListProps) => {
+export const PatternList = ({ patterns, onDestroy, onSave}: PatternListProps) => {
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
 
@@ -45,7 +45,7 @@ export const PatternList = React.memo(({ patterns, onDestroy, onSave}: PatternLi
       })}
     </>
   )
-})
+}
 
 export const PatternGrid = styled(Box)<BoxProps>`
   display: grid;

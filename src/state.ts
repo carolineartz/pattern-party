@@ -1,9 +1,10 @@
-import { Reducer } from 'react';
+
+import React, { Reducer } from 'react';
 import { firestore } from "firebase"
 import produce from "immer"
 import { createContainer } from 'react-tracked';
 import { useReducerAsync, AsyncActionHandlers } from 'use-reducer-async';
-import firebase from "./components/Firebase"
+import firebase, { patternConverter } from "./components/firebase"
 
 const DEFAULT_LIMIT = 10
 
@@ -50,6 +51,7 @@ export type State = {
   firebase: firebase | null
   loading : boolean
   error: Error | null
+  async?: any
 }
 
 const initialState: State = {
@@ -77,10 +79,11 @@ type Action =
   | { type: 'STARTED'; firebase: firebase }
   | { type: 'SUBSCRIBED_TO_PATTERNS', collection: CollectionType, listener: firebase.Unsubscribe }
   | { type: 'PATTERNS_FETCHED' }
+  | { type: 'PATTERN_CREATED', pattern?: PatternType }
   | { type: 'FETCH_PATTERNS_FAILED', error: Error }
   | { type: 'PATTERNS_RECEIVED'; patterns: PatternTypeData[], lastVisible?: firebase.firestore.QueryDocumentSnapshot<PatternType>, hasMore: boolean, collection: CollectionType }
   | { type: 'PATTERN_RECEIVED'; id: PatternId, pattern: PatternType }
-  | { type: 'PATTERN_DELETED'; id: PatternId }
+  | { type: 'PATTERN_DELETED'; id: PatternId, foo?: any }
   | { type: 'PATTERN_HIDDEN'; id: PatternId }
   | { type: 'PATTERN_FEATURED'; id: PatternId }
   | { type: 'SUBSCRIBED_TO_AUTH'; listener: firebase.Unsubscribe }
@@ -144,6 +147,10 @@ const reducer: Reducer<State, Action> = (state, action) => {
         draftState.patterns.set(action.id, action.pattern)
       })
     case 'PATTERN_DELETED':
+      action.foo.then(() => {
+        debugger
+      })
+      console.log("delete action", action)
       return produce(state, draftState => {
         draftState.patterns.delete(action.id)
       })
@@ -155,6 +162,7 @@ const reducer: Reducer<State, Action> = (state, action) => {
         } else {
           console.log("no pattern found!", action.id)
         }
+        draftState.loading = false
       })
     case 'PATTERN_HIDDEN':
       return produce(state, draftState => {
@@ -177,6 +185,10 @@ const reducer: Reducer<State, Action> = (state, action) => {
       return produce(state, draftState => {
         draftState.authUser = null
       })
+    case 'PATTERN_CREATED': return {
+      ...state,
+      loading: false
+    }
     default:
       throw new Error('unknown action type');
   }
@@ -192,7 +204,7 @@ type AsyncActionFetchUserPatterns = { type: 'FETCH_USER_PATTERNS', step?: number
 type AsyncActionFetchCommunityPatterns = { type: 'FETCH_COMMUNITY_PATTERNS', step?: number }
 type AsyncActionFetchFeaturedPatterns = { type: 'FETCH_FEATURED_PATTERNS', limit?: number }
 
-type AsyncActionCreatePattern = { type: 'CREATE_PATTERN'; markup: string };
+type AsyncActionCreatePattern = { type: 'CREATE_PATTERN'; markup: string, owner: OwnerType };
 type AsyncActionDeletePattern = { type: 'DELETE_PATTERN'; id: PatternId };
 type AsyncActionHidePattern = { type: 'HIDE_PATTERN'; id: PatternId };
 type AsyncActionFeaturePattern = { type: 'FEATURE_PATTERN'; id: PatternId };
@@ -200,6 +212,8 @@ type AsyncActionFeaturePattern = { type: 'FEATURE_PATTERN'; id: PatternId };
 type AsyncActionSubscribeToAuth = { type: 'SUBSCRIBE_TO_AUTH' }
 type AsyncActionLoginUser = { type: 'LOGIN_USER' };
 type AsyncActionLogoutUser = { type: 'LOGOUT_USER' };
+
+type AsyncActionPayload = { type: 'PAYLOAD', promise: Promise<any> };
 
 type AsyncAction =
   | AsnycActionStartApp
@@ -216,6 +230,7 @@ type AsyncAction =
   | AsyncActionSubscribeToAuth
   | AsyncActionLoginUser
   | AsyncActionLogoutUser
+  | AsyncActionPayload
 
 const asyncActionHandlers: AsyncActionHandlers<
   Reducer<State, Action>,
@@ -233,8 +248,7 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
-    const listener = firebase.patterns()
-      .onSnapshot((snapshot) => {
+    const listener = firebase.patterns().onSnapshot((snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             dispatch({ type: "PATTERN_RECEIVED", id: [change.doc.id, 'community'], pattern: change.doc.data() })
@@ -295,6 +309,7 @@ const asyncActionHandlers: AsyncActionHandlers<
     const limit = action.step || DEFAULT_LIMIT
 
     const { firebase, fetchPatterns: {community: {startAfter, hasMore}} } = getState()
+    // debugger
 
     if (!firebase) {
       console.log("HANDLE ME: NO FIREBASE!")
@@ -308,9 +323,10 @@ const asyncActionHandlers: AsyncActionHandlers<
 
     const query = startAfter ? firebase.patterns().startAfter(startAfter) : firebase.patterns()
     try {
+      const snapshots = await query.get()
+      // debugger
       dispatch({ type: "PATTERNS_FETCHED" })
 
-      const snapshots = await query.get()
       const lastVisible = snapshots.docs[snapshots.docs.length - 1]
       const noMore = snapshots.docs.length < limit || (startAfter && startAfter.id === lastVisible.id)
 
@@ -398,9 +414,9 @@ const asyncActionHandlers: AsyncActionHandlers<
     }
   },
 
-  CREATE_PATTERN: ({ getState }) => async (action) => {
+  CREATE_PATTERN: ({ dispatch, getState, signal }) => async (action) => {
     const { firebase, authUser } = getState()
-
+    console.log("create signal", signal)
     if (!firebase) {
       console.log("HANDLE ME: NO FIREBASE!")
       return
@@ -411,26 +427,55 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
+    dispatch({type: "PATTERNS_FETCHED"})
+
     // add to the user's patterns
-    firebase.userPatternCollection(authUser.uid).add({
-      markup: action.markup,
-      hidden: false,
-      featured: false,
-      createdAt: firestore.Timestamp.now()
-    })
+    try {
+      const patternRefPromise = firebase.userPatternCollection(authUser.uid).add({
+        markup: action.markup,
+        hidden: false,
+        featured: false,
+        createdAt: firestore.Timestamp.now()
+      })
+
+      // debugger
+      const patternRef = await patternRefPromise
+      // debugger
+      const patternDoc = await patternRef.withConverter(patternConverter).get()
+      const pattern = patternDoc.data()
+      if (pattern) {
+        dispatch({type: 'PATTERN_CREATED', pattern})
+      } else {
+        console.log("didn't write")
+      }
+    } catch (e) {
+      debugger
+    }
+
+    // debugger
 
     // add to the community patterns
-    firebase.patternCollection().add({
-      markup: action.markup,
-      hidden: false,
-      featured: false,
-      createdAt: firestore.Timestamp.now()
-    })
+    if (action.owner === "user") {
+      try {
+        const foos = await firebase.patternCollection().add({
+          markup: action.markup,
+          hidden: false,
+          featured: false,
+          createdAt: firestore.Timestamp.now()
+        })
+        dispatch({type: 'PATTERN_CREATED'})
+        console.log(foos)
+        debugger
+      } catch (e) {
+        debugger
+      }
+    }
 
     // the items are populated via the subscriptions so don't do it here.
   },
 
-  DELETE_PATTERN: ({ dispatch, getState }) => async (action) => {
+  DELETE_PATTERN: ({ dispatch, getState, signal }) => async (action) => {
+    console.log("delete signal", signal)
     const [pid, owner] = action.id
 
     const { firebase, authUser } = getState()
@@ -446,12 +491,26 @@ const asyncActionHandlers: AsyncActionHandlers<
     }
 
     if (owner === "user" && authUser) {
-      firebase.userPattern(authUser.uid, pid).delete()
-      dispatch({type: "PATTERN_DELETED", id: action.id})
-    } else if (owner === "community") {
-      firebase.pattern(pid).delete()
-       dispatch({type: "PATTERN_DELETED", id: action.id})
+      const foo = firebase.userPattern(authUser.uid, pid).delete()
+      // console.log("delete signal", signal, foo)
+      // foo.then(() => {
+      //   debugger
+      //   dispatch({ type: "PATTERN_DELETED", id: action.id, foo })
+      // })
+      dispatch({ type: "PATTERN_DELETED", id: action.id, foo })
     }
+      // return dispatch({type: "PATTERN_DELETED", id: action.id, res: (await foo)})
+    //   const bar = await foo
+    //   console.log("delete signal", signal, bar)
+
+    //   dispatch({type: "PATTERN_DELETED", id: action.id})
+    // } else if (owner === "community") {
+    //   firebase.pattern(pid).delete()
+    //    dispatch({type: "PATTERN_DELETED", id: action.id})
+    // }
+
+    // console.log("deleting anyway?")
+    // dispatch({type: "PATTERN_DELETED", id: action.id})
   },
 
   HIDE_PATTERN: ({ dispatch, getState }) => async (action) => {
@@ -510,7 +569,8 @@ const asyncActionHandlers: AsyncActionHandlers<
     }
 
     const fallbackHandler = () => {
-      dispatch({type: 'USER_LOGGED_OUT'})
+      console.log("fallback")
+      // dispatch({type: 'USER_LOGGED_OUT'})
     }
 
     const listener = firebase.onAuthUserListener(successHandler, fallbackHandler)
@@ -525,7 +585,12 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
-    firebase.doSignInWithGoogle()
+    try {
+      const foo = await firebase.doSignInWithGoogle()
+      debugger
+    } catch (e) {
+      debugger
+    }
   },
 
   LOGOUT_USER: ({ getState }) => async () => {
@@ -536,16 +601,72 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
-    firebase.doSignOut()
+    try {
+      await firebase.doSignOut()
+    } catch (e) {
+      console.error("oops", e)
+    }
+  },
+
+  PAYLOAD: ({ getState, dispatch }) => async (action) => {
+
   }
 };
 
 
-export const useValue = () =>
-  useReducerAsync(reducer, initialState, asyncActionHandlers);
+// function useAsyncReducer
+// function useAsyncDispatcher<T>(fn: (action: T, dispatch: ((action: T) => any)) => void) {
+//   return React.useMemo(() =>
+//     function dispatch(action: T) {
+//       return fn(action, dispatch)
+//     }, [])
+// }
+
+// function useAsyncNamedDispatcher<T extends { type: string }>(provider: () => { [type: string]: Function }) {
+//   const fnObj = React.useMemo(provider, [])
+
+//   return useAsyncDispatcher<T>((action, dispatch) => {
+//     if (action.type in fnObj)
+//       fnObj[action.type](action, dispatch)
+//     else
+//       throw new Error('Missing handler for action ' + action.type)
+//   })
+// }
+
+// function useFirebaseRequest<R, A> = (endpoint, { verb = 'get', params = {} } = {}) {
+//     const [state, dispatch] = React.useReducer(reducer, initialState);
+
+//     const makeRequest = React.useCallback(async () => {
+//         dispatch(fetching());
+//         try {
+//             const response = await axios[verb](endpoint, params);
+//             dispatch(success(response));
+//         } catch (e) {
+//             dispatch(error(e));
+//         }
+//     }, [endpoint, verb, params]);
+
+//     return [state, makeRequest];
+// };
+
+const useValue = () =>
+  useReducerAsync<Reducer<State, Action>, AsyncAction>(
+    reducer,
+    initialState,
+    asyncActionHandlers,
+  );
 
 export const {
   Provider,
   useTrackedState,
   useUpdate: useDispatch,
 } = createContainer(useValue);
+
+
+export const useAsyncDispatch = () => {
+  const dispatch = useDispatch()
+  return React.useCallback(async action => {
+    return dispatch(action)
+    console.log(action)
+  }, [dispatch])
+}

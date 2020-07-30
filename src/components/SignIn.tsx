@@ -1,28 +1,23 @@
 import * as React from "react"
 import "styled-components/macro"
 
-import { withFirebase, WithFirebaseProps } from "./Firebase"
-// import { useDeviceDetect } from "./../../hooks/useDeviceDetect"
 import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 import { Box, Text } from "grommet"
-import * as ROUTES from "../constants/routes"
 import GoogleButton from 'react-google-button'
 import { ReactComponent as Logo } from "./../images/logo-with-text-white-outline.svg"
+import { useDispatch, useTrackedState } from './../state';
 
 
-type WithRouterProps = {
+type SignInGoogleProps = {
   history: any
 }
 
-type Props = WithFirebaseProps & WithRouterProps
-
-const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
+export const SignIn = ( { history }: SignInGoogleProps): JSX.Element => {
   // const [error, setError] = React.useState<string | null>(null)
+  const dispatch = useDispatch();
+
   const handleClickSignIn = () => {
-    firebase.doSignInWithGoogle().then(() => {
-      history.push(ROUTES.LANDING)
-    })
+    dispatch({type: "LOGIN_USER"})
   }
     return (
       <Box fill="horizontal" pad="large" animation="slideDown" justify="center" align="center">
@@ -37,7 +32,4 @@ const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
     )
 }
 
-export const SignInGoogle = compose<Props, {}>(
-  withRouter,
-  withFirebase,
-)(GoogleAuth);
+export const SignInGoogle = withRouter(SignIn)

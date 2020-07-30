@@ -1,12 +1,8 @@
 import React from 'react';
-import { compose } from 'recompose';
-import { withFirebase, WithFirebaseProps } from './Firebase';
-import { withAuthorization, WithAuthProps } from './Session';
+
 import { PatternList } from './PatternList';
 import { PatternGrid } from "./Patterns/grid"
 import { DestroyDialog } from "./Patterns/destroy"
-import {PatternCollectionState} from "./Patterns/context"
-import { ScrollablePatternList } from './ScrollablePatternList';
 import { Box, Heading, Text } from "grommet"
 import "styled-components/macro"
 import * as ROUTES from '../constants/routes';
@@ -29,15 +25,24 @@ type CommunityPatternProps = {
   location: any
 }
 
-const CommunityPatterns = React.memo((props: CommunityPatternProps) => {
+const CommunityPatterns = (props: CommunityPatternProps) => {
   const dispatch = useDispatch();
   const state = useTrackedState();
 
-  const { authUser, patterns } = state
+  const { authUser, patterns, loading } = state
+  const [ready, setReady] = React.useState<boolean>(false)
   const isFeaturedPatterns = props.location.pathname === ROUTES.LANDING
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const user = authUser as any
   const userIsAdmin = user && user.roles && user.roles.admin
+
+  React.useEffect(() => {
+    if (authUser) {
+      setReady(true)
+    } else {
+      setReady(false)
+    }
+  }, [authUser, setReady])
 
   return (
     <>
@@ -50,11 +55,13 @@ const CommunityPatterns = React.memo((props: CommunityPatternProps) => {
             onDestroy={userIsAdmin ? (pattern: PatternType) => {
               setPatternForDestroy(pattern)
             } : undefined}
-            onSave={authUser ? (pattern: PatternType) => {
-              dispatch({type: 'CREATE_PATTERN', markup: pattern.markup})
+            onSave={authUser && ready ? (pattern: PatternType) => {
+              dispatch({ type: 'CREATE_PATTERN', markup: pattern.markup, owner: "community" })
+              debugger
             } : undefined}
             />
-          </PatternGrid>
+        </PatternGrid>
+        {loading && <Box>loadig!</Box>}
         </Box>}
       {userIsAdmin && patternForDestroy &&
         <DestroyDialog
@@ -62,18 +69,18 @@ const CommunityPatterns = React.memo((props: CommunityPatternProps) => {
           ident={patternForDestroy.id}
           markup={patternForDestroy.markup}
           onClickDestroy={() => {
-            dispatch({type: "DELETE_PATTERN", id: [patternForDestroy.id, "community"]})
             setPatternForDestroy(null)
+            dispatch({type: "DELETE_PATTERN", id: [patternForDestroy.id, "community"]})
           }}
           onClickHide={() => {
-            dispatch({type: "HIDE_PATTERN", id: [patternForDestroy.id, "community"]})
             setPatternForDestroy(null)
+            dispatch({type: "HIDE_PATTERN", id: [patternForDestroy.id, "community"]})
           }}
           closeDialog={() => setPatternForDestroy(null)}
         />}
       </>
   )
-})
+}
 
 const ExploreText = () => (
   <TextBlock text="Explore Patterns">

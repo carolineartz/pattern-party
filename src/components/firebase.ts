@@ -129,7 +129,7 @@ class Firebase implements IFirebase {
 
 }
 export const patternConverter: firebase. firestore. FirestoreDataConverter<PatternType> = {
-  toFirestore(pattern: PatternType): firebase.firestore.DocumentData {
+  toFirestore(pattern: Omit<PatternType, 'id'>): firebase.firestore.DocumentData {
     return {
       markup: pattern.markup,
       createdAt: pattern.createdAt!,

@@ -1,3 +1,4 @@
+import uniqBy from "lodash.uniqby"
 import { PatternId } from "./state"
 export const formatSVG = (markup: string) => {
   return markup.replace(/^((\s+)([^<])*")>/gm, (_match: string, offset: string) => offset + "/>");
@@ -12,7 +13,7 @@ export const communityPatterns = (patternMap: Map<PatternId, PatternType>) => {
     }
   }
 
-  return patterns
+  return uniqBy(patterns, 'id')
 }
 
 export const userPatterns = (patternMap: Map<PatternId, PatternType>) => {
@@ -24,7 +25,7 @@ export const userPatterns = (patternMap: Map<PatternId, PatternType>) => {
     }
   }
 
-  return patterns
+  return uniqBy(patterns, 'id')
 }
 
 export const featuredPatterns = (patternMap: Map<PatternId, PatternType>) => {
@@ -36,5 +37,5 @@ export const featuredPatterns = (patternMap: Map<PatternId, PatternType>) => {
     }
   }
 
-  return patterns
+  return uniqBy(patterns, 'id')
 }

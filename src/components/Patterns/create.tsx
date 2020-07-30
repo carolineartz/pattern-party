@@ -3,43 +3,30 @@ import * as React from "react"
 import "styled-components/macro"
 
 import { Box, Button, ResponsiveContext, Image, Text } from "grommet"
-import { WithFirebaseProps, withFirebase } from "./../Firebase"
-import { withAuthentication, WithAuthProps } from "./../Session"
 import { Checkmark, Close } from "grommet-icons"
 import { formatSVG } from "../../util";
-import { firestore } from "firebase"
 import doodadLogo from './../../images/doodad.png'
+import {useTrackedState, useDispatch} from "./../../state"
 
-type CreatePatternProps = WithAuthProps & WithFirebaseProps & {
+type CreatePatternProps = {
   showCreate: boolean
   setShowCreate: (show: boolean) => void
 }
 
-const Create = React.memo(({ authUser, firebase, showCreate, setShowCreate }: CreatePatternProps) => {
+export const CreatePattern = React.memo(({ showCreate, setShowCreate }: CreatePatternProps) => {
   const size = React.useContext(ResponsiveContext)
+
+  const state = useTrackedState();
+  const dispatch = useDispatch()
+  const { authUser } = state
 
   const handleClickSavePattern = () => {
     navigator.clipboard.readText().then(text => {
       if (!text.startsWith("<svg")) {
-        console.log(text)
         throw new Error("Uncable to save pattern. Make sure to copy inline svg code to clipboard before clicking save.");
       } else {
-        console.log(formatSVG(text))
-
         if (authUser) {
-          // save to the user patterns
-          firebase.userPatternCollection(authUser.uid).add({
-            hidden: false,
-            markup: formatSVG(text),
-            createdAt: firestore.Timestamp.now()
-          })
-
-          // also create a community pattern item
-          firebase.patternCollection().add({
-            hidden: false,
-            markup: formatSVG(text),
-            createdAt: firestore.Timestamp.now()
-          })
+          dispatch({ type: "CREATE_PATTERN", markup: formatSVG(text), owner: "user" })
         }
       }
     }).catch(err => {
@@ -111,5 +98,3 @@ const Create = React.memo(({ authUser, firebase, showCreate, setShowCreate }: Cr
     </>
   )
 })
-
-export const CreatePattern = withAuthentication(withFirebase(Create))

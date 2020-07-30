@@ -4,14 +4,12 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 import "css-doodle"
-import AuthContextProvider from './components/Session/context';
-import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
+
 import { Provider } from './state';
 
-  // <AuthContextProvider value={null}>
-  //   <PatternsProvider value={initialPatterns}>
-  //   </PatternsProvider>
-  // </AuthContextProvider>,
+import { enableMapSet } from "immer"
+enableMapSet()
+
 ReactDOM.render(
   <Provider>
     <App />

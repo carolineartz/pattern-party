@@ -2,21 +2,24 @@ import * as React from "react"
 import "styled-components/macro"
 
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
-import { ReactComponent as Logo } from "./../../images/logo-with-text-white-outline.svg"
+import { ReactComponent as Logo } from "./../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
-import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
-import { withFirebase, WithFirebaseProps } from "./Firebase"
+// import { WithRouterProps } from "./Session"
 
 import * as ROUTES from "../constants/routes"
-import { compose } from "recompose";
+import { useDispatch, useTrackedState } from './../state';
 
-type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {
+type HeaderProps = {
+  history: any
+  children: React.ReactNode
   onClickSignIn: Function
   onClickSignOut: Function
-  onClickCreate: Function
 }
 
-const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onClickCreate}: HeaderProps) => {
+const Header = ({ history, onClickSignIn, onClickSignOut, children }: HeaderProps): JSX.Element => {
+  const dispatch = useDispatch();
+  const state = useTrackedState();
+
   return (
     <GHeader border={{
       "color": "light-4",
@@ -24,9 +27,13 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
       "style": "solid",
       "side": "bottom"
     }}>
-      <Brand history={history}>
+      <Box direction="row" responsive pad="xsmall" justify="center" align="center" onClick={() => {
+        if (history.location.pathname !== ROUTES.LANDING) {
+          history.push(ROUTES.LANDING)
+        }
+      }}>
         <Box height={{ max: "52px" }}><Logo /></Box>
-      </Brand>
+      </Box>
       <Box direction="row" gap="medium" pad={{ right: "medium" }}>
         <NavButton
           active={history.location.pathname === ROUTES.EXPLORE}
@@ -37,7 +44,7 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
           }}
           text="Explore"
         />
-        {authUser &&
+        {state.authUser &&
           <>
             <NavButton
               active={history.location.pathname === ROUTES.MY_PATTERNS}
@@ -49,22 +56,25 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
               text="My Patterns"
             />
             <Menu
-              label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
+              label={<Avatar background="brand"><Text color="white">{(state.authUser.displayName || "?").charAt(0)}</Text></Avatar>}
               items={[
                 {
                   label: 'Sign Out',
                   onClick: () => {
                     onClickSignOut()
-                    firebase.doSignOut()
+                    dispatch({type: "LOGOUT_USER"})
                   }
                 },
               ]}
             />
           </>
         }
-        {!authUser &&
+        {!state.authUser &&
           <NavButton
-            onClick={() => onClickSignIn()}
+            onClick={() => {
+              onClickSignIn()
+              // dispatch({ type: "LOGIN_USER" })
+            }}
             text="Sign In"
           />
         }
@@ -73,17 +83,6 @@ const Header = ({history, authUser, firebase, onClickSignIn, onClickSignOut, onC
   )
 }
 
-
-const Brand = ({ history, children }: WithRouterProps) => {
-  return (
-    <Box direction="row" responsive pad="xsmall" justify="center" align="center" onClick={() => {
-      if (history.location.pathname !== ROUTES.LANDING) {
-        history.push(ROUTES.LANDING)
-      }
-    }}>{children}
-    </Box>
-  )
-}
 
 type NavButtonProps = ButtonProps & {
   onClick: (evt: React.MouseEvent<HTMLButtonElement>) => void
@@ -108,4 +107,6 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
   )
 }
 
-export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
+// const Foo = withRouter(Header)
+
+export default withRouter<any, any>(Header)

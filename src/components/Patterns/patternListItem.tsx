@@ -25,8 +25,8 @@ export const PatternListItem = (props: PatternListItemProps) => {
   const patternRef = React.useRef<HTMLDivElement | null>(null);
 
   const animateClick = (fn: Function) => {
-    fn();
-
+    const foo = fn();
+    debugger
     if (patternRef.current) {
       animateClickPatternOption(patternRef.current, props.markup);
     }
