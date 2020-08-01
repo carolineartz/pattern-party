@@ -1,13 +1,12 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { withFirebase, WithFirebaseProps } from '../Firebase';
-import { withAuthorization, WithAuthProps } from '../Session';
-import { PatternList } from '../PatternList';
-import { PatternGrid } from "./../Patterns/grid"
-import { DestroyDialog } from "../Patterns/destroy"
 import { Box } from "grommet"
 
-type UserPatternsProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
+import { withFirebase, WithFirebaseProps } from './Firebase';
+import { withAuthorization, WithAuthProps } from './Session';
+import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+
+type UserPatternsProps = WithAuthProps & WithFirebaseProps & { patterns: PatternData[] }
 
 type PatternData = {
   id: string
@@ -37,7 +36,7 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
         />
       </PatternGrid>
       {authUser && patternForDestroy &&
-        <DestroyDialog
+        <DestroyPatternDialog
           key="destroy-dialog"
           ident={patternForDestroy.id}
           markup={patternForDestroy.markup}

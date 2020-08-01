@@ -1,15 +1,13 @@
 import * as React from "react"
-import "styled-components/macro"
-
-import { withFirebase, WithFirebaseProps } from "./../Firebase"
-// import { useDeviceDetect } from "./../../hooks/useDeviceDetect"
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import { Box, Text } from "grommet"
-import * as ROUTES from "./../../constants/routes"
 import GoogleButton from 'react-google-button'
-import { ReactComponent as Logo } from "./../../images/logo-p.svg"
+import { Box, Text } from "grommet"
+import "styled-components/macro"
 
+import { withFirebase, WithFirebaseProps } from "./Firebase"
+import { ReactComponent as Logo } from "./../images/logo-p.svg"
+import * as ROUTES from "./../constants/routes"
 
 type WithRouterProps = {
   history: any
@@ -37,7 +35,7 @@ const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
     )
 }
 
-export const SignInGoogle = compose<Props, {}>(
+export default compose<Props, {}>(
   withRouter,
   withFirebase,
 )(GoogleAuth);

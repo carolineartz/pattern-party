@@ -1,13 +1,12 @@
 import * as React from "react"
-
+import { firestore } from "firebase"
+import { Box, Button, ResponsiveContext, Image, Text } from "grommet"
+import { Checkmark, Close } from "grommet-icons"
 import "styled-components/macro"
 
-import { Box, Button, ResponsiveContext, Image, Text } from "grommet"
-import { WithFirebaseProps, withFirebase } from "./../Firebase"
-import { withAuthentication, WithAuthProps } from "./../Session"
-import { Checkmark, Close } from "grommet-icons"
-import { formatSVG } from "../../util";
-import { firestore } from "firebase"
+import { WithFirebaseProps, withFirebase } from "../Firebase"
+import { withAuthentication, WithAuthProps } from "../Session"
+import { formatSVG } from "./util";
 import doodadLogo from './../../images/doodad.png'
 
 type CreatePatternProps = WithAuthProps & WithFirebaseProps & {

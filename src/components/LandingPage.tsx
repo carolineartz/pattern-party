@@ -1,12 +1,11 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { firestore } from "firebase"
-import { withFirebase, WithFirebaseProps } from '../Firebase';
-import { withAuthentication, WithAuthProps } from '../Session';
-import { PatternList } from './../PatternList';
-import { PatternGrid } from "./../Patterns/grid"
-import { DestroyDialog } from "./../Patterns/destroy"
-import {Box} from "grommet"
+import { Box } from "grommet"
+
+import { withFirebase, WithFirebaseProps } from './Firebase';
+import { withAuthentication, WithAuthProps } from './Session';
+import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 
 type LandingPageProps = WithAuthProps & WithFirebaseProps & {patterns: PatternData[]}
 
@@ -45,7 +44,7 @@ const LandingPage = React.memo((props: LandingPageProps) => {
         />
       </PatternGrid>
       {userIsAdmin && patternForDestroy &&
-        <DestroyDialog
+        <DestroyPatternDialog
           key="destroy-dialog"
           ident={patternForDestroy.id}
           markup={patternForDestroy.markup}

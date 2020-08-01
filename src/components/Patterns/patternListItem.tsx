@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Box, Stack, Button } from 'grommet';
-import { animateClickPatternOption } from './util';
 import { CSSTransition } from "react-transition-group";
 import { Close, Gallery, Code, Save } from "grommet-icons";
-import { ElevatedHoverBox } from '../elevatedBox';
 import styled from "styled-components"
-import { formatSVG } from './util';
 import "styled-components/macro"
+
+import { ElevatedHoverBox } from '../ElevatedBox';
+import { formatSVG, animateClickPatternOption } from './util';
 
 type PatternListItemProps = {
   markup: string

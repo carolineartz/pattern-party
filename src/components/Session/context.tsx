@@ -1,11 +1,10 @@
 import React from 'react';
-import Firebase, { WithFirebaseProps } from '../Firebase';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 
-import { withFirebase } from '../Firebase';
+import Firebase, { WithFirebaseProps, withFirebase } from '../Firebase';
 import { WithRouterProps } from '.';
 import * as ROUTES from '../../constants/routes';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 
 type IAuthState = {
   authUser?: firebase.User | null

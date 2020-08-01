@@ -4,7 +4,7 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 import "css-doodle"
-import AuthContextProvider from './components/Session/context';
+import { AuthContextProvider } from './components/Session';
 import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
 
 ReactDOM.render(

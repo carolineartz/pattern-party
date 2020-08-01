@@ -1,17 +1,15 @@
 import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Grommet, Layer, Box } from "grommet"
+
+import Header from "../Header"
+import PatternsPage, { CreatePattern } from "../Patterns"
+import Login from "../Login"
+import { withAuthentication, WithAuthProps } from '../Session';
 
 import { theme } from "./theme"
 import { GlobalStyles } from './globalStyles';
-import { Grommet, Layer, Box } from "grommet"
-import Header from "../Header"
-import PatternsPage from "./../Patterns"
-import { SignInGoogle } from "./../SignIn/google"
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { CreatePattern } from "./../Patterns/create"
-
 import * as ROUTES from '../../constants/routes';
-
-import { withAuthentication, WithAuthProps } from '../Session';
 
 const App = ({ authUser }: WithAuthProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
@@ -30,7 +28,7 @@ const App = ({ authUser }: WithAuthProps) => {
             onEsc={() => setShowSignIn(false)}
             onClickOutside={() => setShowSignIn(false)}
           >
-            <SignInGoogle />
+            <Login />
           </Layer>
         }
         {(!showSignIn || authUser) &&

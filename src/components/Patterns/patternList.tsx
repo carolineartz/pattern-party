@@ -1,9 +1,10 @@
 import * as React from 'react';
 import styled from "styled-components"
-import { PatternListItem } from './Patterns/patternListItem'
-import { formatSVG } from "./Patterns/util"
-import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
+import { Box, BoxProps } from "grommet"
+
+import { formatSVG } from "./util"
+import { PatternListItem } from "./patternListItem"
 
 type PatternData = {
   id: string

@@ -1,7 +1,7 @@
 import React from 'react';
-import { withAuthentication } from "../Session"
 
-import Firebase, {withFirebase} from "./../Firebase"
+import { withAuthentication } from "../Session"
+import Firebase, {withFirebase} from "../Firebase"
 
 type PatternData = {
   id: string
@@ -10,7 +10,7 @@ type PatternData = {
   createdAt?: firebase.firestore.Timestamp
 }
 
-type IPatternsState = {
+export type IPatternsState = {
   communityPatterns: PatternData[],
   userPatterns: PatternData[]
 }

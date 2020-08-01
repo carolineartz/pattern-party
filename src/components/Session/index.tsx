@@ -1,9 +1,9 @@
-import AuthContext, { withAuthentication, withAuthorization } from './context';
+import AuthContextProvider, { withAuthentication, withAuthorization } from './context';
 
 export {
   withAuthentication,
   withAuthorization,
-  AuthContext
+  AuthContextProvider
 };
 
 export type WithAuthProps = {

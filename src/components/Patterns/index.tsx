@@ -1,14 +1,19 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { WithAuthProps } from '../Session';
-import { withPatterns, WithPatternsProps } from "./../Patterns/context"
-import LandingPage from "./../Landing"
-import UserPatterns from "../UserPatterns"
 import "styled-components/macro"
+
+import { WithAuthProps } from '../Session';
+import LandingPage from "../LandingPage"
+import UserPatternsPage from "../UserPatternsPage"
+import { withPatterns, IPatternsState } from "./context"
+import { PatternList } from "./patternList"
+import { PatternGrid } from "./grid"
+import { CreatePattern } from './createFrame'
+import { DestroyPatternDialog } from "./destroyDialog"
+
 
 type PatternsPageProps = WithAuthProps & WithPatternsProps & { location: any }
 
-type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const PatternsPage = React.memo((props: PatternsPageProps) => {
   console.log("Patterns Page", props)
@@ -16,9 +21,13 @@ const PatternsPage = React.memo((props: PatternsPageProps) => {
   return (
     <>
       {props.location.pathname === "/"&& <LandingPage patterns={communityPatterns} />}
-      {props.location.pathname === "/my-patterns" && <UserPatterns patterns={userPatterns} />}
+      {props.location.pathname === "/my-patterns" && <UserPatternsPage patterns={userPatterns} />}
     </>
   )
 })
 
 export default compose<PatternsPageProps, any>(withPatterns)(PatternsPage);
+export type WithPatternsProps = IPatternsState
+export {
+  withPatterns, PatternList, PatternGrid, CreatePattern, DestroyPatternDialog
+}

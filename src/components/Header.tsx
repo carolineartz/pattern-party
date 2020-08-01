@@ -1,15 +1,14 @@
 import * as React from "react"
+import { compose } from "recompose";
+import { withRouter } from 'react-router-dom';
+import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
+import { Add } from "grommet-icons"
 import "styled-components/macro"
 
-import { Header as GHeader, Box, Text, Anchor, Menu, Button } from "grommet"
-import { ReactComponent as Logo } from "./../../images/logo-p.svg"
-import { withRouter } from 'react-router-dom';
-import { WithRouterProps, WithAuthProps, withAuthentication } from "./../Session"
-import { withFirebase, WithFirebaseProps } from "./../Firebase"
-import { Add } from "grommet-icons"
-
-import * as ROUTES from "./../../constants/routes"
-import { compose } from "recompose";
+import { ReactComponent as Logo } from "./../images/logo-p.svg"
+import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
+import { withFirebase, WithFirebaseProps } from "./Firebase"
+import * as ROUTES from "../constants/routes"
 
 type HeaderProps = WithRouterProps & WithAuthProps & WithFirebaseProps & {
   onClickSignIn: Function

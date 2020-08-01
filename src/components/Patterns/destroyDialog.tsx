@@ -1,10 +1,10 @@
 import * as React from 'react';
-
 import styled from "styled-components"
-import { withFirebase } from "./../Firebase"
 import { Box, Layer, Button, Stack, BoxProps } from "grommet"
 import { Hide, Trash, Close } from "grommet-icons"
-import { formatSVG } from "../../util";
+
+import { withFirebase } from "../Firebase"
+import { formatSVG } from "./util";
 
 type DestroyDialogProps = {
   ident: string
@@ -64,4 +64,4 @@ const Preview = styled(Box) <BoxProps & PreviewProps>`
   }};
 `
 
-export const DestroyDialog = withFirebase(Dialog)
+export const DestroyPatternDialog = withFirebase(Dialog)
