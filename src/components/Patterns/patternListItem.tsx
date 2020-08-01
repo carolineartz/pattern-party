@@ -12,23 +12,31 @@ type PatternListItemProps = {
   markup: string
   key: string
   ident: string
-  onClickSave?: (evt: React.MouseEvent) => void
-  onClickDestroy?: (evt: React.MouseEvent) => void
-  onClickHide?: (evt: React.MouseEvent) => void
-  onClick?: (evt: React.MouseEvent) => void
-  onClickCopyMarkup: (evt: React.MouseEvent) => void
-  onClickCopyDataUri: (evt: React.MouseEvent) => void
+  onClickSave?: () => Promise<void>
+  onClickDestroy?: () => void
+  onClickHide?: () => Promise<void>
+  // onClick?: (evt: React.MouseEvent) => void
+  onClickCopyMarkup: () => Promise<void>
+  onClickCopyDataUri: () => Promise<void>
 }
 
 export const PatternListItem = (props: PatternListItemProps) => {
   const [showOptions, setShowOptions] = React.useState<boolean>(false);
   const patternRef = React.useRef<HTMLDivElement | null>(null);
 
-  const animateClick = (fn: Function) => {
-    fn()
-    if (patternRef.current) {
-      animateClickPatternOption(patternRef.current, props.markup);
+  const animateClick = async (fn: () => Promise<void>) => {
+
+    try {
+      const foo = await fn();
+      if (patternRef.current) {
+        animateClickPatternOption(patternRef.current, props.markup);
+      }
+      debugger;
     }
+    catch (e) {
+      debugger;
+    }
+    // debugger
   };
 
   return (
@@ -87,7 +95,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
                       hoverIndicator
                       icon={<Code size="small" color="text" />}
                       size="small"
-                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
+                      onClick={() => animateClick(props.onClickCopyMarkup)}
                       css={`
                         padding: 6px;
                         box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
@@ -116,7 +124,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
                         }
                       `}
                       icon={<Gallery size="small" color="text" />}
-                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))} />
+                      onClick={() => animateClick(props.onClickCopyDataUri)} />
                   </CSSTransition>
                   { props.onClickSave &&
                     <CSSTransition
@@ -139,10 +147,10 @@ export const PatternListItem = (props: PatternListItemProps) => {
                           }
                         `}
                         icon={<Save size="small" color="text" />}
-                        onClick={(evt: React.MouseEvent) => {
+                        onClick={() => {
                           if (props.onClickSave) {
-                            console.log(props.onClickSave)
-                            animateClick(props.onClickSave.bind(null, evt))
+                            // console.log(props.onClickSave)
+                            animateClick(props.onClickSave)
                           }
                         }}
                       />

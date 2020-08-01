@@ -8,22 +8,32 @@ import { PatternListItem } from './Patterns/patternListItem'
 type PatternListProps = {
   patterns: PatternType[]
   onClickDestroy?: (pat: PatternType) => void
-  onClickSave?: (data: PatternType) => void
+  onClickSave?: (data: PatternType) => Promise<any>
 }
 
 export const PatternList = ({ patterns, onClickDestroy, onClickSave}: PatternListProps) => {
-  const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
-    evt.stopPropagation()
-    navigator.clipboard.writeText(content).then(text => {
+  const handleClickCopyPattern = (content: string) => {
+    // evt.stopPropagation()
+    return navigator.clipboard.writeText(content).then(text => {
       console.log("Successfully copied SVG markup")
     }).catch(err => {
       console.error('Failed to write clipboard contents: ', err);
     });
   }
 
-  const handleClickSavePattern = (evt: React.MouseEvent, pattern: PatternType) => {
-    evt.stopPropagation()
-    onClickSave && onClickSave(pattern)
+  const handleClickSavePattern = (pattern: PatternType) => {
+    // evt.stopPropagation()
+    // console.log("evt", evt, "pattern", pattern)
+    if (onClickSave) {
+      return onClickSave(pattern)
+    } else {
+      return Promise.resolve()
+    }
+    // onClickSave && onClickSave(pattern).then(() => {
+    //   debugger
+    // }).catch(() => {
+    //   debugger
+    // })
   }
 
   return (
@@ -34,9 +44,9 @@ export const PatternList = ({ patterns, onClickDestroy, onClickSave}: PatternLis
             key={`pat-${pattern.id}-${i}`}
             ident={pattern.id}
             markup={pattern.markup}
-            onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
-            onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
-            onClickSave={onClickSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
+            onClickCopyMarkup={() => handleClickCopyPattern(formatSVG(pattern.markup))}
+            onClickCopyDataUri={() => handleClickCopyPattern(svgToMiniDataURI(formatSVG(pattern.markup)))}
+            onClickSave={onClickSave ? () => handleClickSavePattern(pattern) : undefined}
             onClickDestroy={onClickDestroy ? () => onClickDestroy(pattern) : undefined}
           />
         )

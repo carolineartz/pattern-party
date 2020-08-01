@@ -76,7 +76,6 @@ class Firebase implements IFirebase {
 
   onAuthUserListener = (next: (user: firebase.User) => any, fallback: Function) =>
     this.auth.onIdTokenChanged((authUser: firebase.User | null) => {
-      debugger
       console.log("authUser", authUser)
       if (authUser) {
         this.user(authUser.uid).get().then(snapshot => {

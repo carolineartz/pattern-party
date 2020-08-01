@@ -1,3 +1,5 @@
+// import firebase from "./firebase"
+// export { firebase }
 declare type PatternData = {
   id: string
   markup: string
@@ -5,7 +7,6 @@ declare type PatternData = {
   hidden?: boolean
   featured?: boolean
 }
-
 
 declare type PatternDataResponse = {
   items: PatternData[],
@@ -26,3 +27,4 @@ declare type PatternType = {
   hidden: boolean
   createdAt?: firebase.firestore.Timestamp
 }
+// declare module firebase {}

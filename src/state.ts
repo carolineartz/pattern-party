@@ -181,10 +181,12 @@ const reducer: Reducer<State, Action> = (state, action) => {
       ...state,
       authUser: null
     }
-    case 'PATTERN_CREATED': return {
-      ...state,
-      loading: false
-    }
+    case 'PATTERN_CREATED':
+      console.log("CREATED")
+      return {
+        ...state,
+        loading: false
+      }
     default:
       throw new Error('unknown action type');
   }
@@ -406,9 +408,8 @@ const asyncActionHandlers: AsyncActionHandlers<
     }
   },
 
-  CREATE_PATTERN: ({ dispatch, getState, signal }) => async (action) => {
+  CREATE_PATTERN: ({ dispatch, getState }) => async (action) => {
     const { firebase, authUser } = getState()
-    console.log("create signal", signal)
     if (!firebase) {
       console.log("HANDLE ME: NO FIREBASE!")
       return
@@ -419,45 +420,73 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
-    dispatch({type: "PATTERNS_FETCHED"})
-
-    // add to the user's patterns
     try {
-      const patternRef = await firebase.userPatternCollection(authUser.uid).add({
+      console.log("gonna try")
+      const resp = await add(firebase, authUser.uid, {
         markup: action.markup,
         hidden: false,
         featured: false,
         createdAt: firestore.Timestamp.now()
       })
-
-      const patternDoc = await patternRef.withConverter(patternConverter).get()
-      const pattern = patternDoc.data()
-
-      if (pattern) {
-        // shouldn't actually need to do this...just trying to see if it makes a difference ... subscription to create events should populate the pattern wehn it successfully writes to backend
-        // pattern arg is optional/temporary until figure out the whole async action issue
-        dispatch({type: 'PATTERN_CREATED', pattern})
-      } else {
-        console.log("didn't write")
+      if (resp) {
+        dispatch({type: 'PATTERN_CREATED'})
+      }
+      else {
+        debugger
       }
     } catch (e) {
-      console.warn("error in create pattern", e)
+      debugger
     }
 
+
+
+    // const getData = (ref) => {
+    //   return new Promise((resolve, reject) => {
+    //     const onError = (error => reject(error));
+    //     const onData = (snap) => resolve(snap.val());
+
+    //     ref.on("value", onData, onError);
+    //   });
+    // };
+    // dispatch({type: "PATTERNS_FETCHED"})
+
+    // add to the user's patterns
+    // try {
+    //   const patternRef = await firebase.userPatternCollection(authUser.uid).add({
+    //     markup: action.markup,
+    //     hidden: false,
+    //     featured: false,
+    //     createdAt: firestore.Timestamp.now()
+    //   })
+
+    //   const patternDoc = await patternRef.withConverter(patternConverter).get()
+    //   const pattern = patternDoc.data()
+
+    //   if (pattern) {
+    //     // shouldn't actually need to do this...just trying to see if it makes a difference ... subscription to create events should populate the pattern wehn it successfully writes to backend
+    //     // pattern arg is optional/temporary until figure out the whole async action issue
+    //     dispatch({type: 'PATTERN_CREATED', pattern})
+    //   } else {
+    //     console.log("didn't write")
+    //   }
+    // } catch (e) {
+    //   console.warn("error in create pattern", e)
+    // }
+
     // add to the community patterns
-    if (action.owner === "user") {
-      try {
-        await firebase.patternCollection().add({
-          markup: action.markup,
-          hidden: false,
-          featured: false,
-          createdAt: firestore.Timestamp.now()
-        })
-        dispatch({type: 'PATTERN_CREATED'})
-      } catch (e) {
-        console.warn("error in create pattern", e)
-      }
-    }
+    // if (action.owner === "user") {
+    //   try {
+        // await firebase.patternCollection().add({
+        //   markup: action.markup,
+        //   hidden: false,
+        //   featured: false,
+        //   createdAt: firestore.Timestamp.now()
+        // })
+    //     dispatch({type: 'PATTERN_CREATED'})
+    //   } catch (e) {
+    //     console.warn("error in create pattern", e)
+    //   }
+    // }
   },
 
   DELETE_PATTERN: ({ dispatch, getState, signal }) => async (action) => {
@@ -497,11 +526,12 @@ const asyncActionHandlers: AsyncActionHandlers<
       return
     }
 
+    const data: any = {hidden: true}
     if (owner === "user" && authUser) {
-      await firebase.userPattern(authUser.uid, pid).set({hidden: true}, {merge: true})
+      await firebase.userPattern(authUser.uid, pid).set(data, {merge: true})
       dispatch({type: "PATTERN_HIDDEN", id: action.id})
     } else if (owner === "community") {
-      await firebase.pattern(pid).set({ hidden: true }, { merge: true })
+      await firebase.pattern(pid).set(data, { merge: true })
       dispatch({type: "PATTERN_HIDDEN", id: action.id})
     }
   },
@@ -520,8 +550,8 @@ const asyncActionHandlers: AsyncActionHandlers<
       console.log("HANDLE ME! Can't feature a user's pattern!")
       return
     }
-
-    await firebase.pattern(pid).set({ featured: true }, { merge: true })
+    const data: any = {featured: true}
+    await firebase.pattern(pid).set(data, { merge: true })
     dispatch({type: "PATTERN_FEATURED", id: action.id})
   },
 
@@ -591,3 +621,14 @@ export const {
   useTrackedState,
   useUpdate: useDispatch,
 } = createContainer(useValue);
+
+
+function add(firebase: firebase, id: string, data: any) {
+  return new Promise((resolve, reject) => {
+    firebase
+      .userPatternCollection(id)
+      .add(data)
+      .then(d => resolve(d))
+      .catch(e => reject(e))
+  })
+}

@@ -4,7 +4,6 @@ import "styled-components/macro"
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
 import { ReactComponent as Logo } from "./../images/logo-with-text-white-outline.svg"
 import { withRouter } from 'react-router-dom';
-// import { WithRouterProps } from "./Session"
 
 import * as ROUTES from "../constants/routes"
 import { useDispatch, useTrackedState } from './../state';
@@ -106,7 +105,5 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
     />
   )
 }
-
-// const Foo = withRouter(Header)
 
 export default withRouter<any, any>(Header)

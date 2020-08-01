@@ -16,9 +16,8 @@ type CreatePatternProps = {
 export const CreatePattern = React.memo(({ showCreate, setShowCreate }: CreatePatternProps) => {
   const size = React.useContext(ResponsiveContext)
 
-  const state = useTrackedState();
+  const { authUser, firebase} = useTrackedState();
   const dispatch = useDispatch()
-  const { authUser } = state
 
   const handleClickSavePattern = () => {
     navigator.clipboard.readText().then(text => {
