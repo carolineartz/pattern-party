@@ -26,6 +26,9 @@ export type PatternType = {
 
 export type State = {
   patterns: Map<PatternId, PatternType>
+  communityPatterns: PatternType[],
+  featuredPatterns: PatternType[],
+  userPatterns: PatternType[],
   subscriptions: {
     user?: firebase.Unsubscribe
     community?: firebase.Unsubscribe
@@ -50,6 +53,9 @@ export type State = {
 
 const initialState: State = {
   patterns: new Map<PatternId, PatternType>(),
+  communityPatterns: [],
+  userPatterns: [],
+  featuredPatterns: [],
   visibilityFilter: "SHOW_COMMUNITY",
   subscriptions: {},
   fetchPatterns: {

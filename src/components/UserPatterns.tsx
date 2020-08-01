@@ -1,7 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { Box, Heading } from "grommet"
-import compact from "lodash.compact"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
@@ -14,17 +13,9 @@ type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const UserPatterns = (props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
-  const state = useTrackedState()
+  const {userPatterns} = useTrackedState()
   const { firebase, authUser } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
-
-  const patterns = compact(Array.from(state.patterns.entries()).map(([[, owner], value]) => {
-   if (owner === "user") {
-      return value
-    }
-  })).reverse()
-
-  console.log(state.patterns)
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
@@ -33,7 +24,7 @@ const UserPatterns = (props: UserPatternsProps) => {
       </Box>
       <PatternGrid>
         <PatternList
-          patterns={patterns}
+          patterns={userPatterns}
           onDestroy={authUser ? (pattern: PatternType) => {
             setPatternForDestroy(pattern)
           } : undefined}
@@ -60,4 +51,6 @@ const UserPatterns = (props: UserPatternsProps) => {
 
 const condition = (authUser?: firebase.User) => !!authUser;
 
-export default compose<UserPatternsProps, any>(withAuthorization(condition), withFirebase)(UserPatterns);
+// export default compose<UserPatternsProps, any>(withAuthorization(condition), withFirebase)(UserPatterns);
+
+export default React.memo(withAuthorization(condition)((withFirebase(UserPatterns))))

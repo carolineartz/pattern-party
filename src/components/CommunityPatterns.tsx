@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { firestore } from "firebase"
 import { Box } from "grommet"
-import compact from "lodash.compact"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
@@ -15,24 +14,14 @@ type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element => {
   const [ patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
-  const state = useTrackedState();
+  const {featuredPatterns, communityPatterns} = useTrackedState();
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
-
-  const patterns = compact(Array.from(state.patterns.entries()).map(([[, owner], value]) => {
-    if (isFeaturedPatterns && owner === "community" && value.featured) {
-      console.log("featured", value)
-      return value
-    } else if (!isFeaturedPatterns && owner === "community") {
-      console.log("not featured")
-      return value
-    }
-    })).reverse()
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
       <PatternGrid>
         <PatternList
-          patterns={patterns}
+          patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns}
           onDestroy={userIsAdmin ? (pattern: PatternType) => {
             setPatternForDestroy(pattern)
           } : undefined}

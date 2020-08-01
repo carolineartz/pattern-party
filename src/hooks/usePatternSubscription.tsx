@@ -1,104 +1,50 @@
 import React from 'react';
 import Firebase from "./../components/Firebase"
-import { useSetDraft, CollectionType } from '../store';
+import { useSetDraft } from '../store';
 
 const LIMIT = 10
 
-export const usePatternSubscription = (firebase: Firebase, collection: CollectionType) => {
+export const usePatternSubscription = (firebase: Firebase) => {
   const setDraft = useSetDraft();
 
   React.useEffect(() => {
-    let unsubscribe: firebase.Unsubscribe
-      switch (collection) {
-        case "community":
-          unsubscribe = firebase.patterns().onSnapshot(snapshot => {
-            snapshot.docChanges().forEach(change => {
-              if (change.type === "added") {
-                setDraft(draft => {
-                  draft.patterns.set([change.doc.id, "community"], change.doc.data())
-                  // debugger
-                })
-              }
-            })
-          })
-          break
-        case "community":
-          unsubscribe = firebase.featuredPatterns().onSnapshot(snapshot => {
-            snapshot.docChanges().forEach(change => {
-              if (change.type === "added") {
-                setDraft(draft => {
-                  draft.patterns.set([change.doc.id, "community"], change.doc.data())
-                })
-              } else if (change.type === "removed") {
-                setDraft(draft => {
-                  const pat = draft.patterns.get([change.doc.id, "community"])
+    let featuredUnsubscribe: firebase.Unsubscribe
+    let communityUnsubscribe: firebase.Unsubscribe
 
-                  if (pat) {
-                    draft.patterns.set([change.doc.id, "community"], {...pat, featured: false})
-                  }
-                })
-              }
-            })
+    communityUnsubscribe = firebase.patterns().onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "added") {
+          setDraft(draft => {
+            draft.communityPatterns = [change.doc.data(), ...draft.communityPatterns]
           })
-      }
+        }
+      })
+    })
+
+    featuredUnsubscribe = firebase.featuredPatterns().onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "added") {
+          setDraft(draft => {
+            draft.featuredPatterns = [change.doc.data(), ...draft.featuredPatterns]
+          })
+        } else if (change.type === "removed") {
+          setDraft(draft => {
+            draft.featuredPatterns = draft.featuredPatterns.filter(pat => pat.id !== change.doc.id)
+          })
+        }
+      })
+    })
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe()
+      if (featuredUnsubscribe) {
+        featuredUnsubscribe()
+      }
+      if (communityUnsubscribe) {
+        communityUnsubscribe()
       }
     }
   }, [])
 };
-
-
-// export const useUserPatternSubscription = (firebase: Firebase) => {
-//   const setDraft = useSetDraft();
-
-//   React.useEffect(() => {
-//     let unsubscribe: firebase.Unsubscribe
-//       switch (collection) {
-//         case "community":
-//           unsubscribe = firebase.patterns().onSnapshot(snapshot => {
-//             snapshot.docChanges().forEach(change => {
-//               if (change.type === "added") {
-//                 setDraft(draft => {
-//                   draft.patterns.set([change.doc.id, "community"], change.doc.data())
-//                   // debugger
-//                 })
-//               }
-//             })
-//           })
-//           break
-//         case "community":
-//           unsubscribe = firebase.featuredPatterns().onSnapshot(snapshot => {
-//             snapshot.docChanges().forEach(change => {
-//               if (change.type === "added") {
-//                 setDraft(draft => {
-//                   draft.patterns.set([change.doc.id, "community"], change.doc.data())
-//                 })
-//               } else if (change.type === "removed") {
-//                 setDraft(draft => {
-//                   const pat = draft.patterns.get([change.doc.id, "community"])
-
-//                   if (pat) {
-//                     draft.patterns.set([change.doc.id, "community"], {...pat, featured: false})
-//                   }
-//                 })
-//               }
-//             })
-//           })
-//       }
-
-//     return () => {
-//       if (unsubscribe) {
-//         unsubscribe()
-//       }
-//     }
-//   }, [])
-// };
-
-
-
 
 export const useUserPatternSubscription = (firebase: Firebase, user?: firebase.User) => {
   const setDraft = useSetDraft();
@@ -109,9 +55,9 @@ export const useUserPatternSubscription = (firebase: Firebase, user?: firebase.U
       unsubscribe = firebase.userPatterns(user.uid).onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
           if (change.type === "added") {
-            console.log("added", change.doc.data())
+            // console.log("added", change.doc.data())
             setDraft(draft => {
-              draft.patterns.set([change.doc.id, "user"], change.doc.data())
+              draft.userPatterns = [change.doc.data(), ...draft.userPatterns]
             })
           }
         })

@@ -22,6 +22,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
   }
+
   css-doodle {
     height: 100%;
   }

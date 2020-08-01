@@ -4,7 +4,8 @@ import { Grommet, Layer, Box } from "grommet"
 
 import Header from "../Header"
 import Login from "../Login"
-import {CreatePattern} from "../Patterns"
+import { CreatePattern } from "../Patterns"
+import Footer from "./../Footer"
 import { withAuthentication, WithAuthProps } from '../Session';
 import {withFirebase, WithFirebaseProps} from "../Firebase"
 import { PatternProvider } from "./../../store"
@@ -15,12 +16,11 @@ import { theme } from "./theme"
 import { GlobalStyles } from './globalStyles';
 import * as ROUTES from '../../constants/routes';
 
-const WrappedApp = ({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
+const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
 
-  usePatternSubscription(firebase, "community")
-  usePatternSubscription(firebase, "featured")
+  usePatternSubscription(firebase)
   useUserPatternSubscription(firebase, authUser)
 
   return (
@@ -56,10 +56,10 @@ const WrappedApp = ({ authUser, firebase }: WithAuthProps & WithFirebaseProps) =
         <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
         <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
       </Box>
+      <Footer />
     </Grommet>
-
   )
-}
+})
 
 export const App = withFirebase(withAuthentication(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => (
   <Router>
