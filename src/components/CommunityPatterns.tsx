@@ -7,7 +7,6 @@ import compact from "lodash.compact"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
-import {CollectionType} from "./../store"
 import * as ROUTES from "./../constants/routes"
 import { useTrackedState } from "./../store"
 
@@ -68,4 +67,4 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
 }
 
 
-export default withAuthentication(withRouter(withFirebase(CommunityPatterns)))
+export default React.memo(withAuthentication(withRouter(withFirebase(CommunityPatterns))))

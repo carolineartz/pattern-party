@@ -1,26 +1,37 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { Box } from "grommet"
+import { Box, Heading } from "grommet"
+import compact from "lodash.compact"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+import { useTrackedState } from "./../store"
 
-type UserPatternsProps = WithAuthProps & WithFirebaseProps & { patterns: PatternType[] }
+type UserPatternsProps = WithAuthProps & WithFirebaseProps
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
-const UserPatterns = React.memo((props: UserPatternsProps) => {
+const UserPatterns = (props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
-  const { firebase, authUser, patterns } = props
+  const state = useTrackedState()
+  const { firebase, authUser } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
+
+  const patterns = compact(Array.from(state.patterns.entries()).map(([[, owner], value]) => {
+   if (owner === "user") {
+      return value
+    }
+  })).reverse()
+
+  console.log(state.patterns)
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
+      <Box pad="large">
+        <Heading level={1} color="text">My Patterns</Heading>
+      </Box>
       <PatternGrid>
-        {/* <Box elevation="small" align="center" justify="center" onClick={() => props.setShowCreate(true)}>
-          <Add size="large" color="text" />
-        </Box> */}
         <PatternList
           patterns={patterns}
           onDestroy={authUser ? (pattern: PatternType) => {
@@ -45,7 +56,7 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
         />}
       </Box>
   )
-})
+}
 
 const condition = (authUser?: firebase.User) => !!authUser;
 

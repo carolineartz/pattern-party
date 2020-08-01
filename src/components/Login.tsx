@@ -16,23 +16,23 @@ type WithRouterProps = {
 type Props = WithFirebaseProps & WithRouterProps
 
 const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
-  // const [error, setError] = React.useState<string | null>(null)
   const handleClickSignIn = () => {
     firebase.doSignInWithGoogle().then(() => {
       history.push(ROUTES.LANDING)
     })
   }
-    return (
-      <Box fill="horizontal" pad="large" animation="slideDown" justify="center" align="center">
-        <Box direction="row" align="center" justify="center">
-          <Box pad="small"><Logo /></Box>
-          <Text size="large">Sign in or create an account to start collecting patterns!</Text>
-        </Box>
-        <Box pad="medium" align="center">
-          <GoogleButton onClick={handleClickSignIn} />
-        </Box>
+
+  return (
+    <Box fill="horizontal" pad="large" animation="slideDown" justify="center" align="center">
+      <Box direction="row" align="center" justify="center">
+        <Box pad="small"><Logo /></Box>
+        <Text size="large">Sign in or create an account to start collecting patterns!</Text>
       </Box>
-    )
+      <Box pad="medium" align="center">
+        <GoogleButton onClick={handleClickSignIn} />
+      </Box>
+    </Box>
+  )
 }
 
 export default compose<Props, {}>(
