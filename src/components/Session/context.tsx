@@ -7,7 +7,7 @@ import { WithRouterProps } from '.';
 import * as ROUTES from '../../constants/routes';
 
 type IAuthState = {
-  authUser?: firebase.User | null
+  authUser?: firebase.User
 }
 export const AuthContext = React.createContext<{ authUser: IAuthState['authUser'] }>({authUser: undefined});
 
@@ -26,13 +26,13 @@ export class AuthContextProvider extends React.Component<any & { firebase: Fireb
 
           if (!authUser) {
             debugger
-            this.setState({authUser: null})
+            this.setState({authUser: undefined})
           }
           this.setState({authUser})
         },
         () => {
           console.log("doing fallback")
-          this.setState({authUser: null})
+          this.setState({authUser: undefined})
         }
       )
     }

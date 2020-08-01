@@ -2,16 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import { enableMapSet } from "immer"
 
 import "css-doodle"
 import { AuthContextProvider } from './components/Session';
 import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
 
+enableMapSet()
 ReactDOM.render(
   <AuthContextProvider value={null}>
-    <PatternsProvider value={initialPatterns}>
+
       <App />
-    </PatternsProvider>
+
   </AuthContextProvider>,
   document.getElementById('root')
 );

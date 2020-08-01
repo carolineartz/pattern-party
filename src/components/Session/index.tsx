@@ -7,8 +7,8 @@ export {
 };
 
 export type WithAuthProps = {
-  authUser?: firebase.User | null
-  children: React.ReactNode
+  authUser?: firebase.User
+  children?: React.ReactNode
 }
 
 export type WithRouterProps = {

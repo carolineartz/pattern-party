@@ -1,21 +1,33 @@
 import React from 'react';
-import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 import { firestore } from "firebase"
 import { Box } from "grommet"
+import compact from "lodash.compact"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
-import { withAuthentication, WithAuthProps } from './Session';
+import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+import {CollectionType} from "./../store"
+import * as ROUTES from "./../constants/routes"
+import { useTrackedState } from "./../store"
 
-type LandingPageProps = WithAuthProps & WithFirebaseProps & {patterns: PatternType[]}
+type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 
-type LoadingState = "not-started" | "loading" | "loaded" | "error"
-
-const LandingPage = React.memo((props: LandingPageProps) => {
-  console.log("Landing Page", props)
-  const { firebase, authUser, patterns } = props
+const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element => {
   const [ patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
+  const state = useTrackedState();
+  const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
+
+  const patterns = compact(Array.from(state.patterns.entries()).map(([[, owner], value]) => {
+    if (isFeaturedPatterns && owner === "community" && value.featured) {
+      console.log("featured", value)
+      return value
+    } else if (!isFeaturedPatterns && owner === "community") {
+      console.log("not featured")
+      return value
+    }
+    })).reverse()
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
@@ -53,6 +65,7 @@ const LandingPage = React.memo((props: LandingPageProps) => {
         />}
       </Box>
   )
-})
+}
 
-export default compose<LandingPageProps, any>(withAuthentication, withFirebase)(LandingPage);
+
+export default withAuthentication(withRouter(withFirebase(CommunityPatterns)))

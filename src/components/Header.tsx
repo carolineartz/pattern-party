@@ -93,7 +93,4 @@ const UserIcon = ({ character }: UserIconProps) => {
   )
 }
 
-
 export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
-
-// export default withRouter<WithRouterProps, any>(Header)

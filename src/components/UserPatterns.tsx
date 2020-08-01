@@ -6,21 +6,14 @@ import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 
-type UserPatternsProps = WithAuthProps & WithFirebaseProps & { patterns: PatternData[] }
-
-type PatternData = {
-  id: string
-  markup: string
-  hidden?: boolean
-  createdAt?: firebase.firestore.Timestamp
-}
+type UserPatternsProps = WithAuthProps & WithFirebaseProps & { patterns: PatternType[] }
 
 type LoadingState = "not-started" | "loading" | "loaded" | "error"
 
 const UserPatterns = React.memo((props: UserPatternsProps) => {
   console.log("UserPatterns Page", props)
   const { firebase, authUser, patterns } = props
-  const [patternForDestroy, setPatternForDestroy] = React.useState<PatternData | null>(null)
+  const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
 
   return (
     <Box pad="medium" className={`${authUser ? 'user' : 'explore'}-grid`}>
@@ -30,7 +23,7 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
         </Box> */}
         <PatternList
           patterns={patterns}
-          onDestroy={authUser ? (pattern: PatternData) => {
+          onDestroy={authUser ? (pattern: PatternType) => {
             setPatternForDestroy(pattern)
           } : undefined}
         />
@@ -45,7 +38,7 @@ const UserPatterns = React.memo((props: UserPatternsProps) => {
             setPatternForDestroy(null)
           }}
           onClickHide={() => {
-            firebase.userPattern(authUser.uid, patternForDestroy.id).set({hidden: true}, {merge: true})
+            firebase.userPattern(authUser.uid, patternForDestroy.id).set({hidden: true} as any, {merge: true})
             setPatternForDestroy(null)
           }}
           closeDialog={() => setPatternForDestroy(null)}

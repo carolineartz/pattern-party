@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { withAuthentication } from "../Session"
-import Firebase, {withFirebase} from "../Firebase"
+import Firebase, { withFirebase } from "../Firebase"
 
-type PatternData = {
+type PatternType = {
   id: string
   markup: string
   hidden?: boolean
@@ -11,8 +11,8 @@ type PatternData = {
 }
 
 export type IPatternsState = {
-  communityPatterns: PatternData[],
-  userPatterns: PatternData[]
+  communityPatterns: PatternType[],
+  userPatterns: PatternType[]
 }
 
 export type WithPatternsProps = IPatternsState
@@ -43,7 +43,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
     const docs = pats.docs
 
-    let patData: PatternData[] = []
+    let patData: PatternType[] = []
 
     docs.forEach((pattern) => {
       const data = pattern.data()
@@ -72,7 +72,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
           switch (change.type) {
             case "added":
-              if (this.state.communityPatterns.find((pData: PatternData) => id === pData.id)) {
+              if (this.state.communityPatterns.find((pData: PatternType) => id === pData.id)) {
                 return
               }
 
@@ -85,7 +85,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
               console.log("community pattern was added", change)
               break
             case "removed":
-              this.setState({ communityPatterns: this.state.communityPatterns.filter((p: PatternData) => p.id !== id) })
+              this.setState({ communityPatterns: this.state.communityPatterns.filter((p: PatternType) => p.id !== id) })
               console.log("community pattern was removed", change)
               break
             case "modified":
@@ -117,7 +117,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
 
           switch (change.type) {
             case "added":
-              if (this.state.userPatterns.find((pData: PatternData) => id === pData.id)) {
+              if (this.state.userPatterns.find((pData: PatternType) => id === pData.id)) {
                 return
               }
               this.setState({
@@ -129,7 +129,7 @@ class Provider extends React.Component<any & { firebase: Firebase, authUser?: fi
               console.log("user pattern was added", change)
               break
             case "removed":
-              this.setState({ userPatterns: this.state.userPatterns.filter((p: PatternData) => p.id !== id) })
+              this.setState({ userPatterns: this.state.userPatterns.filter((p: PatternType) => p.id !== id) })
               console.log("user pattern was removed", change)
               break
             case "modified":
