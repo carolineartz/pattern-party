@@ -9,7 +9,8 @@ import Footer from "./../Footer"
 import { withAuthentication, WithAuthProps } from '../Session';
 import {withFirebase, WithFirebaseProps} from "../Firebase"
 import { PatternProvider } from "./../../store"
-import { usePatternSubscription, useUserPatternSubscription} from "./../../hooks/usePatternSubscription"
+import { usePatternSubscription, useUserPatternSubscription } from "./../../hooks/usePatternSubscription"
+import { useUserPatterns } from "../../hooks/usePatterns"
 import CommunityPatternsPage from "./../CommunityPatterns"
 import UserPatternsPage from "./../UserPatterns"
 import { theme } from "./theme"
@@ -19,9 +20,6 @@ import * as ROUTES from '../../constants/routes';
 const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
-
-  usePatternSubscription(firebase)
-  useUserPatternSubscription(firebase, authUser)
 
   return (
     <Grommet theme={theme}>

@@ -59,9 +59,18 @@ const initialState: State = {
   visibilityFilter: "SHOW_COMMUNITY",
   subscriptions: {},
   fetchPatterns: {
-    community: { hasMore: true },
-    user: { hasMore: true },
-    featured: { hasMore: true }
+    community: {
+      hasMore: true,
+      startAfter: undefined
+    },
+    user: {
+      hasMore: true,
+      startAfter: undefined
+    },
+    featured: {
+      hasMore: true,
+      startAfter: undefined
+    }
   }
 }
 const useValue = () => React.useState(initialState);

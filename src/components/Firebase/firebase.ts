@@ -17,7 +17,6 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
-
 interface AuthUser extends firebase.User {
   roles: Record<string, boolean>
 }
@@ -113,7 +112,12 @@ class Firebase implements IFirebase {
       this.db.collection("patterns")
         .withConverter(patternConverter)
         .doc(pid)
-    featuredPatterns = (limit = 10) => this.patternCollection().withConverter(patternConverter).where("featured", "==", true)
+    featuredPatterns = (limit = 10) =>
+      this.patternCollection()
+        .withConverter(patternConverter)
+        .orderBy("createdAt", "desc")
+        .where("featured", "==", true)
+
 
     // *** User Patterns API ***
     userPatternCollection = (uid: string) => this.user(uid).collection("patterns")
