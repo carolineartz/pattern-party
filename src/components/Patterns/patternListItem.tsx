@@ -20,7 +20,7 @@ type PatternListItemProps = {
   onClickCopyDataUri: (evt: React.MouseEvent) => void
 }
 
-export const PatternListItem = (props: PatternListItemProps) => {
+export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
   const [showOptions, setShowOptions] = React.useState<boolean>(false);
   const patternRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -33,7 +33,7 @@ export const PatternListItem = (props: PatternListItemProps) => {
   };
 
   return (
-    <Box ref={patternRef}>
+    <Box ref={patternRef} id={props.ident}>
       <PatternContainer
         css={`
             [class*='StyledStackLayer'] {

@@ -76,11 +76,11 @@ class Firebase implements IFirebase {
 
   onAuthUserListener = (next: (user: firebase.User) => any, fallback: Function) =>
     this.auth.onIdTokenChanged((authUser: firebase.User | null) => {
-      console.log("authUser", authUser)
+      // console.log("authUser", authUser)
       if (authUser) {
         this.user(authUser.uid).get().then(snapshot => {
           const dbUser: firebase.firestore.DocumentData | undefined = snapshot.data();
-          console.log("dbUser", dbUser)
+          // console.log("dbUser", dbUser)
           if (!authUser) {
             return fallback()
           } else {
@@ -102,11 +102,7 @@ class Firebase implements IFirebase {
 
     // *** Community Patterns API ***
     patternCollection = () => this.db.collection("patterns")
-    patterns = (limit = 10) =>
-      this.patternCollection()
-        .withConverter(patternConverter)
-        .orderBy("createdAt", "desc")
-        .limit(limit)
+    patterns = (limit = 10) => this.db.collection("patterns").orderBy("createdAt", "desc").withConverter(patternConverter)
 
     pattern = (pid: string) =>
       this.db.collection("patterns")

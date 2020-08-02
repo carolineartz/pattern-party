@@ -6,7 +6,7 @@ import { enableMapSet } from "immer"
 
 import "css-doodle"
 import { AuthContextProvider } from './components/Session';
-import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
+// import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
 
 enableMapSet()
 ReactDOM.render(

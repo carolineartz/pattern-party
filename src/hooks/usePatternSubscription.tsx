@@ -55,7 +55,6 @@ export const useUserPatternSubscription = (firebase: Firebase, user?: firebase.U
       unsubscribe = firebase.userPatterns(user.uid).onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
           if (change.type === "added") {
-            // console.log("added", change.doc.data())
             setDraft(draft => {
               draft.userPatterns = [change.doc.data(), ...draft.userPatterns]
             })

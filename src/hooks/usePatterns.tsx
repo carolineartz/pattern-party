@@ -1,6 +1,6 @@
 import React from 'react';
-import Firebase, { LIMIT } from "./../components/Firebase"
-import { useSetDraft } from '../store';
+import Firebase, { LIMIT } from "../components/Firebase"
+import { useSetDraft, useTrackedState } from '../store';
 
 export const useUserPatterns = (firebase: Firebase, user?: firebase.User) => {
   const setDraft = useSetDraft();
@@ -28,6 +28,8 @@ export const useUserPatterns = (firebase: Firebase, user?: firebase.User) => {
 
 export const useCommunityPatterns = (firebase: Firebase) => {
   const setDraft = useSetDraft();
+  const { fetchPatterns: { community: { startAfter, hasMore } } } = useTrackedState()
+
 
   return React.useCallback(
     async (hasMore: boolean, lastVisible?: firebase.firestore.QueryDocumentSnapshot<PatternType>) => {
@@ -45,6 +47,6 @@ export const useCommunityPatterns = (firebase: Firebase) => {
         console.log("NO MORE!")
       }
     },
-    [setDraft, firebase]
+    [setDraft, firebase, startAfter, hasMore]
   )
 };
