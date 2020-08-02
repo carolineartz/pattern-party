@@ -1,22 +1,22 @@
 import * as React from 'react';
 import styled from "styled-components"
-import { PatternListItem } from './Patterns/patternListItem'
-import { formatSVG } from "./Patterns/util"
+import { PatternListItem } from './patternListItem'
+import { formatSVG } from "./util"
 import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
-import { InfiniteScroll } from './InfiniteScroll';
+import { InfiniteScroll } from './../InfiniteScroll';
 
 
 type PatternListProps = {
   patterns: PatternType[]
-  // hasMore: boolean
-  cursor?: firebase.firestore.QueryDocumentSnapshot<PatternType>
-  loadMore: (lv: firebase.firestore.QueryDocumentSnapshot<PatternType>) => Promise<firebase.firestore.QueryDocumentSnapshot<PatternType>>
+  hasMore: boolean
+  cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>
+  loadMore: (lv: firebase.firestore.QueryDocumentSnapshot<PatternType>) => LoadMoreResponse<PatternType>
   onDestroy?: (pat: PatternType) => void
   onSave?: (data: PatternType) => void
 }
 
-export const ScrollablePatternList =({ onDestroy, patterns, loadMore, onSave, cursor }: PatternListProps) => {
+export const ScrollablePatternList = ({ onDestroy, patterns, loadMore, onSave, cursor, hasMore }: PatternListProps) => {
   console.log("calling ScrollablePatternList with cursor", cursor && cursor.id)
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
@@ -46,18 +46,13 @@ export const ScrollablePatternList =({ onDestroy, patterns, loadMore, onSave, cu
   )
 
   return (
-    <>
-    {cursor && <InfiniteScroll
+    <InfiniteScroll
       items={patterns}
       cursor={cursor}
       loadMore={loadMore}
       renderFn={renderPattern}
-      />}
-</>
+      hasMore={hasMore}
+    />
+
   )
 }
-
-    export default ScrollablePatternList
-
-    // cursor={cursor}
-    // hasMore={hasMore}

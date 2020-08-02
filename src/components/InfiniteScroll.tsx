@@ -6,18 +6,18 @@ import uniqBy from "lodash.uniqby"
 
 type InfiniteScrollProps<D> = {
   items: D[]
-  // hasMore: boolean
+  hasMore: boolean
   cursor: firebase.firestore.QueryDocumentSnapshot<D>
-  loadMore: (cursor: firebase.firestore.QueryDocumentSnapshot<D>) => Promise<firebase.firestore.QueryDocumentSnapshot<D>>
+  loadMore: (cursor: firebase.firestore.QueryDocumentSnapshot<D>) => LoadMoreResponse<D>
   renderFn: (item: D, i: number) => JSX.Element
 }
 
-export function InfiniteScroll<D>({items, cursor, loadMore, renderFn}: InfiniteScrollProps<D>) {
-// export const InfiniteScrollWrapped = <D extends {}>(props: InfiniteScrollProps<D>) => {
-// export const InfiniteScrollWrapped<D>(props: InfiniteScrollProps<D>) {
+export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: InfiniteScrollProps<D>) {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
   const cursorRef = useRef<firebase.firestore.QueryDocumentSnapshot<D>>(cursor)
+  const moreRef = useRef<boolean>(hasMore)
+  const [done, setDone] = React.useState<boolean>(!hasMore)
 
   const prevY = useRef(0);
   const observer = useRef(
@@ -26,12 +26,16 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn}: InfiniteS
         const firstEntry = entries[0];
         const y = firstEntry.boundingClientRect.y;
 
-        if (cursor && prevY.current > y) {
+        if (moreRef.current && prevY.current > y) {
           console.log("loading!")
 
           setTimeout(() => {
-            loadMore(cursorRef.current).then((curs) => {
-              cursorRef.current = curs
+            loadMore(cursorRef.current).then(([nextCursor, nextMore]) => {
+              cursorRef.current = nextCursor
+              moreRef.current = nextMore
+              if (!nextMore) {
+                setDone(true)
+              }
             })
           }, 1000)
         }
@@ -61,6 +65,7 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn}: InfiniteS
     <>
       {items.map(renderFn)}
       <Box ref={setElement}></Box>
+      {done && <Box>DONE!</Box>}
     </>
   );
 }

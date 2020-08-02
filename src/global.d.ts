@@ -5,3 +5,6 @@ declare type PatternType = {
   hidden: boolean
   createdAt?: firebase.firestore.Timestamp
 }
+
+type LoadMoreData<D> = [firebase.firestore.QueryDocumentSnapshot<D>, boolean]
+type LoadMoreResponse<D> = Promise<[firebase.firestore.QueryDocumentSnapshot<D>, boolean]>
