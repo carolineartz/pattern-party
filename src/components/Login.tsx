@@ -6,7 +6,7 @@ import { Box, Text } from "grommet"
 import "styled-components/macro"
 
 import { withFirebase, WithFirebaseProps } from "./Firebase"
-import { ReactComponent as Logo } from "./../images/logo-p.svg"
+import { ReactComponent as Logo } from "./../images/logo-confetti.svg"
 import * as ROUTES from "./../constants/routes"
 
 type WithRouterProps = {
@@ -25,7 +25,7 @@ const GoogleAuth = ( {firebase, history }: Props): JSX.Element => {
   return (
     <Box fill="horizontal" pad="large" animation="slideDown" justify="center" align="center">
       <Box direction="row" align="center" justify="center">
-        <Box pad="small"><Logo /></Box>
+        <Box pad="small"><Logo width="100px" /></Box>
         <Text size="large">Sign in or create an account to start collecting patterns!</Text>
       </Box>
       <Box pad="medium" align="center">

@@ -39,12 +39,12 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
       </Box>
 
       <Box direction="row" gap="medium">
-        <NavButton
+        {authUser && <NavButton
           onClick={() => {
             onClickCreate()
           }}
           text="Generate"
-        />
+        />}
         <NavButton
           active={history.location.pathname === ROUTES.EXPLORE}
           onClick={() => {
@@ -82,6 +82,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
           <NavButton
             onClick={() => onClickSignIn()}
             text="Sign In"
+            css="padding-right: 20px;"
           />
         }
       </Box>
@@ -93,6 +94,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
 type NavButtonProps = ButtonProps & {
   onClick: (evt: React.MouseEvent<HTMLButtonElement>) => void
   text: string
+  css?: string
 }
 
 const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
