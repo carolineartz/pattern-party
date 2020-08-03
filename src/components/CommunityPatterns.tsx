@@ -42,14 +42,14 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const fetchInitialPatterns = React.useCallback(
     async () => {
       if (!startAfter) {
-        console.log("FETCHING INITIAL")
-        const snapshots = await firebase.patterns().limit(10).get()
-        const docs = snapshots.docs
+        const communitySnapshots = await firebase.patterns().limit(10).get()
+        const featuredPatterns = await firebase.featuredPatterns().get()
+        const docs = communitySnapshots.docs
         const nextLastVisible = docs[docs.length - 1];
-        console.log("after fetching initial patterns, setting startAfer to ", nextLastVisible.id)
         setDraft((draft) => {
           draft.fetchPatterns.community.startAfter = nextLastVisible
           draft.communityPatterns = docs.map(doc => doc.data())
+          draft.featuredPatterns = featuredPatterns.docs.map(doc => doc.data())
         })
       }
     },
@@ -60,6 +60,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     fetchInitialPatterns()
   }, [])
 
+
   return (
     <>
       <Box pad="large">
@@ -67,8 +68,29 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
         {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
       </Box>
       <Box>
-        <PatternGrid>
-          {startAfter &&
+        <PatternGrid
+          colMinWidth={isFeaturedPatterns ? '380px' : undefined}
+          rowMinHeight={isFeaturedPatterns ? '300px' : undefined}
+          rowMaxHeight={isFeaturedPatterns ? '33vh' : undefined}
+        >
+          {isFeaturedPatterns &&
+            <PatternList
+              patterns={featuredPatterns}
+              onDestroy={userIsAdmin ? (pattern: PatternType) => {
+                setPatternForDestroy(pattern)
+              } : undefined}
+              onSave={authUser ? (pattern: PatternType) => {
+                if (authUser) {
+                  firebase.userPatternCollection(authUser.uid).add({
+                    markup: pattern.markup,
+                    hidden: false,
+                    createdAt: firestore.Timestamp.now()
+                  })
+                }
+              } : undefined}
+            />
+          }
+          {!isFeaturedPatterns && startAfter &&
             <ScrollablePatternList
               patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns}
               cursor={startAfter}

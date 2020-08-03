@@ -108,12 +108,13 @@ class Firebase implements IFirebase {
       this.db.collection("patterns")
         .withConverter(patternConverter)
         .doc(pid)
+
     featuredPatterns = (limit = 10) =>
       this.patternCollection()
-        .withConverter(patternConverter)
-        .orderBy("createdAt", "desc")
         .where("featured", "==", true)
-
+        .orderBy("createdAt", "desc")
+        .limit(limit)
+        .withConverter(patternConverter)
 
     // *** User Patterns API ***
     userPatternCollection = (uid: string) => this.user(uid).collection("patterns")
@@ -122,6 +123,7 @@ class Firebase implements IFirebase {
         .withConverter(patternConverter)
         .orderBy("createdAt", "desc")
         .limit(limit)
+
     userPattern = (uid: string, upid: string) =>
       this.user(uid).collection("patterns")
         .withConverter(patternConverter)

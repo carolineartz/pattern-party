@@ -1,8 +1,7 @@
 import * as React from "react"
 import styled from "styled-components"
-import "styled-components/macro"
-
 import { Box, BoxProps } from "grommet"
+import "styled-components/macro"
 
 type PatternGridProps = BoxProps & {
   colMinWidth?: string
@@ -20,7 +19,7 @@ export const PatternGrid = (props: PatternGridProps) => (
   </Box>
 )
 
-export const Grid = styled(Box)<PatternGridProps>`
+const Grid = styled(Box)<PatternGridProps>`
   display: grid;
   grid-gap: 1.5rem;
   grid-template-columns: ${props => `repeat(auto-fill, minmax(${props.colMinWidth || '250px'}, 1fr))`};
