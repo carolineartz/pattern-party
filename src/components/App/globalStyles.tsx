@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components"
 
 export const GlobalStyles = createGlobalStyle`
+  // TRANSITION appear-zoom
   .appear-zoom-enter {
     opacity: 0;
     transform: scale(0.9);
@@ -17,6 +18,40 @@ export const GlobalStyles = createGlobalStyle`
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 300ms, transform 300ms;
+  }
+
+  // TRANSITION slide-in-out-right
+
+  // base
+  .slide-in-out-right {
+    transform: translate3d(100%, 0, 0);
+    width: 0;
+    visibility: hidden;
+  }
+
+  // appear
+  .slide-in-out-right-enter {
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  // enter / visible
+  .slide-in-out-right-enter-active {
+    transition: transform 1s ease;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+  }
+
+  // leave
+  .slide-in-out-right-exit {
+    transform: translate3d(100%, 0, 0);
+  }
+
+  // exit / hide
+  .slide-in-out-right-exit-active {
+    transition: transform 1s ease;
+    visibility: hidden;
+    transform: translate3d(100%, 0, 0);
   }
 
   body {
@@ -39,5 +74,16 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     border: 1px solid white;
     outline: 1px solid black;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translate3d(100%, 0, 0);
+      visibility: visible;
+    }
+
+    to {
+      transform: translate3d(0, 0, 0);
+    }
   }
 `

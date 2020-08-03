@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Grommet, Layer, Box } from "grommet"
+import "styled-components/macro"
 
 import Header from "../Header"
 import Login from "../Login"
-import { CreatePattern } from "../Patterns"
+import { CreatePattern, CreatePanel, CreateWindow } from "../Patterns"
 import Footer from "./../Footer"
 import { withAuthentication, WithAuthProps } from '../Session';
 import {withFirebase, WithFirebaseProps} from "../Firebase"
@@ -48,13 +49,16 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
           />
         </Layer>
       }
-      { authUser && <CreatePattern showCreate={showCreate} setShowCreate={setShowCreate} /> }
       <Box fill margin={{top: "large"}}>
         <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
         <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
         <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
       </Box>
       <Footer />
+
+      {authUser &&
+        <CreateWindow showWindow={showCreate} setShowWindow={setShowCreate} />
+      }
     </Grommet>
   )
 })

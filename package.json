@@ -40,6 +40,7 @@
     "react-app-rewired": "^2.1.6",
     "react-dom": "^16.13.1",
     "react-google-button": "^0.7.1",
+    "react-rnd": "^10.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-tracked": "^1.4.1",

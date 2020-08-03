@@ -1,9 +1,9 @@
 import { PatternList } from "./patternList"
 import { ScrollablePatternList } from "./scrollablePatternList"
 import { PatternGrid } from "./grid"
-import { CreatePattern } from './createFrame'
+import { CreatePattern, CreatePanel, CreateWindow } from './createPanel'
 import { DestroyPatternDialog } from "./destroyDialog"
 
 export {
-  PatternList, ScrollablePatternList, PatternGrid, CreatePattern, DestroyPatternDialog
+  PatternList, ScrollablePatternList, PatternGrid, CreatePattern, DestroyPatternDialog, CreatePanel, CreateWindow
 }

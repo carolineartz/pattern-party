@@ -12,9 +12,10 @@ import * as ROUTES from "../constants/routes"
 type HeaderProps = WithAuthProps & WithFirebaseProps & WithRouterProps & {
   onClickSignIn: Function
   onClickSignOut: Function
+  onClickCreate: Function
 }
 
-const Header = ({ history, onClickSignIn, onClickSignOut, authUser, firebase }: HeaderProps): JSX.Element => {
+const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreate, firebase }: HeaderProps): JSX.Element => {
   return (
     <GHeader border={{
       "color": "light-4",
@@ -34,10 +35,16 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, firebase }: 
         gap="xsmall"
       >
         <Box height="100%" css="max-height: 73px; width: 100%; max-width: 73px; padding: 8px 8px 8px 6px;"><Logo /></Box>
-        <Text>Pattern Party</Text>
+        <Box width="small"><Text>Pattern Party!</Text></Box>
       </Box>
 
       <Box direction="row" gap="medium">
+        <NavButton
+          onClick={() => {
+            onClickCreate()
+          }}
+          text="Generate"
+        />
         <NavButton
           active={history.location.pathname === ROUTES.EXPLORE}
           onClick={() => {
@@ -49,18 +56,17 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, firebase }: 
         />
         {authUser &&
           <>
-            <NavButton
-              active={history.location.pathname === ROUTES.MY_PATTERNS}
-              onClick={() => {
-                if (history.location.pathname !== ROUTES.MY_PATTERNS) {
-                  history.push(ROUTES.MY_PATTERNS)
-                }
-              }}
-              text="My Patterns"
-            />
             <Menu
               label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
               items={[
+                {
+                  label: "My Patterns",
+                  onClick: () => {
+                    if (history.location.pathname !== ROUTES.MY_PATTERNS) {
+                      history.push(ROUTES.MY_PATTERNS)
+                    }
+                  }
+                },
                 {
                   label: 'Sign Out',
                   onClick: () => {
