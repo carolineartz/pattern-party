@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { Box } from "grommet"
-import "styled-components/macro"
-import uniqBy from "lodash.uniqby"
 
 type InfiniteScrollProps<D> = {
   items: D[]
@@ -37,7 +35,7 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
                 setDone(true)
               }
             })
-          }, 1000)
+          }, 250)
         }
 
         prevY.current = y;
@@ -69,5 +67,3 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
     </>
   );
 }
-
-// export const InfiniteScroll = React.memo(InfiniteScrollWrapped)

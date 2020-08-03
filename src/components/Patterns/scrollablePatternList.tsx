@@ -1,11 +1,8 @@
 import * as React from 'react';
-import styled from "styled-components"
 import { PatternListItem } from './patternListItem'
 import { formatSVG } from "./util"
-import { Box, BoxProps } from "grommet"
 import svgToMiniDataURI from "mini-svg-data-uri"
 import { InfiniteScroll } from './../InfiniteScroll';
-
 
 type PatternListProps = {
   patterns: PatternType[]
@@ -17,7 +14,6 @@ type PatternListProps = {
 }
 
 export const ScrollablePatternList = ({ onDestroy, patterns, loadMore, onSave, cursor, hasMore }: PatternListProps) => {
-  console.log("calling ScrollablePatternList with cursor", cursor && cursor.id)
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
 
@@ -53,6 +49,5 @@ export const ScrollablePatternList = ({ onDestroy, patterns, loadMore, onSave, c
       renderFn={renderPattern}
       hasMore={hasMore}
     />
-
   )
 }

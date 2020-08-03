@@ -5,8 +5,7 @@ import { Box, Heading, Text } from "grommet"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
-import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
-import { ScrollablePatternList } from "./Patterns/scrollablePatternList"
+import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList } from './Patterns';
 import * as ROUTES from "./../constants/routes"
 import { useTrackedState, useSetDraft } from "./../store"
 import { useCommunityPatterns } from "./../hooks/usePatterns"
@@ -17,14 +16,12 @@ type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element => {
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const state = useTrackedState()
-  const { featuredPatterns, communityPatterns, fetchPatterns: { community: { startAfter, hasMore } } } = state
   const setDraft = useSetDraft()
+  const { featuredPatterns, communityPatterns, fetchPatterns: { community: { startAfter, hasMore } } } = state
   const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
-    console.log("Calling loadPatterns with lastVisible", cursor.id);
-
     const snapshots = await firebase.patterns().startAfter(cursor).limit(10).get()
     const docs = snapshots.docs;
     const nextLastVisible = docs[docs.length - 1];
@@ -65,9 +62,9 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
 
   return (
     <>
-    <Box pad="large">
-      <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
-      {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
+      <Box pad="large">
+        <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
+        {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
       </Box>
       <Box>
         <PatternGrid>
