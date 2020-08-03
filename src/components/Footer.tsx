@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Box, Footer, Text, Anchor } from "grommet"
-import { ReactComponent as Logo } from "./../images/cupcake-logo-white-outline.svg"
+import { ReactComponent as Logo } from "./../images/balloons.svg"
 import { Github } from "grommet-icons"
 
 export default () => (
@@ -13,8 +13,8 @@ export default () => (
     }}
     pad="small"
   >
-    <Box align="center" direction="row" gap="xsmall">
-      <Logo />
+    <Box width="xxsmall">
+      <Logo style={{height: "100%", width: "100%"}} height="100%" />
     </Box>
     <Text>Because a party without patterns is just a meeting</Text>
     <Anchor
