@@ -11,7 +11,7 @@ import { useTrackedState, useSetDraft } from "./../store"
 import { useCommunityPatterns } from "./../hooks/usePatterns"
 import uniqBy from "lodash.uniqby"
 import {BannerStyle1} from "./Icon"
-
+import { usePatternSubscription } from "./../hooks/usePatternSubscription"
 type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 
 const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element => {
@@ -43,7 +43,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const fetchInitialPatterns = React.useCallback(
     async () => {
       if (!startAfter) {
-        const communitySnapshots = await firebase.patterns().limit(10).get()
+        const communitySnapshots = await firebase.patterns(10).get()
         const featuredPatterns = await firebase.featuredPatterns().get()
         const docs = communitySnapshots.docs
         const nextLastVisible = docs[docs.length - 1];
@@ -57,9 +57,13 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     [startAfter, setDraft, firebase]
   )
 
+  const subscripionStatus = usePatternSubscription(firebase)
+
   React.useEffect(() => {
-    fetchInitialPatterns()
-  }, [])
+    if (subscripionStatus === "subscribed") {
+      fetchInitialPatterns()
+    }
+  }, [subscripionStatus])
 
 
   return (

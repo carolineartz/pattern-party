@@ -33,7 +33,7 @@ export interface IFirebase {
   user: (uid: string) => firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
 
   patternCollection: () => firebase.firestore.CollectionReference
-  patterns: (limit: number) => firebase.firestore.Query<PatternType>
+  patterns: (limit?: number) => firebase.firestore.Query<PatternType>
   featuredPatterns: (limit: number) => firebase.firestore.Query<PatternType>
   pattern: (pid: string) => firebase.firestore.DocumentReference<PatternType>
 
@@ -102,7 +102,13 @@ class Firebase implements IFirebase {
 
     // *** Community Patterns API ***
     patternCollection = () => this.db.collection("patterns")
-    patterns = (limit = 10) => this.db.collection("patterns").orderBy("createdAt", "desc").withConverter(patternConverter)
+    patterns = (limit?: number) => {
+      if (limit) {
+        return this.db.collection("patterns").withConverter(patternConverter).orderBy("createdAt", "desc").limit(limit)
+      } else {
+        return this.db.collection("patterns").withConverter(patternConverter).orderBy("createdAt", "desc")
+      }
+    }
 
     pattern = (pid: string) =>
       this.db.collection("patterns")
