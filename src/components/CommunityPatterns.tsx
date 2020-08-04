@@ -68,12 +68,13 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
 
   return (
     <>
-      <Box pad="large">
+      <Box pad="xlarge">
         <Box direction="row" gap="small" align="center">
           <BannerStyle1 color="plain" size="medium-large" />
           <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
         </Box>
         {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
+        {isFeaturedPatterns && <Text>A selection of awesome patterns by community members.</Text>}
       </Box>
       <Box>
         <PatternGrid

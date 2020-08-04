@@ -23,48 +23,6 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
 
-  const setDraft = useSetDraft();
-
-  // React.useEffect(() => {
-  //   let featuredUnsubscribe: firebase.Unsubscribe
-  //   let communityUnsubscribe: firebase.Unsubscribe
-
-  //   communityUnsubscribe = firebase.patterns().onSnapshot(snapshot => {
-  //     snapshot.docChanges().forEach(change => {
-  //       if (change.type === "added") {
-  //         setDraft(draft => {
-  //           // debugger
-  //           // draft.communityPatterns.push(change.doc.data())
-  //           draft.communityPatterns = [change.doc.data(), ...draft.communityPatterns]
-  //         })
-  //       }
-  //     })
-  //   })
-
-  //   featuredUnsubscribe = firebase.featuredPatterns().onSnapshot(snapshot => {
-  //     snapshot.docChanges().forEach(change => {
-  //       if (change.type === "added") {
-  //         setDraft(draft => {
-  //           draft.featuredPatterns = [change.doc.data(), ...draft.featuredPatterns]
-  //         })
-  //       } else if (change.type === "removed") {
-  //         setDraft(draft => {
-  //           draft.featuredPatterns = draft.featuredPatterns.filter(pat => pat.id !== change.doc.id)
-  //         })
-  //       }
-  //     })
-  //   })
-
-  //   return () => {
-  //     if (featuredUnsubscribe) {
-  //       featuredUnsubscribe()
-  //     }
-  //     if (communityUnsubscribe) {
-  //       communityUnsubscribe()
-  //     }
-  //   }
-  // }, [])
-
   const subscripionStatus = usePatternSubscription(firebase)
 
   return (
@@ -94,7 +52,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
             />
           </Layer>
         }
-        {subscripionStatus === "subscribed" && <Box fill margin={{ top: "large" }}>
+        {subscripionStatus === "subscribed" && <Box fill margin={{ vertical: "large" }}>
           <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
           <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
           <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
