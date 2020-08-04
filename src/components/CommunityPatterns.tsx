@@ -65,6 +65,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     }
   }, [subscripionStatus])
 
+  const signedOutMessage = <Text>Sign in with Google to bookmark community patterns and collect your own creations!</Text>
 
   return (
     <>
@@ -73,7 +74,13 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
           <BannerStyle1 color="plain" size="medium-large" />
           <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
         </Box>
-        {!isFeaturedPatterns && <Text>Browse patterns by community members.</Text>}
+        {
+          !isFeaturedPatterns &&
+            <>
+              <Text>Browse patterns by community members.</Text>
+              <Text></Text>
+            </>
+        }
         {isFeaturedPatterns && <Text>A selection of awesome patterns by community members.</Text>}
       </Box>
       <Box>
