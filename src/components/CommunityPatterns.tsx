@@ -23,10 +23,10 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
-    const snapshots = await firebase.patterns().startAfter(cursor).limit(10).get()
+    const snapshots = await firebase.patterns().startAfter(cursor).limit(15).get()
     const docs = snapshots.docs;
     const nextLastVisible = docs[docs.length - 1];
-    const noMore = nextLastVisible === cursor || docs.length < 10
+    const noMore = nextLastVisible === cursor || docs.length < 15
 
     setDraft((draft) => {
       draft.fetchPatterns.community.hasMore = !noMore
@@ -43,7 +43,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const fetchInitialPatterns = React.useCallback(
     async () => {
       if (!startAfter) {
-        const communitySnapshots = await firebase.patterns(10).get()
+        const communitySnapshots = await firebase.patterns(15).get()
         const featuredPatterns = await firebase.featuredPatterns().get()
         const docs = communitySnapshots.docs
         const nextLastVisible = docs[docs.length - 1];

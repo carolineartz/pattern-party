@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import takeRight from "lodash.takeright"
+import take from "lodash.take"
 import { Box } from "grommet"
+import "styled-components/macro"
 
 type InfiniteScrollProps<D> = {
   items: D[]
@@ -37,7 +39,7 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
 
         prevY.current = y;
       },
-      { threshold: 1 }
+      { threshold: 0 }
     )
   );
 
@@ -56,11 +58,39 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
     };
   }, [element]);
 
-  return (
-    <>
-      {items.map(renderFn)}
-      <Box ref={setElement}></Box>
-      {done && <Box>DONE!</Box>}
-    </>
-  );
+  // const [...head, last] = items
+
+
+  let _tail = takeRight(items, 9)
+  const head = take(items, items.length - 9)
+  const [target, ...tail] = _tail
+
+  if (items.length < 17) {
+    return (
+      <>
+        {items.map(renderFn)}
+        <Box ref={setElement}></Box>
+        {done && <Box>DONE!</Box>}
+      </>
+    )
+  }
+  else {
+    return (
+      <>
+        {head.map(renderFn)}
+        <Box
+          width="100%"
+          height="100%"
+          css={`
+          > div {
+            height: 100%;
+            width: 100%;
+          }
+        `}
+          className="ITEM" ref={setElement}>{renderFn(target, items.length - 6)}</Box>
+        {tail.map(renderFn)}
+        {done && <Box>DONE!</Box>}
+      </>
+    );
+  }
 }
