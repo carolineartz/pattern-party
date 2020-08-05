@@ -154,7 +154,7 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
       id: snapshot.id,
       markup: data.markup,
       createdAt: data.createdAt,
-      hidden: data.hiddenn || false,
+      hidden: data.hidden || false,
       featured: data.featured || false,
     }
   }

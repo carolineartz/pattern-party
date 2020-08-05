@@ -87,7 +87,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
         <PatternGrid>
           {isFeaturedPatterns &&
             <PatternList
-              patterns={featuredPatterns}
+              patterns={featuredPatterns.filter(pattern => !pattern.hidden)}
               onDestroy={userIsAdmin ? (pattern: PatternType) => {
                 setPatternForDestroy(pattern)
               } : undefined}
@@ -104,7 +104,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
           }
           {!isFeaturedPatterns && startAfter &&
             <ScrollablePatternList
-              patterns={isFeaturedPatterns ? featuredPatterns : communityPatterns}
+              patterns={communityPatterns.filter(pattern => !pattern.hidden)}
               cursor={startAfter}
               hasMore={hasMore}
               loadMore={loadPatterns}
@@ -133,7 +133,15 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
             setPatternForDestroy(null)
           }}
           onClickHide={() => {
-            firebase.pattern(patternForDestroy.id).set({hidden: true} as any, {merge: true})
+            const { hidden, ...restPat } = patternForDestroy
+            firebase.pattern(patternForDestroy.id).set({
+              hidden: true,
+              ...restPat
+            })
+            setDraft(draft => {
+              const hiddenPattern = draft.communityPatterns.find(pattern => pattern.id === patternForDestroy.id)
+              hiddenPattern && (hiddenPattern.hidden = true)
+            })
             setPatternForDestroy(null)
           }}
           closeDialog={() => setPatternForDestroy(null)}

@@ -4,7 +4,7 @@ import { Box, Heading } from "grommet"
 import uniqBy from "lodash.uniqby"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
-import { PatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+import { PatternList, ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { useUserPatterns } from "../hooks/usePatterns"
 
@@ -52,8 +52,6 @@ const UserPatterns = (props: UserPatternsProps) => {
     }
   }, [startAfter, authUser])
 
-  console.log("state", state)
-
   return (
     <>
       <Box pad="large">
@@ -61,12 +59,17 @@ const UserPatterns = (props: UserPatternsProps) => {
       </Box>
       <Box>
         <PatternGrid>
-          <PatternList
-            patterns={userPatterns.filter(pattern => !pattern.hidden)}
-            onDestroy={authUser ? (pattern: PatternType) => {
-              setPatternForDestroy(pattern)
-            } : undefined}
-          />
+          {startAfter &&
+            <ScrollablePatternList
+              patterns={userPatterns.filter(pattern => !pattern.hidden)}
+              cursor={startAfter}
+              hasMore={hasMore}
+              loadMore={loadPatterns}
+              onDestroy={authUser ? (pattern: PatternType) => {
+                setPatternForDestroy(pattern)
+              } : undefined}
+            />
+          }
         </PatternGrid>
         {authUser && patternForDestroy &&
           <DestroyPatternDialog
@@ -80,17 +83,17 @@ const UserPatterns = (props: UserPatternsProps) => {
               })
               setPatternForDestroy(null)
             }}
-              onClickHide={() => {
-                const { hidden, ...restPat } = patternForDestroy
-                firebase.userPattern(authUser.uid, patternForDestroy.id).set({
-                  hidden: true,
-                  ...restPat
-                })
-                setDraft(draft => {
-                  const hiddenPattern = draft.userPatterns.find(pattern => pattern.id === patternForDestroy.id)
-                  hiddenPattern && (hiddenPattern.hidden = true)
-                })
-                setPatternForDestroy(null)
+            onClickHide={() => {
+              const { hidden, ...restPat } = patternForDestroy
+              firebase.userPattern(authUser.uid, patternForDestroy.id).set({
+                hidden: true,
+                ...restPat
+              })
+              setDraft(draft => {
+                const hiddenPattern = draft.userPatterns.find(pattern => pattern.id === patternForDestroy.id)
+                hiddenPattern && (hiddenPattern.hidden = true)
+              })
+              setPatternForDestroy(null)
             }}
             closeDialog={() => setPatternForDestroy(null)}
           />}

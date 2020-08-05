@@ -25,7 +25,7 @@ service cloud.firestore {
       allow delete: if getRole('admin') // admins can also delete them
     }
       // Only an individual user can read/write to their patterns, or an admin --- for now?
-    match /users/{userId}/{userData=**} {
+    match /users/{userId}/patterns/{userData=**} {
       allow read, write, update: if ((request.auth.uid == userId) || getRole('admin'));
     }
   }
