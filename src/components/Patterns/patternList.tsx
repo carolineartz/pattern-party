@@ -1,11 +1,8 @@
 import * as React from 'react';
-import styled from "styled-components"
 import svgToMiniDataURI from "mini-svg-data-uri"
-import { Box, BoxProps } from "grommet"
 
 import { formatSVG } from "./util"
 import { PatternListItem } from "./patternListItem"
-
 
 type PatternListProps = {
   patterns: PatternType[]
@@ -49,12 +46,5 @@ export const PatternList = ({ patterns, onDestroy, onSave }: PatternListProps) =
     </>
   )
 }
-
-export const PatternGrid = styled(Box)<BoxProps>`
-  display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  grid-auto-rows: minmax(150px, 25vh);
-`
 
 export default PatternList

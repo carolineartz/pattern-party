@@ -23,10 +23,10 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
-    const snapshots = await firebase.patterns().startAfter(cursor).limit(15).get()
+    const snapshots = await firebase.patterns().startAfter(cursor).limit(16).get()
     const docs = snapshots.docs;
     const nextLastVisible = docs[docs.length - 1];
-    const noMore = nextLastVisible === cursor || docs.length < 15
+    const noMore = nextLastVisible === cursor || docs.length < 16
 
     setDraft((draft) => {
       draft.fetchPatterns.community.hasMore = !noMore
@@ -43,7 +43,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   const fetchInitialPatterns = React.useCallback(
     async () => {
       if (!startAfter) {
-        const communitySnapshots = await firebase.patterns(15).get()
+        const communitySnapshots = await firebase.patterns(16).get()
         const featuredPatterns = await firebase.featuredPatterns().get()
         const docs = communitySnapshots.docs
         const nextLastVisible = docs[docs.length - 1];
@@ -84,11 +84,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
         {isFeaturedPatterns && <Text>A selection of awesome patterns by community members.</Text>}
       </Box>
       <Box>
-        <PatternGrid
-          colMinWidth={isFeaturedPatterns ? '380px' : undefined}
-          rowMinHeight={isFeaturedPatterns ? '300px' : undefined}
-          rowMaxHeight={isFeaturedPatterns ? '33vh' : undefined}
-        >
+        <PatternGrid>
           {isFeaturedPatterns &&
             <PatternList
               patterns={featuredPatterns}

@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Box, Stack, Button } from 'grommet';
+import "styled-components/macro"
+import { Box, Stack, Button, Card, CardBody, CardHeader, CardFooter, ButtonProps } from 'grommet';
 import { CSSTransition } from "react-transition-group";
 import { Close, Gallery, Code, Save } from "grommet-icons";
 import styled from "styled-components"
-import "styled-components/macro"
-
-import { ElevatedHoverBox } from '../ElevatedBox';
 import { formatSVG, animateClickPatternOption } from './util';
 
 type PatternListItemProps = {
@@ -33,149 +31,75 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
   };
 
   return (
-    <Box ref={patternRef} id={props.ident}>
-      <PatternContainer
-        css={`
-            [class*='StyledStackLayer'] {
-              height: 100%;
-            }
-            > div {
-              height: 100%;
-            }
-          `}
+
+      <PatternCard
+        key={props.ident}
+        ref={patternRef}
         height="100%"
         round="xsmall"
         width="100%"
-        markup={props.markup}
+      markup={props.markup}
+      overflow="visible"
         elevation="small"
         onMouseEnter={() => setShowOptions(true)}
         onMouseLeave={() => setShowOptions(false)}
       >
-        <Stack
-          anchor="top-right"
-          css="height: 100% !important;"
-        >
-          <css-doodle grid="1" use="var(--pattern)" />
-          <Box height="100%">
-            <Box fill="vertical" justify="between" height="100%">
-              <Box
-                css={`
-                  position: relative;
-                  height: 100%;
-                  width: 100%;
-                `}
-              >
+        <Stack guidingChild={0}>
+          <CardBody width="100%" height="small">
+            <css-doodle grid="1" use="var(--pattern)" />
+          </CardBody>
+          <Box fill direction="column" justify="between">
+            <CardHeader css="position: relative">
+              <Box />
+              {props.onClickDestroy &&
                 <Box
-                  gap="xxsmall"
-                  direction="row"
-                  pad={{ bottom: "xsmall", right: "xsmall" }}
                   css={`
-                  width: 100%;
-                  height: 100%;
-                  align-items: flex-end;
-                `}
+                    position: absolute;
+                    top: -10px;
+                    right: -10px;
+                  `}
                 >
-                  <CSSTransition
-                    in={showOptions}
-                    timeout={300}
-                    classNames="appear-zoom"
-                    unmountOnExit
-                  >
-                    <Button
-                      title="Copy SVG Markup"
-                      primary
-                      color="white"
-                      hoverIndicator
-                      icon={<Code size="small" color="text" />}
-                      size="small"
-                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
-                      css={`
-                        padding: 6px;
-                        box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
-                        &:hover {
-                          background-color: #EDEDED;
-                        }
-                    `} />
-                  </CSSTransition>
-                  <CSSTransition
-                    in={showOptions}
-                    timeout={300}
-                    classNames="appear-zoom"
-                    unmountOnExit
-                  >
-                    <Button
-                      title="Copy DataUri"
-                      primary
-                      color="white"
-                      hoverIndicator
-                      size="small"
-                      css={`
-                        padding: 6px;
-                        box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
-                        &:hover {
-                          background-color: #EDEDED;
-                        }
-                      `}
-                      icon={<Gallery size="small" color="text" />}
-                      onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))} />
-                  </CSSTransition>
-                  { props.onClickSave &&
-                    <CSSTransition
-                      in={showOptions}
-                      timeout={300}
-                      classNames="appear-zoom"
-                      unmountOnExit
-                    >
-                      <Button
-                        title="Save to Patterns"
-                        primary
-                        color="white"
-                        hoverIndicator
-                        size="small"
-                        css={`
-                          padding: 6px;
-                          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
-                          &:hover {
-                            background-color: #EDEDED;
-                          }
-                        `}
-                        icon={<Save size="small" color="text" />}
-                        onClick={(evt: React.MouseEvent) => {
-                          if (props.onClickSave) {
-                            animateClick(props.onClickSave.bind(null, evt))
-                          }
-                        }}
-                      />
-                    </CSSTransition>
-                  }
-                </Box>
-              </Box>
-              { props.onClickDestroy &&
-                <CSSTransition
-                  in={showOptions}
-                  timeout={300}
-                  classNames="appear-zoom"
-                  unmountOnExit
-                >
-                  <Button
-                    icon={<Close size="small" />}
-                    color="light-3"
-                    primary
-                    hoverIndicator
+                  <CardButton
+                    animateIn={showOptions}
+                    icon={Close}
+                    title="Remove Pattern"
                     onClick={props.onClickDestroy}
-                    css={`
-                      position: absolute;
-                      padding: 6px;
-                      top: -8px;
-                      right: -8px;`}
                   />
-                </CSSTransition>
+                </Box>
               }
-            </Box>
+            </CardHeader>
+            <CardFooter>
+              <Box />
+              <Box direction="row" pad="xsmall" align="center" gap="xxsmall">
+                <CardButton
+                  animateIn={showOptions}
+                  icon={Code}
+                  title="Copy SVG Markup"
+                  onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
+                />
+                <CardButton
+                  animateIn={showOptions}
+                  icon={Gallery}
+                  title="Copy DataUri"
+                  onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))}
+                />
+                {props.onClickSave &&
+                  <CardButton
+                    animateIn={showOptions}
+                    icon={Save}
+                    title="Save to My Patterns"
+                    onClick={(evt: React.MouseEvent) => {
+                      if (props.onClickSave) {
+                        animateClick(props.onClickSave.bind(null, evt))
+                      }
+                    }}
+                  />
+                }
+              </Box>
+            </CardFooter>
           </Box>
         </Stack>
-      </PatternContainer>
-    </Box>
+      </PatternCard>
   );
 };
 
@@ -183,6 +107,41 @@ type PatternContainerProps = {
   markup: string
 }
 
-const PatternContainer = styled(ElevatedHoverBox)<PatternContainerProps>`
+const PatternCard = styled(Card)<PatternContainerProps>`
   --pattern: ${props => "(background-image: @svg(" + formatSVG(props.markup) + "); border-radius: 6px;);"};
 `
+
+type CardButtonProps = Omit<ButtonProps, 'icon'> & {
+  animateIn: boolean
+  onClick: (evt: React.MouseEvent) => void
+  icon: typeof Code
+  title: string
+  css?: any
+}
+
+const CardButton = ({ animateIn, onClick, title, icon: Icon, ...rest }: CardButtonProps) => {
+  return (
+    <CSSTransition
+      in={animateIn}
+      timeout={300}
+      classNames="appear-zoom"
+      unmountOnExit
+    >
+      <Button
+        title={title}
+        primary
+        color="white"
+        hoverIndicator
+        icon={<Icon size="small" color="text" />}
+        size="small"
+        onClick={onClick}
+        css={`
+          padding: 6px;
+          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+          &:hover {
+            background-color: #EDEDED;
+          }
+      `} />
+    </CSSTransition>
+  )
+}

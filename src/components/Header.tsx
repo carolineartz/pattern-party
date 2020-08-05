@@ -34,7 +34,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
         align="center"
         gap="xsmall"
       >
-        <Box height="100%" css="max-height: 73px; width: 100%; max-width: 73px; padding: 8px 8px 8px 6px;"><Logo /></Box>
+        <Box height="100%" css="max-height: 73px; width: 100%; max-width: 73px; padding: 12px 12px 12px 9px;"><Logo /></Box>
         <Box width="small"><Text>Pattern Party!</Text></Box>
       </Box>
 

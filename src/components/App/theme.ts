@@ -16,6 +16,17 @@ export const theme = deepFreeze(deepMerge(grommet, {
   anchor: {
     fontWeight: 400
   },
+  card: {
+    container: {
+      round: 'small',
+      elevation: 'small',
+    },
+    header: {},
+    body: {},
+    footer: {
+      background: 'background-contrast',
+    },
+  },
   icon: {
     size: {
       "medium-large": "72px",
