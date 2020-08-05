@@ -25,3 +25,5 @@ yarn-error.log*
 firebase-debug.log*
 .history
 .firebase
+
+.vscode*
