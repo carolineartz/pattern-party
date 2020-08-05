@@ -26,7 +26,7 @@ service cloud.firestore {
     }
       // Only an individual user can read/write to their patterns, or an admin --- for now?
     match /users/{userId}/{userData=**} {
-      allow read, write: if (request.auth.uid == userId || getRole('admin'));
+      allow read, write, update: if ((request.auth.uid == userId) || getRole('admin'));
     }
   }
 }
