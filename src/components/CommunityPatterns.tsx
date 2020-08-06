@@ -1,6 +1,5 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { firestore } from "firebase"
 import { Box, Heading, Text } from "grommet"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';

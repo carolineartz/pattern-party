@@ -1,11 +1,14 @@
 import React from 'react';
-import { Box, Heading } from "grommet"
+import { Box, Heading, Text } from "grommet"
 import uniqBy from "lodash.uniqby"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { Garland3 } from "./Icon"
+import { useDestroyPattern } from "./../hooks/useDestroyPattern"
+import { useHidePattern } from "./../hooks/useHidePattern"
+import { randomIcon } from "./Icon"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps
 
@@ -15,6 +18,8 @@ const UserPatterns = (props: UserPatternsProps) => {
   const { userPatterns, fetchPatterns: { user: { startAfter, hasMore } } } = state
   const { firebase, authUser } = props
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
+  const destroyPattern = useDestroyPattern({ firebase, owner: "user", user: authUser })
+  const hidePattern = useHidePattern({ firebase, owner: "user", user: authUser })
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
     const snapshots = await firebase.userPatterns(authUser!.uid).startAfter(cursor).limit(16).get()
@@ -51,12 +56,17 @@ const UserPatterns = (props: UserPatternsProps) => {
     }
   }, [startAfter, authUser, fetchInitialPatterns])
 
+  const HeadingIcon = randomIcon()!
+
   return (
     <>
       <Box pad="xlarge">
-        <Box direction="row" gap="small" align="center">
-          <Garland3 color="plain" size="medium-large" />
-          <Heading level={1} color="text">My Patterns</Heading>
+        <Box direction="row" gap="medium" align="center">
+          <HeadingIcon color="plain" size="xlarge" />
+          <Box>
+            <Heading size="large" level={1} color="text">My Patterns</Heading>
+            <Text />
+          </Box>
         </Box>
       </Box>
       <Box>
@@ -67,34 +77,21 @@ const UserPatterns = (props: UserPatternsProps) => {
               cursor={startAfter}
               hasMore={hasMore}
               loadMore={loadPatterns}
-              onDestroy={authUser ? (pattern: PatternType) => {
-                setPatternForDestroy(pattern)
-              } : undefined}
+              onDestroy={authUser ? (pattern: PatternType) => setPatternForDestroy(pattern) : undefined}
             />
           }
         </PatternGrid>
-        {authUser && patternForDestroy &&
+        {patternForDestroy &&
           <DestroyPatternDialog
             key="destroy-dialog"
             ident={patternForDestroy.id}
             markup={patternForDestroy.markup}
             onClickDestroy={() => {
-              firebase.userPattern(authUser.uid, patternForDestroy.id).delete()
-              setDraft(draft => {
-                draft.userPatterns = draft.userPatterns.filter(pattern => pattern.id !== patternForDestroy.id)
-              })
+              destroyPattern(patternForDestroy.id)
               setPatternForDestroy(null)
             }}
             onClickHide={() => {
-              const { hidden, ...restPat } = patternForDestroy
-              firebase.userPattern(authUser.uid, patternForDestroy.id).set({
-                hidden: true,
-                ...restPat
-              })
-              setDraft(draft => {
-                const hiddenPattern = draft.userPatterns.find(pattern => pattern.id === patternForDestroy.id)
-                hiddenPattern && (hiddenPattern.hidden = true)
-              })
+              hidePattern(patternForDestroy.id)
               setPatternForDestroy(null)
             }}
             closeDialog={() => setPatternForDestroy(null)}
