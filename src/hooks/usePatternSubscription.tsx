@@ -35,17 +35,8 @@ export const usePatternSubscription = (firebase: Firebase) => {
         })
       })
     }
-
-    return () => {
-      // if (communityUnsubscribe) {
-      //   console.log("unsubscribing")
-      //   communityUnsubscribe()
-      // }
-    }
   }, [initialPattern, subscriptionStatus, communityPatterns.length, firebase, setDraft])
 
-  console.log(subscriptionStatus, communityPatterns)
-  console.log("initial pattern", initialPattern)
   return subscriptionStatus
 };
 

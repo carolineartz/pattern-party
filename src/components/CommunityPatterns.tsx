@@ -10,7 +10,7 @@ import * as ROUTES from "./../constants/routes"
 import { useTrackedState, useSetDraft } from "./../store"
 import { useCommunityPatterns } from "./../hooks/usePatterns"
 import uniqBy from "lodash.uniqby"
-import {BannerStyle1} from "./Icon"
+import { Garland1, Garland2, randomIcon } from "./Icon"
 import { usePatternSubscription } from "./../hooks/usePatternSubscription"
 type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 
@@ -66,51 +66,72 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
   }, [subscripionStatus])
 
   const signedOutMessage = <Text>Sign in with Google to bookmark community patterns and collect your own creations!</Text>
+  const CommunityIcon = randomIcon()!
+  const FeaturedIcon = randomIcon()!
+
+  const header = React.useMemo(() => {
+    if (isFeaturedPatterns) {
+      return (
+        <Box pad="xlarge">
+          <Box direction="row" gap="small" align="center">
+            <FeaturedIcon color="plain" size="medium-large" />
+            <Heading level={1} color="text">Featured Patterns</Heading>
+          </Box>
+          <Text>A selection of awesome patterns by community members.</Text>
+        </Box>
+      )
+    } else {
+      return (
+        <Box pad="xlarge">
+          <Box direction="row" gap="small" align="center">
+            <CommunityIcon color="plain" size="medium-large" />
+            <Heading level={1} color="text">Community Patterns</Heading>
+          </Box>
+          <Text>Browse patterns by community members.</Text>
+        </Box>
+      )
+    }
+  }, [isFeaturedPatterns])
+
+  const featuredPatternGrid = React.useMemo(() => {
+    if (isFeaturedPatterns) {
+      return (
+        <PatternGrid>
+          <PatternList
+            patterns={featuredPatterns.filter(pattern => !pattern.hidden)}
+            onDestroy={userIsAdmin ? (pattern: PatternType) => {
+              setPatternForDestroy(pattern)
+            } : undefined}
+            onSave={authUser ? (pattern: PatternType) => {
+              if (authUser) {
+                firebase.userPatternCollection(authUser.uid).add({
+                  markup: pattern.markup,
+                  hidden: false,
+                  createdAt: firestore.Timestamp.now()
+                })
+              }
+            } : undefined}
+          />
+        </PatternGrid>
+      )
+    } else {
+      return (<></>)
+    }
+  }, [isFeaturedPatterns, featuredPatterns])
 
   return (
     <>
-      <Box pad="xlarge">
-        <Box direction="row" gap="small" align="center">
-          <BannerStyle1 color="plain" size="medium-large" />
-          <Heading level={1} color="text">{isFeaturedPatterns ? "Featured Patterns" : "Community Patterns"}</Heading>
-        </Box>
-        {
-          !isFeaturedPatterns &&
-            <>
-              <Text>Browse patterns by community members.</Text>
-              <Text></Text>
-            </>
-        }
-        {isFeaturedPatterns && <Text>A selection of awesome patterns by community members.</Text>}
-      </Box>
+      {header}
       <Box>
-        <PatternGrid>
-          {isFeaturedPatterns &&
-            <PatternList
-              patterns={featuredPatterns.filter(pattern => !pattern.hidden)}
-              onDestroy={userIsAdmin ? (pattern: PatternType) => {
-                setPatternForDestroy(pattern)
-              } : undefined}
-              onSave={authUser ? (pattern: PatternType) => {
-                if (authUser) {
-                  firebase.userPatternCollection(authUser.uid).add({
-                    markup: pattern.markup,
-                    hidden: false,
-                    createdAt: firestore.Timestamp.now()
-                  })
-                }
-              } : undefined}
-            />
-          }
-          {!isFeaturedPatterns && startAfter &&
+        {featuredPatternGrid}
+        {!isFeaturedPatterns && startAfter &&
+          <PatternGrid>
             <ScrollablePatternList
               patterns={communityPatterns.filter(pattern => !pattern.hidden)}
               cursor={startAfter}
               hasMore={hasMore}
               loadMore={loadPatterns}
-              onDestroy={userIsAdmin ? (pattern: PatternType) => {
-                setPatternForDestroy(pattern)
-              } : undefined}
+              onDestroy={userIsAdmin ? (pattern: PatternType) => { setPatternForDestroy(pattern) } : undefined}
               onSave={authUser ? (pattern: PatternType) => {
                 if (authUser) {
                   firebase.userPatternCollection(authUser.uid).add({
@@ -121,8 +142,8 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
                 }
               } : undefined}
             />
-          }
-      </PatternGrid>
+          </PatternGrid>
+        }
       {userIsAdmin && patternForDestroy &&
         <DestroyPatternDialog
           key="destroy-dialog"
@@ -152,4 +173,4 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
 }
 
 
-export default withAuthentication(withRouter(withFirebase(CommunityPatterns)))
+export default React.memo(withAuthentication(withRouter(withFirebase(CommunityPatterns))))

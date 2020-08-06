@@ -7,6 +7,7 @@ import { withAuthorization, WithAuthProps } from './Session';
 import { PatternList, ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { useUserPatterns } from "../hooks/usePatterns"
+import { Garland3 } from "./Icon"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps
 
@@ -54,8 +55,11 @@ const UserPatterns = (props: UserPatternsProps) => {
 
   return (
     <>
-      <Box pad="large">
-        <Heading level={1} color="text">My Patterns</Heading>
+      <Box pad="xlarge">
+        <Box direction="row" gap="small" align="center">
+          <Garland3 color="plain" size="medium-large" />
+          <Heading level={1} color="text">My Patterns</Heading>
+        </Box>
       </Box>
       <Box>
         <PatternGrid>

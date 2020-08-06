@@ -26,7 +26,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
   const subscripionStatus = usePatternSubscription(firebase)
 
   return (
-    <Grommet theme={theme}>
+    <Grommet css="min-height: 100vh" theme={theme}>
       <GlobalStyles />
       <Box fill>
         {!authUser && showSignIn &&
@@ -52,12 +52,15 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
             />
           </Layer>
         }
-        {subscripionStatus === "subscribed" && <Box fill margin={{ vertical: "large" }}>
-          <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
-          <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
-          <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
-        </Box>
-        }
+          <Box fill css="min-height: 90vh" margin={{ vertical: "large" }}>
+          {subscripionStatus === "subscribed" &&
+            <>
+              <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
+              <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
+              <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
+            </>
+              }
+          </Box>
         <Footer />
           <Layer responsive={false} animate={false} position="top-left" modal={false}>
             {authUser &&

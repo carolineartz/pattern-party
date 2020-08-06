@@ -132,4 +132,4 @@ export const Window = ({ showWindow, setShowWindow, firebase, authUser }: Create
   </Box>
   );
 }
-export const CreateWindow = withAuthentication(withFirebase(Window))
+export const CreateWindow = React.memo((withAuthentication(withFirebase(Window))))
