@@ -67,7 +67,8 @@
     "test": "react-app-rewired test",
     "eject": "react-app eject",
     "dev:firebase": "firebase serve -p 4000",
-    "dev": "concurrently \"yarn:dev:firebase\" \"yarn:dev:react\""
+    "dev": "concurrently \"yarn:dev:firebase\" \"yarn:dev:react\"",
+    "deploy": "yarn build && yarn firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
