@@ -58,10 +58,7 @@ type PreviewProps = {
 }
 
 const Preview = styled(Box) <BoxProps & PreviewProps>`
-  --pattern: ${props => {
-  console.log(props);
-    return "(background-image: @svg(" + formatSVG(props.markup) + "));"
-  }};
+  --pattern: ${props => "(background-image: @svg(" + formatSVG(props.markup) + "));"};
 `
 
 export const DestroyPatternDialog = withFirebase(Dialog)

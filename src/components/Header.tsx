@@ -25,7 +25,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
     }}>
       <Box
         direction="row"
-        pad={{left: "small"}}
+        pad={{left: "small", vertical: "small"}}
         onClick={() => {
           if (history.location.pathname !== ROUTES.LANDING) {
             history.push(ROUTES.LANDING)

@@ -5,7 +5,6 @@ import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
-import { Garland3 } from "./Icon"
 import { useDestroyPattern } from "./../hooks/useDestroyPattern"
 import { useHidePattern } from "./../hooks/useHidePattern"
 import { randomIcon } from "./Icon"
