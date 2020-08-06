@@ -1,11 +1,6 @@
-
-
 import React from 'react';
 import { createContainer } from 'react-tracked';
 import produce, { Draft } from 'immer';
-import firebase from "./components/Firebase"
-
-const DEFAULT_LIMIT = 10
 
 export type VisibilityFilterType =
   | 'SHOW_USER'

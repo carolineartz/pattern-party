@@ -1,7 +1,6 @@
 import React from 'react';
 import Firebase from "./../components/Firebase"
 import { useSetDraft, OwnerType } from '../store';
-import { firestore } from "firebase"
 
 type DestroyPatternProps = {
   firebase: Firebase
@@ -31,6 +30,6 @@ export const useDestroyPattern = ({
         })
       }
     },
-    [setDraft, firebase, user],
+    [setDraft, firebase, user, owner, userIsAdmin],
   );
 };

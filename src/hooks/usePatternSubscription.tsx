@@ -6,11 +6,10 @@ type SubscriptionStatus = "not-subscribed" | "subscribing" | "subscribed"
 
 export const usePatternSubscription = (firebase: Firebase) => {
   const [subscriptionStatus, setSubscriptionStatus] = React.useState<SubscriptionStatus>("not-subscribed")
-  const setDraft = useSetDraft();
   const [initialPattern, setInitialPattern] = React.useState<PatternType | undefined>()
 
-  const foo = useTrackedState()
-  const { communityPatterns } = foo
+  const setDraft = useSetDraft();
+  const { communityPatterns } = useTrackedState()
 
   React.useEffect(() => {
     if (initialPattern || communityPatterns.length) {
@@ -22,8 +21,8 @@ export const usePatternSubscription = (firebase: Firebase) => {
         setSubscriptionStatus("subscribing")
         snapshot.docChanges().forEach(change => {
           if (change.type === "added") {
+            setInitialPattern(change.doc.data())
             setDraft(draft => {
-              setInitialPattern(change.doc.data())
               if (!draft.communityPatterns.find(pat => pat.id === change.doc.id)) {
                 draft.communityPatterns = [change.doc.data(), ...draft.communityPatterns]
               }

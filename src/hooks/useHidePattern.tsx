@@ -32,6 +32,6 @@ export const useHidePattern = ({
         })
       }
     },
-    [setDraft, firebase, user],
+    [setDraft, firebase, user, owner, userIsAdmin],
   );
 };

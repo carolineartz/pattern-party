@@ -1,15 +1,13 @@
 import * as React from "react"
-import { firestore, auth } from "firebase"
+import "styled-components/macro"
 import { Box, Button, Nav } from "grommet"
 import { Checkmark, Close } from "grommet-icons"
-import "styled-components/macro"
 import { WithFirebaseProps, withFirebase } from "../Firebase"
 import { withAuthentication, WithAuthProps } from "../Session"
 import { formatSVG } from "./util";
 import { Rnd } from "react-rnd";
 import { AlertError, AlertSuccess } from "../Notification"
-import { useSetDraft } from "./../../store"
-import {useCreatePattern} from "./../../hooks/useCreatePattern"
+import { useCreatePattern } from "./../../hooks/useCreatePattern"
 
 type CreateWindowProps = WithAuthProps & WithFirebaseProps & {
   showWindow: boolean

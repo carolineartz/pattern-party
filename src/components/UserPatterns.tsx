@@ -1,12 +1,10 @@
 import React from 'react';
-import { compose } from 'recompose';
 import { Box, Heading } from "grommet"
 import uniqBy from "lodash.uniqby"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
-import { PatternList, ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+import { ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
-import { useUserPatterns } from "../hooks/usePatterns"
 import { Garland3 } from "./Icon"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps
@@ -36,7 +34,7 @@ const UserPatterns = (props: UserPatternsProps) => {
   return [nextLastVisible, !noMore]
 }
 
-  const fetchInitialPatterns = async (usr: firebase.User) => {
+  const fetchInitialPatterns = React.useCallback(async (usr: firebase.User) => {
     const snapshots = await firebase.userPatterns(usr.uid).get()
     const docs = snapshots.docs
     const lastVisible = docs[docs.length - 1];
@@ -45,13 +43,13 @@ const UserPatterns = (props: UserPatternsProps) => {
       draft.fetchPatterns.user.startAfter = lastVisible
       draft.userPatterns = docs.map(doc => doc.data())
     })
-  }
+  }, [firebase, setDraft])
 
   React.useEffect(() => {
     if (!startAfter && authUser) {
       fetchInitialPatterns(authUser)
     }
-  }, [startAfter, authUser])
+  }, [startAfter, authUser, fetchInitialPatterns])
 
   return (
     <>

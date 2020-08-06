@@ -12,7 +12,6 @@ type PatternListProps = {
 }
 
 export const PatternList = ({ patterns, onDestroy, onSave }: PatternListProps) => {
-  console.log("rendering pattern list with", patterns)
   const handleClickCopyPattern = (evt: React.MouseEvent, content: string) => {
     evt.stopPropagation()
 

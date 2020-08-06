@@ -68,9 +68,9 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     if (subscripionStatus === "subscribed") {
       fetchInitialPatterns()
     }
-  }, [subscripionStatus])
+  }, [subscripionStatus, fetchInitialPatterns])
 
-  const signedOutMessage = <Text>Sign in with Google to bookmark community patterns and collect your own creations!</Text>
+  // const signedOutMessage = <Text>Sign in with Google to bookmark community patterns and collect your own creations!</Text>
   const CommunityIcon = randomIcon()!
   const FeaturedIcon = randomIcon()!
 
@@ -116,7 +116,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     } else {
       return (<></>)
     }
-  }, [isFeaturedPatterns, featuredPatterns])
+  }, [authUser, isFeaturedPatterns, featuredPatterns, savePattern, userIsAdmin])
 
   return (
     <>

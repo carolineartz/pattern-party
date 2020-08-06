@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Box, Footer, Text, Anchor } from "grommet"
-import { ReactComponent as Logo } from "./../images/balloons.svg"
-import { Balloons, Garland1, Garland2, Confetti } from "./Icon"
+import { Garland1, Garland2, Confetti } from "./Icon"
 import { Github } from "grommet-icons"
 
 export default () => (

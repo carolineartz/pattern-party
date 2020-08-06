@@ -31,75 +31,74 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
   };
 
   return (
-
-      <PatternCard
-        key={props.ident}
-        ref={patternRef}
-        height="100%"
-        round="xsmall"
-        width="100%"
+    <PatternCard
+      key={props.ident}
+      ref={patternRef}
+      height="100%"
+      round="xsmall"
+      width="100%"
       markup={props.markup}
       overflow="visible"
-        elevation="small"
-        onMouseEnter={() => setShowOptions(true)}
-        onMouseLeave={() => setShowOptions(false)}
-      >
-        <Stack guidingChild={0}>
-          <CardBody width="100%" height="small">
-            <css-doodle grid="1" use="var(--pattern)" />
-          </CardBody>
-          <Box fill direction="column" justify="between">
-            <CardHeader css="position: relative">
-              <Box />
-              {props.onClickDestroy &&
-                <Box
-                  css={`
-                    position: absolute;
-                    top: -10px;
-                    right: -10px;
-                  `}
-                >
-                  <CardButton
-                    animateIn={showOptions}
-                    icon={Close}
-                    title="Remove Pattern"
-                    onClick={props.onClickDestroy}
-                  />
-                </Box>
-              }
-            </CardHeader>
-            <CardFooter>
-              <Box />
-              <Box direction="row" pad="xsmall" align="center" gap="xxsmall">
+      elevation="small"
+      onMouseEnter={() => setShowOptions(true)}
+      onMouseLeave={() => setShowOptions(false)}
+    >
+      <Stack guidingChild={0}>
+        <CardBody width="100%" height="small">
+          <css-doodle grid="1" use="var(--pattern)" />
+        </CardBody>
+        <Box fill direction="column" justify="between">
+          <CardHeader css="position: relative">
+            <Box />
+            {props.onClickDestroy &&
+              <Box
+                css={`
+                  position: absolute;
+                  top: -10px;
+                  right: -10px;
+                `}
+              >
                 <CardButton
                   animateIn={showOptions}
-                  icon={Code}
-                  title="Copy SVG Markup"
-                  onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
+                  icon={Close}
+                  title="Remove Pattern"
+                  onClick={props.onClickDestroy}
                 />
-                <CardButton
-                  animateIn={showOptions}
-                  icon={Gallery}
-                  title="Copy DataUri"
-                  onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))}
-                />
-                {props.onClickSave &&
-                  <CardButton
-                    animateIn={showOptions}
-                    icon={Save}
-                    title="Save to My Patterns"
-                    onClick={(evt: React.MouseEvent) => {
-                      if (props.onClickSave) {
-                        animateClick(props.onClickSave.bind(null, evt))
-                      }
-                    }}
-                  />
-                }
               </Box>
-            </CardFooter>
-          </Box>
-        </Stack>
-      </PatternCard>
+            }
+          </CardHeader>
+          <CardFooter>
+            <Box />
+            <Box direction="row" pad="xsmall" align="center" gap="xxsmall">
+              <CardButton
+                animateIn={showOptions}
+                icon={Code}
+                title="Copy SVG Markup"
+                onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyMarkup.bind(null, evt))}
+              />
+              <CardButton
+                animateIn={showOptions}
+                icon={Gallery}
+                title="Copy DataUri"
+                onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))}
+              />
+              {props.onClickSave &&
+                <CardButton
+                  animateIn={showOptions}
+                  icon={Save}
+                  title="Save to My Patterns"
+                  onClick={(evt: React.MouseEvent) => {
+                    if (props.onClickSave) {
+                      animateClick(props.onClickSave.bind(null, evt))
+                    }
+                  }}
+                />
+              }
+            </Box>
+          </CardFooter>
+        </Box>
+      </Stack>
+    </PatternCard>
   );
 };
 

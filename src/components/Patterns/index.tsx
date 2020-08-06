@@ -4,6 +4,4 @@ import { PatternGrid } from "./grid"
 import { CreateWindow } from './createWindow'
 import { DestroyPatternDialog } from "./destroyDialog"
 
-export {
-  PatternList, ScrollablePatternList, PatternGrid, DestroyPatternDialog, CreateWindow
-}
+export { PatternList, ScrollablePatternList, PatternGrid, DestroyPatternDialog, CreateWindow }

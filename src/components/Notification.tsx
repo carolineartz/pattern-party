@@ -4,7 +4,6 @@ import { Box, Button, Text } from "grommet"
 import { ColorType } from "grommet/utils"
 import { Checkmark, Alert as AlertIcon, FormClose } from "grommet-icons"
 
-
 type AlertProps = {
   dismiss: () => void
   message: string
