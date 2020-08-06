@@ -12,7 +12,7 @@ export type VisibilityFilterType =
   | 'SHOW_COMMUNITY'
   | 'SHOW_FEATURED';
 
-type OwnerType = 'user' | 'community'
+export type OwnerType = 'user' | 'community'
 export type CollectionType = OwnerType | 'featured'
 export type PatternId = [string, OwnerType]
 

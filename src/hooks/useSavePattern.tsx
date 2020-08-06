@@ -8,7 +8,7 @@ function generateLocalId(): string {
   return uint32.toString(16);
 };
 
-export const useCreatePattern = (firebase: Firebase, user?: firebase.User) => {
+export const useSavePattern = (firebase: Firebase, user?: firebase.User) => {
   const setDraft = useSetDraft();
 
   return React.useCallback(
@@ -20,7 +20,6 @@ export const useCreatePattern = (firebase: Firebase, user?: firebase.User) => {
           markup,
           createdAt: firestore.Timestamp.now()
         }
-        firebase.patternCollection().add(data)
         firebase.userPatternCollection(user.uid).add(data)
 
         setDraft((draft) => {

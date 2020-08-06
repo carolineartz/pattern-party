@@ -6,7 +6,7 @@ export const PatternGrid = ({children}: {children?: React.ReactNode}) => {
   const size = React.useContext(ResponsiveContext);
 
   return (
-    <Box pad={{ horizontal: "medium", bottom: "medium" }} width={{ max: "1080px" }} margin="auto" css='width: 100%'>
+    <Box pad={{ horizontal: "large", bottom: "medium" }} width={{ max: "1080px" }} margin="auto" css='width: 100%'>
       <Grid columns={size !== 'small' ? 'medium' : '100%'} gap="medium">
         {children}
       </Grid>

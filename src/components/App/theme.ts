@@ -30,7 +30,9 @@ export const theme = deepFreeze(deepMerge(grommet, {
   icon: {
     size: {
       "medium-large": "72px",
-      "medium-small": "18px"
+      "medium-small": "18px",
+      "xmedium": "36px",
+      "xxxlarge": "256px"
     }
   }
 }))

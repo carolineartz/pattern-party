@@ -1,5 +1,5 @@
 import * as React from "react"
-import { firestore } from "firebase"
+import { firestore, auth } from "firebase"
 import { Box, Button, Nav } from "grommet"
 import { Checkmark, Close } from "grommet-icons"
 import "styled-components/macro"
@@ -8,6 +8,8 @@ import { withAuthentication, WithAuthProps } from "../Session"
 import { formatSVG } from "./util";
 import { Rnd } from "react-rnd";
 import { AlertError, AlertSuccess } from "../Notification"
+import { useSetDraft } from "./../../store"
+import {useCreatePattern} from "./../../hooks/useCreatePattern"
 
 type CreateWindowProps = WithAuthProps & WithFirebaseProps & {
   showWindow: boolean
@@ -30,6 +32,8 @@ const style = {
 };
 
 export const Window = ({ showWindow, setShowWindow, firebase, authUser }: CreateWindowProps) => {
+  const createPattern = useCreatePattern(firebase, authUser)
+
   const [windowLocation, setWindowLocation] = React.useState<WindowLocationState>({
     width: window.innerWidth / 2,
     height: window.innerHeight/2,
@@ -45,25 +49,8 @@ export const Window = ({ showWindow, setShowWindow, firebase, authUser }: Create
       if (!text.startsWith("<svg")) {
         setShowError(true)
       } else {
-        console.log(formatSVG(text))
-
-        if (authUser) {
-          // save to the user patterns
-          firebase.userPatternCollection(authUser.uid).add({
-            hidden: false,
-            markup: formatSVG(text),
-            createdAt: firestore.Timestamp.now()
-          })
-
-          // also create a community pattern item
-          firebase.patternCollection().add({
-            hidden: false,
-            markup: formatSVG(text),
-            createdAt: firestore.Timestamp.now()
-          })
-
-          setShowSuccess(true)
-        }
+        createPattern(formatSVG(text))
+        setShowSuccess(true)
       }
     }).catch(err => {
       console.error('Failed to read clipboard contents: ', err);

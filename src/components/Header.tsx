@@ -4,7 +4,7 @@ import { compose } from "recompose";
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
 import { withFirebase, WithFirebaseProps } from "./Firebase"
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
-import { ReactComponent as Logo } from "./../images/logo-confetti.svg"
+import { Confetti } from "./Icon"
 import { withRouter } from 'react-router-dom';
 
 import * as ROUTES from "../constants/routes"
@@ -32,9 +32,9 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
           }
         }}
         align="center"
-        gap="xsmall"
+        gap="small"
       >
-        <Box height="100%" css="max-height: 73px; width: 100%; max-width: 73px; padding: 12px 12px 12px 9px;"><Logo /></Box>
+        <Confetti size="large" color="plain" />
         <Box width="small"><Text>Pattern Party!</Text></Box>
       </Box>
 

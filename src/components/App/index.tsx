@@ -10,14 +10,13 @@ import Footer from "./../Footer"
 import { withAuthentication, WithAuthProps } from '../Session';
 import {withFirebase, WithFirebaseProps} from "../Firebase"
 import { PatternProvider } from "./../../store"
-import { usePatternSubscription, useUserPatternSubscription } from "./../../hooks/usePatternSubscription"
-import { useUserPatterns } from "../../hooks/usePatterns"
+import { usePatternSubscription } from "./../../hooks/usePatternSubscription"
 import CommunityPatternsPage from "./../CommunityPatterns"
 import UserPatternsPage from "./../UserPatterns"
 import { theme } from "./theme"
+import { Garland3 } from "./../Icon"
 import { GlobalStyles } from './globalStyles';
 import * as ROUTES from '../../constants/routes';
-import { useSetDraft, useTrackedState } from './../../store';
 
 const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
@@ -53,13 +52,14 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
           </Layer>
         }
           <Box fill css="min-height: 90vh" margin={{ vertical: "large" }}>
-          {subscripionStatus === "subscribed" &&
-            <>
-              <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
-              <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
-              <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
-            </>
+              {subscripionStatus === "subscribed" &&
+                <>
+                  <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
+                  <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
+                  <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
+                </>
               }
+            <Box fill="horizontal" align="center" justify="center"><Garland3 size="xxxlarge" color="plain" /></Box>
           </Box>
         <Footer />
           <Layer responsive={false} animate={false} position="top-left" modal={false}>
