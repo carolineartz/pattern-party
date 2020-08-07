@@ -25,7 +25,7 @@ const style = {
   display: "flex",
   padding: "10px",
   margin: "10px",
-  background: "rgba(255, 255, 255, 0.5)",
+  background: "rgba(255, 255, 255, 0.6)",
   boxShadow: "0px 8px 16px rgba(0,0,0,0.20)"
 };
 
@@ -95,12 +95,10 @@ export const Window = ({ showWindow, setShowWindow, firebase, authUser }: Create
                 }
               />
             </Box>
-            <Nav>
+            <Nav align="center" pad={{left: "small"}}>
               <Button
-                primary
-                color="status-error"
-                css="border-radius: 100%"
-                icon={<Close color="white" />}
+                plain
+                icon={<Close color="text" />}
                 onClick={() => setShowWindow(false)}
               />
               <Button

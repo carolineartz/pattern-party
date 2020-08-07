@@ -1,7 +1,7 @@
 import React from "react"
 import "styled-components/macro"
 
-import { Box, ResponsiveContext, Heading, Stack, Button, Text, Anchor } from "grommet"
+import { Box, ResponsiveContext, Heading, Stack, Button, Text, Anchor, Image, Carousel } from "grommet"
 import { Close, Gallery, Code, Save } from "grommet-icons"
 import { Pinata, PartyHat } from "./Icon"
 import { Tagline } from "./Tagline"
@@ -50,18 +50,42 @@ export const UserInfoPanel = ({ onDismiss }: UserInfoPanelProps) => {
       <Text size="large" textAlign="center">
         Pattern Party is a place to share and collect svg patterns made via the wonderful <Anchor color="text" href="https://doodad.dev/pattern-generator" target="_blank" label="DOODAD.DEV" /> pattern generator tool.
       </Text>
-      <Box align="center" justify="center" direction="row" gap="large">
-        <InfoIcon icon={Gallery} text="Copy Data URL" />
-        <InfoIcon icon={Code} text="Copy SVG Code" />
-        <InfoIcon icon={Save} text="Save Pattern" />
+      <Box fill="horizontal">
+        <Carousel>
+          <UserInfoPane screenShotName="intro-screen1.png" />
+          <UserInfoPane screenShotName="intro-screen2.png" />
+          <UserInfoPane screenShotName="intro-screen3.png" />
+          <UserInfoPane screenShotName="intro-screen4.png" />
+          <UserInfoPane>
+            <Box fill align="center" justify="center" direction="row" gap="large">
+              <InfoIcon icon={Gallery} text="Copy Data URL" />
+              <InfoIcon icon={Code} text="Copy SVG Code" />
+              <InfoIcon icon={Save} text="Save Pattern" />
+            </Box>
+          </UserInfoPane>
+        </Carousel>
       </Box>
-      <Text size="large" textAlign="center">
-        Something here.
-      </Text>
       <Box align="center"><Tagline /></Box>
     </InfoPanel>
   )
 }
+
+type UserInfoPaneProps = {
+  screenShotName?: string
+  text?: string
+  children?: React.ReactNode
+}
+
+const UserInfoPane = ({ screenShotName, text, children }: UserInfoPaneProps) => {
+  return (
+    <Box gap="medium" height="medium">
+      {text && <Text size="medium">{text}</Text>}
+      {screenShotName && <Image fit="contain" src={`/images/${screenShotName}`} />}
+      {children}
+    </Box>
+  )
+}
+
 
 type InfoIconProps = {
   icon: typeof Code

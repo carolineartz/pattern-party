@@ -1,7 +1,8 @@
 import { deepFreeze, deepMerge } from 'grommet/utils';
-import { grommet } from "grommet"
+import { grommet, ThemeType } from "grommet"
+import {StatusGoodSmall} from "grommet-icons"
 
-export const theme = deepFreeze(deepMerge(grommet, {
+export const theme: ThemeType = deepFreeze(deepMerge(grommet, {
   global: {
     font: {
       family: "Inconsolata, Anonymous Pro, Montserrat, monospace"
@@ -27,6 +28,11 @@ export const theme = deepFreeze(deepMerge(grommet, {
     footer: {
       background: 'background-contrast',
     },
+  },
+  carousel: {
+    icons: {
+      current: StatusGoodSmall
+    }
   },
   icon: {
     size: {
