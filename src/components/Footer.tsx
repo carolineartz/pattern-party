@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Box, Footer, Text, Anchor } from "grommet"
 import { Garland1, Garland2, Confetti } from "./Icon"
+import { Tagline } from "./Tagline"
 import { Github } from "grommet-icons"
 
 export default () => (
@@ -14,11 +15,7 @@ export default () => (
     pad="small"
   >
     <Confetti color="plain" size="large" />
-    <Box direction="row" gap="medium" align="center">
-      <Garland1 color="plain" size="medium-large" />
-      <Text size="large">Because a party  without patterns is just a meeting</Text>
-      <Garland2 color="plain" size="medium-large" />
-    </Box>
+    <Tagline />
     <Anchor
       icon={<Github />}
       href="https://github.com/carolineartz/pattern-party"

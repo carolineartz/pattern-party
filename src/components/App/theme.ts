@@ -14,7 +14,8 @@ export const theme = deepFreeze(deepMerge(grommet, {
     }
   },
   anchor: {
-    fontWeight: 400
+    fontWeight: 700,
+    textDecoration: "underline"
   },
   card: {
     container: {

@@ -14,17 +14,18 @@ declare module "react" {
   }
 
   namespace JSX {
-      interface IntrinsicElements {
-        "css-doodle": any;
-        "iframe": any;
-        "pre": any;
-        "code": any;
-        "svg": any;
-        "path": any;
-        "g": any;
-        "polygon": any;
-        "rect": any;
-  }
+    interface IntrinsicElements {
+      "css-doodle": any;
+      "iframe": any;
+      "pre": any;
+      "code": any;
+      "svg": any;
+      "path": any;
+      "g": any;
+      "polygon": any;
+      "rect": any;
+      "br": any
+    }
   }
 }
 
@@ -41,6 +42,7 @@ declare namespace JSX {
     "g": any;
     "polygon": any;
     "rect": any;
+    "br": any;
   }
 }
 

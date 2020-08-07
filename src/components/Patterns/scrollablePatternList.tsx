@@ -35,7 +35,7 @@ export const ScrollablePatternList = ({ onDestroy, patterns, loadMore, onSave, c
       ident={pattern.id}
       markup={pattern.markup}
       onClickCopyMarkup={(evt: React.MouseEvent) => handleClickCopyPattern(evt, formatSVG(pattern.markup))}
-      onClickCopyDataUri={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
+      onClickCopyDataURL={(evt: React.MouseEvent) => handleClickCopyPattern(evt, svgToMiniDataURI(formatSVG(pattern.markup)))}
       onClickSave={onSave ? (evt: React.MouseEvent) => handleClickSavePattern(evt, pattern) : undefined}
       onClickDestroy={onDestroy ? () => onDestroy(pattern) : undefined}
     />

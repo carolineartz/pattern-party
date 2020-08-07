@@ -11,8 +11,10 @@ import { withAuthentication, WithAuthProps } from '../Session';
 import {withFirebase, WithFirebaseProps} from "../Firebase"
 import { PatternProvider } from "./../../store"
 import { usePatternSubscription } from "./../../hooks/usePatternSubscription"
+import { useLocalStorage } from "./../../hooks/useLocalStorage"
 import CommunityPatternsPage from "./../CommunityPatterns"
 import UserPatternsPage from "./../UserPatterns"
+import { PublicInfoPanel, UserInfoPanel } from "../InfoPanel"
 import { theme } from "./theme"
 import { Garland3 } from "./../Icon"
 import { GlobalStyles } from './globalStyles';
@@ -21,6 +23,8 @@ import * as ROUTES from '../../constants/routes';
 const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
+  const [showPublicInfoPanel, setShowPublicInfoPanel] = useLocalStorage<boolean>("pp-show-info", true)
+  const [showUserInfoPanel, setShowUserInfoPanel] = useLocalStorage<boolean>("pp-show-intro", true)
 
   const subscripionStatus = usePatternSubscription(firebase)
 
@@ -52,15 +56,25 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
           </Layer>
         }
           <Box fill css="min-height: 90vh" margin={{ vertical: "large" }}>
-            {subscripionStatus === "subscribed" &&
-              <>
-                <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
-                <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
-                <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
-              </>
-            }
-            <Box fill="horizontal" align="center" justify="center"><Garland3 size="xxxlarge" color="plain" /></Box>
-          </Box>
+          {!authUser && showPublicInfoPanel &&
+            <Box pad={{ top: "xlarge", horizontal: "large" }}>
+              <PublicInfoPanel onClickSignIn={() => setShowSignIn(true)} onDismiss={() => setShowPublicInfoPanel(false)} />
+            </Box>
+          }
+          {authUser && showUserInfoPanel &&
+            <Box pad={{ top: "xlarge", horizontal: "large" }}>
+              <UserInfoPanel onDismiss={() => setShowUserInfoPanel(false)} />
+            </Box>
+          }
+          {subscripionStatus === "subscribed" &&
+            <>
+              <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />
+              <Route exact path={ROUTES.EXPLORE} component={CommunityPatternsPage} />
+              <Route path={ROUTES.MY_PATTERNS} component={UserPatternsPage} />
+            </>
+          }
+          <Box fill="horizontal" align="center" justify="center"><Garland3 size="xxxlarge" color="plain" /></Box>
+        </Box>
         <Footer />
           <Layer responsive={false} animate={false} position="top-left" modal={false}>
             {authUser &&

@@ -76,14 +76,13 @@ export const GlobalStyles = createGlobalStyle`
     outline: 1px solid black;
   }
 
-  @keyframes slideInRight {
-    from {
-      transform: translate3d(100%, 0, 0);
-      visibility: visible;
-    }
+  ::-moz-selection {
+    color: white;
+    background: #f95152;
+  }
 
-    to {
-      transform: translate3d(0, 0, 0);
-    }
+  ::selection {
+    color: white;
+    background: #f95152;
   }
 `

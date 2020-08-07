@@ -15,7 +15,7 @@ type PatternListItemProps = {
   onClickHide?: (evt: React.MouseEvent) => void
   onClick?: (evt: React.MouseEvent) => void
   onClickCopyMarkup: (evt: React.MouseEvent) => void
-  onClickCopyDataUri: (evt: React.MouseEvent) => void
+  onClickCopyDataURL: (evt: React.MouseEvent) => void
 }
 
 export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
@@ -79,8 +79,8 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
               <CardButton
                 animateIn={showOptions}
                 icon={Gallery}
-                title="Copy DataUri"
-                onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataUri.bind(null, evt))}
+                title="Copy Data URL"
+                onClick={(evt: React.MouseEvent) => animateClick(props.onClickCopyDataURL.bind(null, evt))}
               />
               {props.onClickSave &&
                 <CardButton
