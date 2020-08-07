@@ -3,7 +3,7 @@ import "styled-components/macro"
 import { compose } from "recompose";
 import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
 import { withFirebase, WithFirebaseProps } from "./Firebase"
-import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps } from "grommet"
+import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps, ResponsiveContext } from "grommet"
 import { Confetti } from "./Icon"
 import { withRouter } from 'react-router-dom';
 
@@ -13,9 +13,96 @@ type HeaderProps = WithAuthProps & WithFirebaseProps & WithRouterProps & {
   onClickSignIn: Function
   onClickSignOut: Function
   onClickCreate: Function
+  onClickShowIntro: Function
 }
 
-const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreate, firebase }: HeaderProps): JSX.Element => {
+const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreate, firebase, onClickShowIntro }: HeaderProps): JSX.Element => {
+  const size = React.useContext(ResponsiveContext)
+  const sizeIsSmall = size === "small"
+
+  const onClickExplore = () => {
+    if (history.location.pathname !== ROUTES.EXPLORE) {
+      history.push(ROUTES.EXPLORE)
+    }
+  }
+
+  const onClickMyPatterns = () => {
+    if (history.location.pathname !== ROUTES.MY_PATTERNS) {
+      history.push(ROUTES.MY_PATTERNS)
+    }
+  }
+
+  const nonMobileNav = (
+    <Box direction="row" gap="large">
+      {authUser && <NavButton onClick={() => { onClickCreate() }} text="Create" />}
+      <NavButton
+        active={history.location.pathname === ROUTES.EXPLORE}
+        onClick={onClickExplore}
+        text="Explore"
+      />
+      {authUser &&
+        <NavButton
+          active={history.location.pathname === ROUTES.MY_PATTERNS}
+          onClick={onClickMyPatterns}
+          text="My Patterns"
+        />}
+      {!authUser &&
+        <NavButton
+          onClick={() => onClickSignIn()}
+          text="Sign In"
+          css="padding-right: 20px;"
+        />}
+      {authUser &&
+        <Menu
+          label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
+          items={[
+            {
+              label: "Show Intro",
+              onClick: onClickShowIntro
+            },
+            {
+              label: 'Sign Out',
+              onClick: () => {
+                onClickSignOut()
+                firebase.doSignOut()
+              }
+            },
+          ]}
+        />}
+    </Box>
+  )
+
+  const authMobileMenu = (
+    <Menu
+      label={<Avatar background="brand"><Text color="white">{((authUser && authUser.displayName) || "?").charAt(0)}</Text></Avatar>}
+      items={[
+        {
+          label: "My Patterns",
+          onClick: onClickMyPatterns
+        },
+        {
+          label: "Explore",
+          onClick: onClickExplore
+        },
+        {
+          label: "Create",
+          onClick: onClickCreate
+        },
+        {
+          label: "Show Intro",
+          onClick: onClickShowIntro
+        },
+        {
+          label: 'Sign Out',
+          onClick: () => {
+            onClickSignOut()
+            firebase.doSignOut()
+          }
+        },
+      ]}
+    />
+  )
+
   return (
     <GHeader border={{
       "color": "light-4",
@@ -37,58 +124,14 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
         <Confetti size="large" color="plain" />
         <Box width="small"><Text>Pattern Party!</Text></Box>
       </Box>
-
-      <Box direction="row" gap="medium">
-        {authUser && <NavButton
-          onClick={() => {
-            onClickCreate()
-          }}
-          text="Generate"
-        />}
-        <NavButton
-          active={history.location.pathname === ROUTES.EXPLORE}
-          onClick={() => {
-            if (history.location.pathname !== ROUTES.EXPLORE) {
-              history.push(ROUTES.EXPLORE)
-            }
-          }}
-          text="Explore"
-        />
-        {authUser &&
-          <>
-            <Menu
-              label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
-              items={[
-                {
-                  label: "My Patterns",
-                  onClick: () => {
-                    if (history.location.pathname !== ROUTES.MY_PATTERNS) {
-                      history.push(ROUTES.MY_PATTERNS)
-                    }
-                  }
-                },
-                {
-                  label: 'Sign Out',
-                  onClick: () => {
-                    onClickSignOut()
-                    firebase.doSignOut()
-                  }
-                },
-              ]}
-            />
-          </>
-        }
-        {!authUser &&
-          <NavButton
-            onClick={() => onClickSignIn()}
-            text="Sign In"
-            css="padding-right: 20px;"
-          />
-        }
-      </Box>
+        {!sizeIsSmall || !authUser ? nonMobileNav : authMobileMenu}
     </GHeader>
   )
 }
+
+// const NonMobileNav = () => {
+
+// }
 
 
 type NavButtonProps = ButtonProps & {
@@ -100,6 +143,7 @@ type NavButtonProps = ButtonProps & {
 const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
   return (
     <Button
+      size="small"
       plain
       label={
         <Box
@@ -116,3 +160,53 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
 }
 
 export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
+    // <Box direction="row" gap="large">
+    //     {!sizeIsSmall && nonMobileNav }
+    //     {authUser &&
+    //       <>
+    //         <Menu
+    //           label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
+    //           items={[
+    //             {
+    //               label: "Show Intro",
+    //               onClick: onClickShowIntro
+    //             },
+    //             {
+    //               label: 'Sign Out',
+    //               onClick: () => {
+    //                 onClickSignOut()
+    //                 firebase.doSignOut()
+    //               }
+    //             },
+    //           ]}
+    //         />
+    //       </>
+    //     }
+    //     {!authUser &&
+          // <NavButton
+          //   onClick={() => onClickSignIn()}
+          //   text="Sign In"
+          //   css="padding-right: 20px;"
+          // />
+    //     }
+    //   </Box>
+
+        // {authUser && <NavButton onClick={() => { onClickCreate() }} text="Create"/>}
+        // <NavButton
+        //   active={history.location.pathname === ROUTES.EXPLORE}
+        //   onClick={() => {
+        //     if (history.location.pathname !== ROUTES.EXPLORE) {
+        //       history.push(ROUTES.EXPLORE)
+        //     }
+        //   }}
+        //   text="Explore"
+        // />
+        // <NavButton
+        //   active={history.location.pathname === ROUTES.MY_PATTERNS}
+        //   onClick={() => {
+        //     if (history.location.pathname !== ROUTES.MY_PATTERNS) {
+        //       history.push(ROUTES.MY_PATTERNS)
+        //     }
+        //   }}
+        //   text="My Patterns"
+        // />

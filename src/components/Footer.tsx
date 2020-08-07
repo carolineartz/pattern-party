@@ -1,6 +1,6 @@
 import * as React from "react"
-import { Box, Footer, Text, Anchor } from "grommet"
-import { Garland1, Garland2, Confetti } from "./Icon"
+import { Footer, Anchor } from "grommet"
+import { Confetti } from "./Icon"
 import { Tagline } from "./Tagline"
 import { Github } from "grommet-icons"
 

@@ -52,6 +52,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
                 setShowSignIn(false)
               }}
               onClickCreate={() => setShowCreate(true)}
+              onClickShowIntro={() => setShowUserInfoPanel(true)}
             />
           </Layer>
         }

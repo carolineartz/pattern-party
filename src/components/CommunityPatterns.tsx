@@ -81,7 +81,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
             <FeaturedIcon color="plain" size="xlarge" />
             <Box>
               <Heading size="large" level={1} color="text">Featured Patterns</Heading>
-              <Text>A selection of awesome patterns by community members.</Text>
+              <Text size="large">A curated selection of awesome patterns by community members.</Text>
             </Box>
           </Box>
         </Box>
@@ -93,7 +93,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
             <CommunityIcon color="plain" size="xlarge" />
             <Box>
               <Heading size="large" level={1} color="text">Community Patterns</Heading>
-              <Text>Browse patterns by community members.</Text>
+              <Text size="large">Browse patterns by community members.</Text>
             </Box>
           </Box>
         </Box>
