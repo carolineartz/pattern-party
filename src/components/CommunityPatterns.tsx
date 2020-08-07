@@ -144,7 +144,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
             setPatternForDestroy(null)
           }}
           onClickHide={() => {
-            hidePattern(patternForDestroy.id)
+            hidePattern(patternForDestroy)
             setPatternForDestroy(null)
           }}
           closeDialog={() => setPatternForDestroy(null)}

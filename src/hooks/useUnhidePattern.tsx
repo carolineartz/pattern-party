@@ -1,36 +1,36 @@
 import React from 'react';
-import Firebase from "./../components/Firebase"
-import { useSetDraft, OwnerType, useTrackedState } from '../store';
+import Firebase from "../components/Firebase"
+import { useSetDraft, OwnerType } from '../store';
 
-type HidePatternProps = {
+type UnhidePatternProps = {
   firebase: Firebase
   owner: OwnerType
   user?: firebase.User
 }
 
-export const useHidePattern = ({
+export const useUnhidePattern = ({
   firebase,
   user,
   owner
-}: HidePatternProps) => {
+}: UnhidePatternProps) => {
   const setDraft = useSetDraft();
   const userIsAdmin = user && (user as any).roles && (user as any).roles.admin
 
   return React.useCallback(
     (pattern: PatternType) => {
       if (owner === "community" && userIsAdmin) {
-        firebase.pattern(pattern.id).set({...pattern, ...{ hidden: true, featured: Boolean(pattern.featured) }})
+        firebase.pattern(pattern.id).set({...pattern, ...{ hidden: false, featured: Boolean(pattern.featured) }})
         setDraft(draft => {
           const hiddenPattern = draft.communityPatterns.find(pat => pat.id === pattern.id)
-          hiddenPattern && (hiddenPattern.hidden = true)
+          hiddenPattern && (hiddenPattern.hidden = false)
         })
       }
 
       else if (owner === "user" && user) {
-        firebase.userPattern(user.uid, pattern.id).set({...pattern, ...{ hidden: true, featured: Boolean(pattern.featured) }})
+        firebase.userPattern(user.uid, pattern.id).set({...pattern, ...{ hidden: false, featured: Boolean(pattern.featured) }})
         setDraft(draft => {
           const hiddenPattern = draft.userPatterns.find(pat => pat.id === pattern.id)
-          hiddenPattern && (hiddenPattern.hidden = true)
+          hiddenPattern && (hiddenPattern.hidden = false)
         })
       }
     },

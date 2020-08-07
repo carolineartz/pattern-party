@@ -141,8 +141,8 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
     return {
       markup: pattern.markup,
       createdAt: pattern.createdAt!,
-      hidden: pattern.hidden || false,
-      featured: pattern.featured || false,
+      hidden: pattern.hidden,
+      featured: pattern.featured,
     };
   },
   fromFirestore(
@@ -154,8 +154,8 @@ export const patternConverter: firebase. firestore. FirestoreDataConverter<Patte
       id: snapshot.id,
       markup: data.markup,
       createdAt: data.createdAt,
-      hidden: data.hidden || false,
-      featured: data.featured || false,
+      hidden: data.hidden === "undefined" ? false : data.hidden,
+      featured: data.hidden === "undefined" ? false : data.featured,
     }
   }
 };
