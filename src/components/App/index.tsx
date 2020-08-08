@@ -19,6 +19,7 @@ import { theme } from "./theme"
 import { Garland3 } from "./../Icon"
 import { GlobalStyles } from './globalStyles';
 import * as ROUTES from '../../constants/routes';
+import { Loader } from "./../Loader"
 
 const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
   const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
@@ -39,6 +40,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
             position="top"
             onEsc={() => setShowSignIn(false)}
             onClickOutside={() => setShowSignIn(false)}
+            css="border-radius: 0"
           >
             <Login />
           </Layer>
@@ -67,6 +69,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
               <UserInfoPanel onDismiss={() => setShowUserInfoPanel(false)} />
             </Box>
           }
+          {subscripionStatus !== "subscribed" &&  <Box fill align="center" justify="center" id="loader" css="min-height: 90vh"><Loader /></Box> }
           {subscripionStatus === "subscribed" &&
             <>
               <Route exact path={ROUTES.LANDING} component={CommunityPatternsPage} />

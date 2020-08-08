@@ -112,7 +112,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
     }}>
       <Box
         direction="row"
-        pad={{left: "small", vertical: "small"}}
+        pad={{left: "medium", vertical: "small"}}
         onClick={() => {
           if (history.location.pathname !== ROUTES.LANDING) {
             history.push(ROUTES.LANDING)
@@ -128,10 +128,6 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
     </GHeader>
   )
 }
-
-// const NonMobileNav = () => {
-
-// }
 
 
 type NavButtonProps = ButtonProps & {

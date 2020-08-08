@@ -5,7 +5,7 @@ import {StatusGoodSmall} from "grommet-icons"
 export const theme: ThemeType = deepFreeze(deepMerge(grommet, {
   global: {
     font: {
-      family: "Inconsolata, Anonymous Pro, Montserrat, monospace"
+      family: "Inconsolata, Anonymous Pro, monospace"
     },
     colors: {
       text: {
