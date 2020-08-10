@@ -1,11 +1,15 @@
 import * as React from "react"
-import { Box,Text } from "grommet"
+import { Box,Text, ResponsiveContext } from "grommet"
 import { Garland1, Garland2 } from "./Icon"
 
-export const Tagline = () => (
-  <Box direction="row" gap="medium" align="center">
-    <Garland1 color="plain" size="medium-large" />
-    <Text size="large">Because a party  without patterns is just a meeting!</Text>
-    <Garland2 color="plain" size="medium-large" />
-  </Box>
-)
+export const Tagline = () => {
+  const size = React.useContext(ResponsiveContext)
+
+  return (
+    <Box direction="row" gap={size === "small" ? "xsmall" : "medium"} align="center">
+      <Garland1 color="plain" size={size === "small" ? "xmedium" : "medium-large"} />
+      <Text textAlign="center" size={size === "small" ? "small" : "large"}>Because a party  without patterns is just a meeting!</Text>
+      <Garland2 color="plain" size={size === "small" ? "xmedium" : "medium-large"} />
+    </Box>
+  )
+}
