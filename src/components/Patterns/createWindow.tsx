@@ -7,7 +7,7 @@ import { withAuthentication, WithAuthProps } from "../Session"
 import { formatSVG } from "./util";
 import { Rnd } from "react-rnd";
 import { AlertError, AlertSuccess } from "../Notification"
-import { useCreatePattern } from "./../../hooks/useCreatePattern"
+import { useCreatePattern } from "./../../hooks"
 
 type CreateWindowProps = WithAuthProps & WithFirebaseProps & {
   showWindow: boolean

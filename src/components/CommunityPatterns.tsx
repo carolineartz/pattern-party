@@ -5,13 +5,11 @@ import { Box } from "grommet"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList, Headline } from './Patterns';
-import * as ROUTES from "./../constants/routes"
 import { useTrackedState, useSetDraft } from "./../store"
-import { useDestroyPattern } from "./../hooks/useDestroyPattern"
-import { useHidePattern } from "./../hooks/useHidePattern"
-import { useSavePattern } from "./../hooks/useSavePattern"
+import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription } from "./../hooks"
+import * as ROUTES from "./../constants/routes"
 import uniqBy from "lodash.uniqby"
-import { usePatternSubscription } from "./../hooks/usePatternSubscription"
+
 type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 
 const CommunityPatterns = ({ history, firebase, authUser }: Props): JSX.Element => {

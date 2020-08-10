@@ -7,9 +7,7 @@ import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
-import { useDestroyPattern } from "./../hooks/useDestroyPattern"
-import { useHidePattern } from "./../hooks/useHidePattern"
-import { useUnhidePattern} from "./../hooks/useUnhidePattern"
+import { useDestroyPattern, useHidePattern, useUnhidePattern } from "./../hooks"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps
 
@@ -65,7 +63,6 @@ const UserPatterns = (props: UserPatternsProps) => {
       <Headline
         collection="user"
         subtitle={<Anchor css="font-weight: 400" color="text" onClick={() => setShowHidden(!showHidden)} label={showHidden ? "Hide hidden" : "Show hidden"} />}
-        showHidden={showHidden}
       />
       <Box>
         <PatternGrid>

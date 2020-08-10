@@ -5,6 +5,8 @@ import 'firebase/firestore';
 import 'firebase/analytics';
 import 'firebase/auth';
 
+type FirebaseAuthProvider = typeof firebase.auth
+
 // Your web app's Firebase configuration
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -24,6 +26,7 @@ interface AuthUser extends firebase.User {
 export interface IFirebase {
   db: firebase.firestore.Firestore
   auth: firebase.auth.Auth
+  authProvider: FirebaseAuthProvider
   googleProvider: firebase.auth.GoogleAuthProvider
 
   onAuthUserListener: (next: (user: firebase.User) => any, fallback: Function) => firebase.Unsubscribe
@@ -45,6 +48,7 @@ export interface IFirebase {
 class Firebase implements IFirebase {
   db: firebase.firestore.Firestore
   auth: firebase.auth.Auth
+  authProvider: FirebaseAuthProvider
   googleProvider: firebase.auth.GoogleAuthProvider
 
   constructor() {
@@ -55,10 +59,12 @@ class Firebase implements IFirebase {
       firebase.app()
     }
 
+
     /* Firebase APIs */
 
     this.auth = firebase.auth()
     this.db = firebase.firestore()
+    this.authProvider = firebase.auth
 
     /* Social Sign In Method Provider */
 

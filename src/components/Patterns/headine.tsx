@@ -7,24 +7,25 @@ import { randomIcon } from "./../Icon"
 type HeadlineProps = {
   collection: CollectionType
   subtitle?: JSX.Element
-  showHidden?: boolean
 }
 
-export const Headline = ({ collection, subtitle, showHidden }: HeadlineProps) => {
-  const showingHidden = showHidden || false
+export const Headline = ({ collection, subtitle }: HeadlineProps) => {
   const size = React.useContext(ResponsiveContext)
   const isSmall = size === "small"
   const isMedium = size === "medium"
   const isDesktop = !isSmall && !isMedium
+
+  // don't want to update the headline icon unless swithching to viewing a different set of patterns.
+  // eslint-disable-next-line
   const HeaderIcon = React.useMemo(() => randomIcon()!, [collection])
 
-  const headerText = (kind: CollectionType) => (
+  const headerText = React.useCallback((kind: CollectionType) => (
     <Heading size={isDesktop ? "medium" : "large"} level={1} color="text">
       {kind === "featured" ? "Featured" : kind === "user" ? "My" : "Community"} Patterns
     </Heading>
-  )
+  ), [isDesktop])
 
-  const headerBlurb = (kind: CollectionType) => (
+  const headerBlurb = React.useCallback((kind: CollectionType) => (
     <>
       <Text size="large">
         {kind === "featured" ?
@@ -33,7 +34,7 @@ export const Headline = ({ collection, subtitle, showHidden }: HeadlineProps) =>
       </Text>
       {subtitle}
     </>
-  )
+  ), [subtitle])
 
   return (
     React.useMemo(() => {
@@ -57,6 +58,6 @@ export const Headline = ({ collection, subtitle, showHidden }: HeadlineProps) =>
           {isSmall && headerBlurb(collection)}
         </Box>
       )
-    }, [collection, isSmall, showingHidden])
+    }, [collection, headerBlurb, headerText, isSmall])
   )
 }

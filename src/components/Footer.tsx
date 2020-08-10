@@ -1,12 +1,10 @@
 import * as React from "react"
-import { Footer, Anchor, ResponsiveContext, Box } from "grommet"
+import { Footer, Anchor, Box } from "grommet"
 import { Confetti } from "./Icon"
 import { Tagline } from "./Tagline"
 import { Github } from "grommet-icons"
 
 export default () => {
-  const size = React.useContext(ResponsiveContext)
-
   return (
     <Footer
       border={{

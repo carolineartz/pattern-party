@@ -1,24 +1,26 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Grommet, Layer, Box } from "grommet"
 import "styled-components/macro"
+import { GlobalStyles } from './globalStyles';
+
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import * as ROUTES from '../../constants/routes';
+
+import { Grommet, Layer, Box } from "grommet"
+import { theme } from "./theme"
 
 import Header from "../Header"
-import Login from "../Login"
-import { CreateWindow } from "../Patterns"
 import Footer from "./../Footer"
-import { withAuthentication, WithAuthProps } from '../Session';
-import {withFirebase, WithFirebaseProps} from "../Firebase"
-import { PatternProvider } from "./../../store"
-import { usePatternSubscription } from "./../../hooks/usePatternSubscription"
-import { useLocalStorage } from "./../../hooks/useLocalStorage"
+import Login from "../Login"
 import CommunityPatternsPage from "./../CommunityPatterns"
 import UserPatternsPage from "./../UserPatterns"
+
+import { CreateWindow } from "../Patterns"
+import { withAuthentication, WithAuthProps } from '../Session';
+import { withFirebase, WithFirebaseProps } from "../Firebase"
+import { PatternProvider } from "./../../store"
+import { usePatternSubscription, useLocalStorage } from "./../../hooks"
 import { PublicInfoPanel, UserInfoPanel } from "../InfoPanel"
-import { theme } from "./theme"
 import { Garland3 } from "./../Icon"
-import { GlobalStyles } from './globalStyles';
-import * as ROUTES from '../../constants/routes';
 import { Loader } from "./../Loader"
 
 const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {

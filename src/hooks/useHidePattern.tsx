@@ -1,6 +1,6 @@
 import React from 'react';
 import Firebase from "./../components/Firebase"
-import { useSetDraft, OwnerType, useTrackedState } from '../store';
+import { useSetDraft, OwnerType } from '../store';
 
 type HidePatternProps = {
   firebase: Firebase
