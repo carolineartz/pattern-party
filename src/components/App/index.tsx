@@ -45,7 +45,7 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
             <Login />
           </Layer>
         }
-        {(!showSignIn || authUser) &&
+        {((!showSignIn || authUser) && subscripionStatus === "subscribed") &&
           <Layer responsive={false} full="horizontal" modal={false} position="top">
             <Header
               onClickSignIn={() => setShowSignIn(true)}
