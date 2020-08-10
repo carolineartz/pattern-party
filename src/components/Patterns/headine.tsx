@@ -29,7 +29,7 @@ export const Headline = ({ collection, subtitle, showHidden }: HeadlineProps) =>
       <Text size="large">
         {kind === "featured" ?
           "A curated selection of awesome patterns by community members." :
-            kind === "community" && "Browse patoterns by community members."}
+            kind === "community" && "Browse patterns by community members."}
       </Text>
       {subtitle}
     </>
