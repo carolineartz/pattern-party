@@ -1,21 +1,20 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Box, Heading, Text } from "grommet"
+import { Box } from "grommet"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
-import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList } from './Patterns';
+import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList, Headline } from './Patterns';
 import * as ROUTES from "./../constants/routes"
 import { useTrackedState, useSetDraft } from "./../store"
 import { useDestroyPattern } from "./../hooks/useDestroyPattern"
 import { useHidePattern } from "./../hooks/useHidePattern"
 import { useSavePattern } from "./../hooks/useSavePattern"
 import uniqBy from "lodash.uniqby"
-import { randomIcon } from "./Icon"
 import { usePatternSubscription } from "./../hooks/usePatternSubscription"
 type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
 
-const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element => {
+const CommunityPatterns = ({ history, firebase, authUser }: Props): JSX.Element => {
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const state = useTrackedState()
   const setDraft = useSetDraft()
@@ -69,38 +68,6 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
     }
   }, [subscripionStatus, fetchInitialPatterns])
 
-  // const signedOutMessage = <Text>Sign in with Google to bookmark community patterns and collect your own creations!</Text>
-  const CommunityIcon = randomIcon()!
-  const FeaturedIcon = randomIcon()!
-
-  const header = React.useMemo(() => {
-    if (isFeaturedPatterns) {
-      return (
-        <Box pad="xlarge">
-          <Box direction="row" gap="medium" align="center">
-            <FeaturedIcon color="plain" size="xlarge" />
-            <Box>
-              <Heading size="large" level={1} color="text">Featured Patterns</Heading>
-              <Text size="large">A curated selection of awesome patterns by community members.</Text>
-            </Box>
-          </Box>
-        </Box>
-      )
-    } else {
-      return (
-        <Box pad="xlarge">
-          <Box direction="row" gap="medium" align="center">
-            <CommunityIcon color="plain" size="xlarge" />
-            <Box>
-              <Heading size="large" level={1} color="text">Community Patterns</Heading>
-              <Text size="large">Browse patterns by community members.</Text>
-            </Box>
-          </Box>
-        </Box>
-      )
-    }
-  }, [isFeaturedPatterns])
-
   const featuredPatternGrid = React.useMemo(() => {
     if (isFeaturedPatterns) {
       return (
@@ -119,7 +86,7 @@ const CommunityPatterns = ({history, firebase, authUser}: Props): JSX.Element =>
 
   return (
     <>
-      {header}
+      <Headline collection={isFeaturedPatterns ? "featured" : "community"} />
       <Box>
         {featuredPatternGrid}
         {!isFeaturedPatterns && startAfter &&

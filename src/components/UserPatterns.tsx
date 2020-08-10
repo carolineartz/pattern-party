@@ -1,16 +1,15 @@
 import React from 'react';
 import "styled-components/macro"
 
-import { Box, Heading, Button, Anchor } from "grommet"
+import { Box, Anchor } from "grommet"
 import uniqBy from "lodash.uniqby"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { withAuthorization, WithAuthProps } from './Session';
-import { ScrollablePatternList, PatternGrid, DestroyPatternDialog } from './Patterns';
+import { ScrollablePatternList, PatternGrid, DestroyPatternDialog, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { useDestroyPattern } from "./../hooks/useDestroyPattern"
 import { useHidePattern } from "./../hooks/useHidePattern"
 import { useUnhidePattern} from "./../hooks/useUnhidePattern"
-import { randomIcon } from "./Icon"
 
 type UserPatternsProps = WithAuthProps & WithFirebaseProps
 
@@ -61,23 +60,12 @@ const UserPatterns = (props: UserPatternsProps) => {
     }
   }, [startAfter, authUser, fetchInitialPatterns])
 
-  const headingIcon = React.useMemo(() => {
-    const Icon = randomIcon()!
-    return <Icon color="plain" size="xlarge" />
-  }, [])
-
-
   return (
     <>
-      <Box pad="xlarge">
-        <Box direction="row" gap="medium" align="center">
-          {headingIcon}
-          <Box>
-            <Heading size="large" level={1} color="text">My Patterns</Heading>
-            <Anchor css="font-weight: 400" color="text" onClick={() => setShowHidden(!showHidden)} label={showHidden ? "Hide hidden" : "Show hidden"} />
-          </Box>
-        </Box>
-      </Box>
+      <Headline
+        collection="user"
+        subtitle={<Anchor css="font-weight: 400" color="text" onClick={() => setShowHidden(!showHidden)} label={showHidden ? "Hide hidden" : "Show hidden"} />}
+      />
       <Box>
         <PatternGrid>
           {startAfter &&
