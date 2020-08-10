@@ -65,6 +65,7 @@ const UserPatterns = (props: UserPatternsProps) => {
       <Headline
         collection="user"
         subtitle={<Anchor css="font-weight: 400" color="text" onClick={() => setShowHidden(!showHidden)} label={showHidden ? "Hide hidden" : "Show hidden"} />}
+        showHidden={showHidden}
       />
       <Box>
         <PatternGrid>

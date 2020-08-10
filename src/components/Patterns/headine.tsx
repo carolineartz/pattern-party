@@ -7,9 +7,11 @@ import { randomIcon } from "./../Icon"
 type HeadlineProps = {
   collection: CollectionType
   subtitle?: JSX.Element
+  showHidden?: boolean
 }
 
-export const Headline = ({ collection, subtitle }: HeadlineProps) => {
+export const Headline = ({ collection, subtitle, showHidden }: HeadlineProps) => {
+  const showingHidden = showHidden || false
   const size = React.useContext(ResponsiveContext)
   const isSmall = size === "small"
   const isMedium = size === "medium"
@@ -55,6 +57,6 @@ export const Headline = ({ collection, subtitle }: HeadlineProps) => {
           {isSmall && headerBlurb(collection)}
         </Box>
       )
-    }, [collection, isSmall])
+    }, [collection, isSmall, showingHidden])
   )
 }
