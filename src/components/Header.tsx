@@ -55,13 +55,14 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
       {authUser &&
         <Menu
           label={<Avatar background="brand"><Text color="white">{(authUser.displayName || "?").charAt(0)}</Text></Avatar>}
+          justifyContent="end"
           items={[
             {
-              label: "Show Intro",
+              label: <LabelText text="Show Intro" />,
               onClick: onClickShowIntro
             },
             {
-              label: 'Sign Out',
+              label: <LabelText text='Sign Out' />,
               onClick: () => {
                 onClickSignOut()
                 firebase.doSignOut()
@@ -75,25 +76,26 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
   const authMobileMenu = (
     <Menu
       label={<Avatar background="brand"><Text color="white">{((authUser && authUser.displayName) || "?").charAt(0)}</Text></Avatar>}
+      justifyContent="end"
       items={[
         {
-          label: "My Patterns",
+          label: <LabelText text="My Patterns" />,
           onClick: onClickMyPatterns
         },
         {
-          label: "Explore",
+          label: <LabelText text="Explore" />,
           onClick: onClickExplore
         },
         {
-          label: "Create",
+          label: <LabelText text="Create" />,
           onClick: onClickCreate
         },
         {
-          label: "Show Intro",
+          label: <LabelText text="Show Intro" />,
           onClick: onClickShowIntro
         },
         {
-          label: 'Sign Out',
+          label: <LabelText text='Sign Out' />,
           onClick: () => {
             onClickSignOut()
             firebase.doSignOut()
@@ -154,6 +156,10 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
     />
   )
 }
+
+const LabelText = ({ text }: { text: string }) => (
+  <Box pad={{ horizontal: "medium", vertical: "small" }}>{text}</Box>
+)
 
 export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
     // <Box direction="row" gap="large">
