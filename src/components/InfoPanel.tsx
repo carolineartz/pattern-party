@@ -121,9 +121,9 @@ export const InfoPanel = ({ color, onDismiss, headline, children, headlineIcon: 
       <Box direction="row" align="center" justify="center" gap="medium" >
         <Box fill pad="small">
           <Stack anchor="top-right">
-            <Box direction="row" gap="small" align="center" justify="center">
+            <Box direction="row" gap="small" align="center" justify="center" pad="medium">
               {HeadlineIcon && <HeadlineIcon size={isSmall ? "large" : "xlarge"} color="plain" />}
-              <Heading level="1" size={isSmall ? "small" : "medium"}>{headline}</Heading>
+              <Heading textAlign="center" level="1" size={isSmall ? "small" : "medium"}>{headline}</Heading>
             </Box>
             <Button icon={<Close color="text" size={isSmall ? "small" : "medium"} />} onClick={() => onDismiss()} />
           </Stack>

@@ -19,7 +19,7 @@ type HeaderProps = WithAuthProps & WithFirebaseProps & WithRouterProps & {
 
 const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreate, firebase, onClickShowIntro }: HeaderProps): JSX.Element => {
   const size = React.useContext(ResponsiveContext)
-  const sizeIsSmall = size === "small"
+  const isSmall = size === "small"
   const setDraft = useSetDraft()
 
   const onClickedSignout = (_evt: React.MouseEvent) => {
@@ -49,7 +49,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
   }
 
   const nonMobileNav = (
-    <Box direction="row" gap={sizeIsSmall ? "small" : "large"}>
+    <Box direction="row" gap={isSmall ? "small" : "large"}>
       {authUser && <NavButton onClick={() => { onClickCreate() }} text="Create" />}
       <NavButton
         active={history.location.pathname === ROUTES.EXPLORE}
@@ -88,7 +88,9 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
 
   const authMobileMenu = (
     <Menu
-      label={<Avatar background="brand"><Text color="white">{((authUser && authUser.displayName) || "?").charAt(0)}</Text></Avatar>}
+      label={
+        <Box pad={{horizontal: isSmall ? "medium" : undefined}}><Avatar background="brand"><Text color="white">{((authUser && authUser.displayName) || "?").charAt(0)}</Text></Avatar></Box>
+      }
       justifyContent="end"
       items={[
         {
@@ -139,7 +141,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
         <Confetti size="large" color="plain" />
         <Box width={{ max: "small" }}><Text>Pattern Party!</Text></Box>
       </Box>
-        {!sizeIsSmall || !authUser ? nonMobileNav : authMobileMenu}
+        {!isSmall || !authUser ? nonMobileNav : authMobileMenu}
     </GHeader>
   )
 }
@@ -153,7 +155,7 @@ type NavButtonProps = ButtonProps & {
 
 const NavButton = ({ text, active, ...restProps }: NavButtonProps) => {
   const size = React.useContext(ResponsiveContext)
-  const sizeIsSmall = size === "small"
+  const isSmall = size === "small"
   return (
     <Button
       size="small"
@@ -164,7 +166,7 @@ const NavButton = ({ text, active, ...restProps }: NavButtonProps) => {
             border-bottom: 3px solid;
             border-bottom-width: ${active ? '3px' : '0'}
           `}>
-          <Text size={sizeIsSmall ? "small" : "medium"}>{text}</Text>
+          <Text size={isSmall ? "small" : "medium"}>{text}</Text>
         </Box>
       }
       {...restProps}
@@ -173,7 +175,7 @@ const NavButton = ({ text, active, ...restProps }: NavButtonProps) => {
 }
 
 const LabelText = ({ text }: { text: string }) => (
-  <Box pad={{ horizontal: "medium", vertical: "small" }}>{text}</Box>
+  <Box pad={{ horizontal: "small", vertical: "small" }}>{text}</Box>
 )
 
 export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
