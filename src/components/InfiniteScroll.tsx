@@ -27,7 +27,6 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
         const y = firstEntry.boundingClientRect.y;
 
         if (moreRef.current && prevY.current > y) {
-          console.log("loading!")
           loadMore(cursorRef.current).then(([nextCursor, nextMore]) => {
             cursorRef.current = nextCursor
             moreRef.current = nextMore

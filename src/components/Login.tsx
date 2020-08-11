@@ -26,7 +26,6 @@ const Authenticate = ({ firebase, history }: WithFirebaseProps & WithRouterProps
 
   React.useEffect(() => {
     let unregisterAuthObserver: firebase.Unsubscribe
-    let anotherObserver: firebase.Unsubscribe
 
     if (firebase.authUser) {
       setSignedIn(true)
@@ -34,11 +33,9 @@ const Authenticate = ({ firebase, history }: WithFirebaseProps & WithRouterProps
 
     else if (!signedIn) {
       unregisterAuthObserver = firebase.auth.onIdTokenChanged((authUser: firebase.User | null) => {
-        // console.log("authUser", authUser)
         if (authUser) {
           firebase.user(authUser.uid).get().then(snapshot => {
             const dbUser: firebase.firestore.DocumentData | undefined = snapshot.data();
-            // console.log("dbUser", dbUser)
             if (!authUser) {
               history.push(ROUTES.LANDING)
               firebase.authUser = undefined
@@ -63,19 +60,10 @@ const Authenticate = ({ firebase, history }: WithFirebaseProps & WithRouterProps
       });
     }
 
-    anotherObserver = firebase.auth.onAuthStateChanged(() => {
-      console.log("AUTH STATE CHANGED")
-    })
-
     return () => {
       if (unregisterAuthObserver) {
-        console.log("unmounting and unregistering observer");
         unregisterAuthObserver()
       }
-
-      anotherObserver()
-
-      console.log("unmounting only");
     }
   }, [history, setSignedIn, signedIn, firebase])
 

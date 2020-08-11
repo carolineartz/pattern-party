@@ -19,7 +19,6 @@ export const ScrollablePatternList = ({ onDestroy, patterns, loadMore, onSave, c
     evt.stopPropagation()
 
     navigator.clipboard.writeText(content).then(text => {
-      console.log("Successfully copied SVG markup")
     }).catch(err => {
       console.error('Failed to write clipboard contents: ', err);
     });

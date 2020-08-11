@@ -28,7 +28,6 @@ export class AuthContextProvider extends React.Component<any & { firebase: Fireb
           this.setState({authUser})
         },
         () => {
-          console.log("doing fallback")
           this.setState({authUser: undefined})
         }
       )

@@ -35,8 +35,6 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
     }
   };
 
-  console.log("isMobile", isMobile)
-
   return (
     <PatternCard
       key={props.ident}
