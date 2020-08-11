@@ -52,6 +52,7 @@ const Main = ({ firebase, history }: Props): JSX.Element => {
           onClickSignOut={() => {
             setShowCreate(false)
             setShowSignIn(false)
+            setAuthUser(undefined)
           }}
           onClickCreate={() => setShowCreate(true)}
           onClickShowIntro={() => setShowUserInfoPanel(true)}
@@ -131,7 +132,7 @@ const Main = ({ firebase, history }: Props): JSX.Element => {
   )
 }
 
-const WrappedApp = React.memo(withRouter(Main))
+const WrappedApp = withRouter(Main)
 
 export const App = withFirebase(({ firebase }: WithFirebaseProps) => (
   <Router>

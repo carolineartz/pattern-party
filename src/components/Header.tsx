@@ -135,10 +135,7 @@ const PublicHeaderComponent = ({ history, onClickSignIn: handleClickSignIn }: Pu
         text="Explore"
       />
       <NavButton
-          onClick={() => {
-            // debugger
-          handleClickSignIn()
-        }}
+        onClick={() => { handleClickSignIn() }}
         text="Sign In"
         css="padding-right: 20px;"
         />
