@@ -49,7 +49,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
   }
 
   const nonMobileNav = (
-    <Box direction="row" gap="large">
+    <Box direction="row" gap={sizeIsSmall ? "small" : "large"}>
       {authUser && <NavButton onClick={() => { onClickCreate() }} text="Create" />}
       <NavButton
         active={history.location.pathname === ROUTES.EXPLORE}
@@ -137,7 +137,7 @@ const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreat
         gap="small"
       >
         <Confetti size="large" color="plain" />
-        <Box width="small"><Text>Pattern Party!</Text></Box>
+        <Box width={{ max: "small" }}><Text>Pattern Party!</Text></Box>
       </Box>
         {!sizeIsSmall || !authUser ? nonMobileNav : authMobileMenu}
     </GHeader>
@@ -151,7 +151,9 @@ type NavButtonProps = ButtonProps & {
   css?: string
 }
 
-const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
+const NavButton = ({ text, active, ...restProps }: NavButtonProps) => {
+  const size = React.useContext(ResponsiveContext)
+  const sizeIsSmall = size === "small"
   return (
     <Button
       size="small"
@@ -162,7 +164,7 @@ const NavButton = ({text, active, ...restProps}: NavButtonProps) => {
             border-bottom: 3px solid;
             border-bottom-width: ${active ? '3px' : '0'}
           `}>
-          {text}
+          <Text size={sizeIsSmall ? "small" : "medium"}>{text}</Text>
         </Box>
       }
       {...restProps}
