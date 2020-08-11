@@ -4,24 +4,33 @@ import "styled-components/macro"
 import { Box, Anchor } from "grommet"
 import uniqBy from "lodash.uniqby"
 import { withFirebase, WithFirebaseProps } from './Firebase';
-import { withAuthorization, WithAuthProps } from './Session';
+import { WithRouterProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { useDestroyPattern, useHidePattern, useUnhidePattern } from "./../hooks"
+import { withRouter } from 'react-router-dom';
+import * as ROUTES from "./../constants/routes"
 
-type UserPatternsProps = WithAuthProps & WithFirebaseProps
+type UserPatternsProps = WithFirebaseProps & WithRouterProps
 
 const UserPatterns = (props: UserPatternsProps) => {
   const setDraft = useSetDraft()
   const state = useTrackedState()
   const { userPatterns, fetchPatterns: { user: { startAfter, hasMore } } } = state
-  const { firebase, authUser } = props
+  const { firebase, history } = props
+  const authUser = firebase.authUser
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const destroyPattern = useDestroyPattern({ firebase, owner: "user", user: authUser })
   const hidePattern = useHidePattern({ firebase, owner: "user", user: authUser })
   const unhidePattern = useUnhidePattern({ firebase, owner: "user", user: authUser })
 
   const [showHidden, setShowHidden] = React.useState<boolean>(false)
+
+  React.useEffect(() => {
+    if (!authUser) {
+      history.push(ROUTES.LANDING)
+    }
+  }, [authUser, history])
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
     const snapshots = await firebase.userPatterns(authUser!.uid).startAfter(cursor).limit(16).get()
@@ -97,6 +106,4 @@ const UserPatterns = (props: UserPatternsProps) => {
   )
 }
 
-const condition = (authUser?: firebase.User) => !!authUser;
-
-export default React.memo(withAuthorization(condition)((withFirebase(UserPatterns))))
+export default withRouter(withFirebase(UserPatterns))

@@ -26,6 +26,7 @@ interface AuthUser extends firebase.User {
 export interface IFirebase {
   db: firebase.firestore.Firestore
   auth: firebase.auth.Auth
+  authUser?: firebase.User
   authProvider: FirebaseAuthProvider
   googleProvider: firebase.auth.GoogleAuthProvider
 
@@ -50,6 +51,7 @@ class Firebase implements IFirebase {
   auth: firebase.auth.Auth
   authProvider: FirebaseAuthProvider
   googleProvider: firebase.auth.GoogleAuthProvider
+  authUser?: firebase.User
 
   constructor() {
     if (!firebase.apps.length) {
@@ -75,7 +77,10 @@ class Firebase implements IFirebase {
   // *** Auth API ***
 
   doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
-  doSignOut = () => this.auth.signOut();
+  doSignOut = async () => {
+    await this.auth.signOut();
+    this.authUser = undefined;
+  }
 
 
   // *** Merge Auth and DB User API *** //
@@ -94,7 +99,8 @@ class Firebase implements IFirebase {
             if (dbUser && !dbUser.roles) {
               dbUser.roles = {};
             }
-            next({...authUser, ...(dbUser || {roles: {}})});
+            this.authUser = { ...authUser, ...(dbUser || { roles: {} }) }
+            next(this.authUser);
           }
           });
       } else {

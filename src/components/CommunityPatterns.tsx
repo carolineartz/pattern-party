@@ -3,16 +3,17 @@ import { withRouter } from 'react-router-dom';
 import { Box } from "grommet"
 
 import { withFirebase, WithFirebaseProps } from './Firebase';
-import { withAuthentication, WithAuthProps, WithRouterProps } from './Session';
+import { WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
 import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription } from "./../hooks"
 import * as ROUTES from "./../constants/routes"
 import uniqBy from "lodash.uniqby"
 
-type Props = WithAuthProps & WithFirebaseProps & WithRouterProps
+type Props = WithFirebaseProps & WithRouterProps
 
-const CommunityPatterns = ({ history, firebase, authUser }: Props): JSX.Element => {
+const CommunityPatterns = ({ history, firebase }: Props): JSX.Element => {
+  const authUser = firebase.authUser
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const state = useTrackedState()
   const setDraft = useSetDraft()
@@ -120,4 +121,4 @@ const CommunityPatterns = ({ history, firebase, authUser }: Props): JSX.Element 
 }
 
 
-export default React.memo(withAuthentication(withRouter(withFirebase(CommunityPatterns))))
+export default React.memo(withRouter(withFirebase(CommunityPatterns)))

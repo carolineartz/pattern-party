@@ -3,13 +3,12 @@ import "styled-components/macro"
 import { Box, Button, Nav } from "grommet"
 import { Checkmark, Close } from "grommet-icons"
 import { WithFirebaseProps, withFirebase } from "../Firebase"
-import { withAuthentication, WithAuthProps } from "../Session"
 import { formatSVG } from "./util";
 import { Rnd } from "react-rnd";
 import { AlertError, AlertSuccess } from "../Notification"
 import { useCreatePattern } from "./../../hooks"
 
-type CreateWindowProps = WithAuthProps & WithFirebaseProps & {
+type CreateWindowProps = WithFirebaseProps & {
   showWindow: boolean
   setShowWindow: (show: boolean) => void
 }
@@ -29,7 +28,8 @@ const style = {
   boxShadow: "0px 8px 16px rgba(0,0,0,0.20)"
 };
 
-export const Window = ({ showWindow, setShowWindow, firebase, authUser }: CreateWindowProps) => {
+export const Window = ({ showWindow, setShowWindow, firebase }: CreateWindowProps) => {
+  const authUser = firebase.authUser
   const createPattern = useCreatePattern(firebase, authUser)
 
   const [windowLocation, setWindowLocation] = React.useState<WindowLocationState>({
@@ -115,4 +115,4 @@ export const Window = ({ showWindow, setShowWindow, firebase, authUser }: Create
   </Box>
   );
 }
-export const CreateWindow = React.memo((withAuthentication(withFirebase(Window))))
+export const CreateWindow = React.memo((withFirebase(Window)))

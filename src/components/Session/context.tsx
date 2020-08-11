@@ -22,10 +22,7 @@ export class AuthContextProvider extends React.Component<any & { firebase: Fireb
     if (!this.state.authUser) {
       this.listener = this.props.firebase.onAuthUserListener(
         (authUser: IAuthState['authUser']) => {
-          // console.log("authUser", authUser)
-
           if (!authUser) {
-            debugger
             this.setState({authUser: undefined})
           }
           this.setState({authUser})

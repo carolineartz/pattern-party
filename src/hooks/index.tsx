@@ -6,6 +6,7 @@ import { useLocalStorage } from "./useLocalStorage"
 import { usePatternSubscription } from "./usePatternSubscription"
 import { useSavePattern } from "./useSavePattern"
 import { useUnhidePattern } from "./useUnhidePattern"
+import { useFirebaseUser } from "./useFirebaseUser"
 
 export {
   useCreatePattern,
@@ -16,4 +17,5 @@ export {
   usePatternSubscription,
   useSavePattern,
   useUnhidePattern,
+  useFirebaseUser,
 }

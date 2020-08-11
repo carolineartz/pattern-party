@@ -1,7 +1,7 @@
 import * as React from "react"
 import "styled-components/macro"
 import { compose } from "recompose";
-import { WithRouterProps, WithAuthProps, withAuthentication } from "./Session"
+import { WithRouterProps } from "./Session"
 import { withFirebase, WithFirebaseProps } from "./Firebase"
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps, ResponsiveContext } from "grommet"
 import { Confetti } from "./Icon"
@@ -10,14 +10,15 @@ import {useSetDraft} from "./../store"
 
 import * as ROUTES from "../constants/routes"
 
-type HeaderProps = WithAuthProps & WithFirebaseProps & WithRouterProps & {
+type HeaderProps = WithFirebaseProps & WithRouterProps & {
   onClickSignIn: Function
   onClickSignOut: Function
   onClickCreate: Function
   onClickShowIntro: Function
 }
 
-const Header = ({ history, onClickSignIn, onClickSignOut, authUser, onClickCreate, firebase, onClickShowIntro }: HeaderProps): JSX.Element => {
+const Header = ({ history, onClickSignIn, onClickSignOut, onClickCreate, firebase, onClickShowIntro }: HeaderProps): JSX.Element => {
+  const authUser = firebase.authUser
   const size = React.useContext(ResponsiveContext)
   const sizeIsSmall = size === "small"
   const setDraft = useSetDraft()
@@ -174,4 +175,4 @@ const LabelText = ({ text }: { text: string }) => (
   <Box pad={{ horizontal: "medium", vertical: "small" }}>{text}</Box>
 )
 
-export default compose<HeaderProps, any>(withRouter, withFirebase, withAuthentication)(Header);
+export default compose<HeaderProps, any>(withRouter, withFirebase)(Header);

@@ -2,7 +2,7 @@ import React from 'react';
 import "styled-components/macro"
 import { GlobalStyles } from './globalStyles';
 
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, withRouter, RouteComponentProps } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 
 import { Grommet, Layer, Box } from "grommet"
@@ -15,19 +15,30 @@ import CommunityPatternsPage from "./../CommunityPatterns"
 import UserPatternsPage from "./../UserPatterns"
 
 import { CreateWindow } from "../Patterns"
-import { withAuthentication, WithAuthProps } from '../Session';
 import { withFirebase, WithFirebaseProps } from "../Firebase"
 import { PatternProvider } from "./../../store"
-import { usePatternSubscription, useLocalStorage } from "./../../hooks"
+import { usePatternSubscription, useLocalStorage, useFirebaseUser } from "./../../hooks"
 import { PublicInfoPanel, UserInfoPanel } from "../InfoPanel"
 import { Garland3 } from "./../Icon"
 import { Loader } from "./../Loader"
+import firebase from "./../Firebase"
 
-const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => {
-  const [showSignIn, setShowSignIn] = React.useState<boolean>(false)
+const AUTH_QUERY = "?mode=select"
+
+type Props = RouteComponentProps & {
+  firebase: firebase
+  authUser?: firebase.User
+}
+
+const Main = ({ firebase, history }: Props): JSX.Element => {
+  const query = history.location.search
+  const [showSignIn, setShowSignIn] = React.useState<boolean>(query === AUTH_QUERY)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
   const [showPublicInfoPanel, setShowPublicInfoPanel] = useLocalStorage<boolean>("pp-show-info", true)
   const [showUserInfoPanel, setShowUserInfoPanel] = useLocalStorage<boolean>("pp-show-intro", true)
+  // const authUser = firebase.auth.currentUser
+  const getUser = useFirebaseUser({ firebase })
+  const authUser = getUser(firebase.auth.currentUser)
 
   const subscripionStatus = usePatternSubscription(firebase)
 
@@ -90,14 +101,16 @@ const WrappedApp = React.memo(({ authUser, firebase }: WithAuthProps & WithFireb
       </Box>
     </Grommet>
   )
-})
+}
 
-export const App = withFirebase(withAuthentication(({ authUser, firebase }: WithAuthProps & WithFirebaseProps) => (
+const WrappedApp = withRouter(Main)
+
+export const App = withFirebase(({ firebase }: WithFirebaseProps) => (
   <Router>
     <PatternProvider>
-      <WrappedApp firebase={firebase} authUser={authUser} />
+      <WrappedApp firebase={firebase} />
     </PatternProvider>
   </Router>
-)))
+))
 
 export default App

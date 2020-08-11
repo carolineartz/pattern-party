@@ -5,16 +5,14 @@ import * as serviceWorker from './serviceWorker';
 import { enableMapSet } from "immer"
 
 import "css-doodle"
-import { AuthContextProvider } from './components/Session';
+// import { AuthContextProvider } from './components/Session';
 // import { PatternsProvider, initialPatterns } from "./components/Patterns/context"
 
+// {/* <AuthContextProvider value={null}>
+//   </AuthContextProvider>, */}
 enableMapSet()
 ReactDOM.render(
-  <AuthContextProvider value={null}>
-
-      <App />
-
-  </AuthContextProvider>,
+  <App />,
   document.getElementById('root')
 );
 
