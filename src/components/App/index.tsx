@@ -32,31 +32,38 @@ type Props = RouteComponentProps & {
 
 const Main = ({ firebase, history }: Props): JSX.Element => {
   const query = history.location.search
+  const getUser = useFirebaseUser({ firebase })
   const [showSignIn, setShowSignIn] = React.useState<boolean>(query === AUTH_QUERY)
   const [showCreate, setShowCreate] = React.useState<boolean>(false)
   const [showPublicInfoPanel, setShowPublicInfoPanel] = useLocalStorage<boolean>("pp-show-info", true)
   const [showUserInfoPanel, setShowUserInfoPanel] = useLocalStorage<boolean>("pp-show-intro", true)
-  // const authUser = firebase.auth.currentUser
-  const getUser = useFirebaseUser({ firebase })
-  const authUser = getUser(firebase.auth.currentUser)
+  const [authUser, setAuthUser] = React.useState<firebase.User | undefined>(undefined)
 
   const subscripionStatus = usePatternSubscription(firebase)
+  console.log("rendering...", authUser)
+
+  React.useEffect(() => {
+    const unsubscribe = firebase.auth.onIdTokenChanged((maybeAuthUser: firebase.User | null) => {
+      if (maybeAuthUser) {
+        getUser(maybeAuthUser).then(user => {
+          setAuthUser(user)
+        })
+      }
+    })
+    console.log(firebase.auth.currentUser)
+    return (() => {
+      console.log("unsubscribing")
+      unsubscribe()
+    })
+  }, [getUser, setAuthUser, firebase.auth])
+
 
   return (
     <Grommet css="min-height: 100vh" theme={theme}>
       <GlobalStyles />
       <Box fill>
-        {!authUser && showSignIn &&
-          <Layer
-            responsive={false}
-            full="horizontal"
-            position="top"
-            onEsc={() => setShowSignIn(false)}
-            onClickOutside={() => setShowSignIn(false)}
-            css="border-radius: 0"
-          >
-            <Login />
-          </Layer>
+        {showSignIn &&
+          <Login onDismiss={() => setShowSignIn(false)} />
         }
         {((!showSignIn || authUser) && subscripionStatus === "subscribed") &&
           <Layer responsive={false} full="horizontal" modal={false} position="top">
@@ -103,7 +110,7 @@ const Main = ({ firebase, history }: Props): JSX.Element => {
   )
 }
 
-const WrappedApp = withRouter(Main)
+const WrappedApp = React.memo(withRouter(Main))
 
 export const App = withFirebase(({ firebase }: WithFirebaseProps) => (
   <Router>

@@ -6,22 +6,16 @@ export const useFirebaseUser = ({firebase}: {firebase: Firebase}) => {
   // const [authUser, setAuthUser] = React.useState<firebase.User | undefined>(currentUser || undefined)
 
   return React.useCallback(
-    (currentUser) => {
-      if (currentUser) {
-        firebase.user(currentUser.uid).get().then(snapshot => {
-          const dbUser: firebase.firestore.DocumentData | undefined = snapshot.data();
-
-          if (dbUser && !dbUser.roles) {
-            dbUser.roles = {};
-            firebase.authUser = { ...currentUser, ...(dbUser || { roles: {} }) }
-          } else {
-            firebase.authUser = currentUser
-          }
-        });
-      } else {
-        firebase.authUser = undefined
+    async (currentUser: firebase.User) => {
+      const snapshot = await firebase.user(currentUser.uid).get();
+      const dbUser: firebase.firestore.DocumentData | undefined = snapshot.data();
+      if (dbUser && !dbUser.roles) {
+        dbUser.roles = {};
+        firebase.authUser = { ...currentUser, ...(dbUser || { roles: {} }) };
       }
-
+      else {
+        firebase.authUser = currentUser;
+      }
       return firebase.authUser
     },
     [firebase],
