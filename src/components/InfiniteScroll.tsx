@@ -58,9 +58,6 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
     };
   }, [element]);
 
-  // const [...head, last] = items
-
-
   let _tail = takeRight(items, 9)
   const head = take(items, items.length - 9)
   const [target, ...tail] = _tail
@@ -89,7 +86,6 @@ export function InfiniteScroll<D>({items, cursor, loadMore, renderFn, hasMore}: 
         `}
           className="ITEM" ref={setElement}>{renderFn(target, items.length - 6)}</Box>
         {tail.map(renderFn)}
-        {done && <Box>DONE!</Box>}
       </>
     );
   }

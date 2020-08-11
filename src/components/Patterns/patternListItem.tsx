@@ -5,6 +5,8 @@ import { CSSTransition } from "react-transition-group";
 import { Close, Gallery, Code, Save, Hide } from "grommet-icons";
 import styled from "styled-components"
 import { formatSVG, animateClickPatternOption } from './util';
+import { useDeviceDetect } from "./../../hooks"
+
 
 type PatternListItemProps = {
   markup: string
@@ -21,7 +23,8 @@ type PatternListItemProps = {
 }
 
 export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
-  const [showOptions, setShowOptions] = React.useState<boolean>(false);
+  const { isMobile } = useDeviceDetect()
+  const [showOptions, setShowOptions] = React.useState<boolean>(isMobile);
   const patternRef = React.useRef<HTMLDivElement | null>(null);
 
   const animateClick = (fn: Function) => {
@@ -31,6 +34,8 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
       animateClickPatternOption(patternRef.current, props.markup);
     }
   };
+
+  console.log("isMobile", isMobile)
 
   return (
     <PatternCard
@@ -43,7 +48,7 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
       overflow="visible"
       elevation={props.hidden ? undefined : "medium"}
       onMouseEnter={() => setShowOptions(true)}
-      onMouseLeave={() => setShowOptions(false)}
+      onMouseLeave={() => !isMobile && setShowOptions(false)}
     >
       <Stack guidingChild={0}>
         <CardBody width="100%" height="small">
@@ -133,28 +138,36 @@ type CardButtonProps = Omit<ButtonProps, 'icon'> & {
 }
 
 const CardButton = ({ animateIn, onClick, title, icon: Icon, ...rest }: CardButtonProps) => {
-  return (
-    <CSSTransition
-      in={animateIn}
-      timeout={300}
-      classNames="appear-zoom"
-      unmountOnExit
-    >
-      <Button
-        title={title}
-        primary
-        color="white"
-        hoverIndicator
-        icon={<Icon size="small" color="text" />}
-        size="small"
-        onClick={onClick}
-        css={`
-          padding: 6px;
-          box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
-          &:hover {
-            background-color: #EDEDED;
-          }
-      `} />
-    </CSSTransition>
+  const { isMobile } = useDeviceDetect()
+
+  const button = (
+    <Button
+      title={title}
+      primary
+      color="white"
+      hoverIndicator
+      icon={<Icon size="small" color="text" />}
+      size="small"
+      onClick={onClick}
+      css={`
+        padding: 6px;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.20);
+        &:hover {
+          background-color: #EDEDED;
+        }
+    `} />
   )
+  if (isMobile) {
+    return button
+  } else {
+    return (
+      <CSSTransition
+        in={animateIn}
+        timeout={300}
+        classNames="appear-zoom"
+        unmountOnExit
+      >{button}
+      </CSSTransition>
+    )
+  }
 }
