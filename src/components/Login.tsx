@@ -1,14 +1,14 @@
 import * as React from "react"
-import {withRouter} from "react-router-dom"
+import { withRouter, RouteComponentProps } from "react-router-dom"
+
 import "styled-components/macro"
 
 import { Box, Text, ResponsiveContext, Layer } from "grommet"
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { withFirebase, WithFirebaseProps } from "./Firebase"
 import { Confetti } from "./Icon"
-import { WithRouterProps } from "./Session";
 
-type Props = WithFirebaseProps & WithRouterProps & {
+type Props = WithFirebaseProps & RouteComponentProps & {
   onDismiss: Function
 }
 

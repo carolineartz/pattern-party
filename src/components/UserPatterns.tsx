@@ -3,14 +3,13 @@ import "styled-components/macro"
 
 import { Box, Anchor } from "grommet"
 import { withFirebase, WithFirebaseProps } from './Firebase';
-import { WithRouterProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog, Headline } from './Patterns';
 import { useTrackedState } from "./../store"
 import { useDestroyPattern, useHidePattern, useUnhidePattern, useFetchPatterns, useLoadPatterns } from "./../hooks"
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import * as ROUTES from "./../constants/routes"
 
-type UserPatternsProps = WithFirebaseProps & WithRouterProps
+type UserPatternsProps = WithFirebaseProps & RouteComponentProps
 
 const UserPatterns = (props: UserPatternsProps) => {
   const state = useTrackedState()

@@ -10,8 +10,3 @@ export type WithAuthProps = {
   authUser?: firebase.User
   children?: React.ReactNode
 }
-
-export type WithRouterProps = {
-  history: any
-  children?: React.ReactNode
-}

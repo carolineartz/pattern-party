@@ -1,13 +1,11 @@
 import * as React from "react"
 import "styled-components/macro"
-// import { compose } from "recompose";
-// import { WithAuthProps, withAuthentication } from "./Session"
+
 import { withFirebase, WithFirebaseProps } from "./Firebase"
 import { Header as GHeader, Box, Text, Menu, Button, Avatar, ButtonProps, ResponsiveContext } from "grommet"
 import { Confetti } from "./Icon"
 import { withRouter,RouteComponentProps } from 'react-router-dom';
-import {useSetDraft} from "./../store"
-import { WithRouterProps } from "./Session"
+import { useSetDraft } from "./../store"
 
 import * as ROUTES from "../constants/routes"
 
@@ -175,7 +173,7 @@ const LabelText = ({ text }: { text: string }) => (
   <Box pad={{ horizontal: "medium", vertical: "small" }}>{text}</Box>
 )
 
-const Header = withRouter(({ children, history }: WithRouterProps) => {
+const Header = withRouter(({ children, history }: RouteComponentProps & {children?: React.ReactNode}) => {
   return (
       <GHeader border={{
       "color": "light-4",

@@ -1,9 +1,8 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import Firebase, { WithFirebaseProps, withFirebase } from '../Firebase';
-import { WithRouterProps } from '.';
 import * as ROUTES from '../../constants/routes';
 
 type IAuthState = {
@@ -56,7 +55,7 @@ export const withAuthentication = (Component:any) => (props:any): JSX.Element =>
 );
 
 export const withAuthorization = (condition: (user?: firebase.User) => boolean) => (Component: React.ComponentType<any>) => {
-  class WithAuthorization extends React.Component<any & WithFirebaseProps & WithRouterProps, any> {
+  class WithAuthorization extends React.Component<any & WithFirebaseProps & RouteComponentProps, any> {
     listener?: firebase.Unsubscribe
 
     componentDidMount() {
