@@ -8,7 +8,6 @@ type PatternListProps = {
   patterns: PatternType[]
   onDestroy?: (pat: PatternType) => void
   onSave?: (data: PatternType) => void
-  key?: string
 }
 
 export const PatternList = ({ patterns, onDestroy, onSave }: PatternListProps) => {
@@ -44,5 +43,3 @@ export const PatternList = ({ patterns, onDestroy, onSave }: PatternListProps) =
     </>
   )
 }
-
-export default PatternList

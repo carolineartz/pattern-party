@@ -1,12 +1,12 @@
 import * as React from "react"
-import { Footer, Anchor, Box } from "grommet"
+import { Footer as GFooter, Anchor, Box } from "grommet"
 import { Confetti } from "./Icon"
 import { Tagline } from "./Tagline"
 import { Github } from "grommet-icons"
 
-export default () => {
+export const Footer = () => {
   return (
-    <Footer
+    <GFooter
       border={{
         "color": "light-4",
         "size": "xsmall",
@@ -22,6 +22,6 @@ export default () => {
         href="https://github.com/carolineartz/pattern-party"
         target="_blank"
       />
-    </Footer>
+    </GFooter>
   )
 }

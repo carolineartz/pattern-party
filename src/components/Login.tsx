@@ -53,4 +53,4 @@ const Authenticate = ({ firebase, history, onDismiss }: Props): JSX.Element => {
   )
 }
 
-export default withRouter(withFirebase(Authenticate));
+export const Login = withRouter(withFirebase(Authenticate));

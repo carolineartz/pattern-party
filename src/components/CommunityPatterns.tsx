@@ -8,7 +8,7 @@ import { useTrackedState } from "./../store"
 import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription, useFetchPatterns, useLoadPatterns } from "./../hooks"
 import * as ROUTES from "./../constants/routes"
 
-const CommunityPatterns = ({ history, firebase }: WithFirebaseProps & RouteComponentProps): JSX.Element => {
+const Patterns = ({ history, firebase }: WithFirebaseProps & RouteComponentProps): JSX.Element => {
   const authUser = firebase.authUser
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
 
@@ -83,4 +83,4 @@ const CommunityPatterns = ({ history, firebase }: WithFirebaseProps & RouteCompo
 }
 
 
-export default React.memo(withRouter(withFirebase(CommunityPatterns)))
+export const CommunityPatterns = React.memo(withRouter(withFirebase(Patterns)))

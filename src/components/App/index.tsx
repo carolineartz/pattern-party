@@ -1,6 +1,7 @@
 import React from 'react';
 import "styled-components/macro"
 import { GlobalStyles } from './globalStyles';
+import firebase from "./../Firebase"
 
 import { BrowserRouter as Router, Route, withRouter, RouteComponentProps } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
@@ -8,12 +9,11 @@ import * as ROUTES from '../../constants/routes';
 import { Grommet, Layer, Box } from "grommet"
 import { theme } from "./theme"
 
-import {AuthHeader, PublicHeader} from "../Header"
-import Footer from "./../Footer"
-import Login from "../Login"
-import CommunityPatternsPage from "./../CommunityPatterns"
-import UserPatternsPage from "./../UserPatterns"
-
+import { AuthHeader, PublicHeader } from "../Header"
+import { CommunityPatterns as CommunityPatternsPage } from "./../CommunityPatterns"
+import { Footer } from "./../Footer"
+import { Login } from "../Login"
+import { UserPatterns as UserPatternsPage } from "./../UserPatterns"
 import { CreateWindow } from "../Patterns"
 import { withFirebase, WithFirebaseProps } from "../Firebase"
 import { PatternProvider } from "./../../store"
@@ -21,7 +21,6 @@ import { usePatternSubscription, useLocalStorage, useFirebaseUser } from "./../.
 import { PublicInfoPanel, UserInfoPanel } from "../InfoPanel"
 import { Garland3 } from "./../Icon"
 import { Loader } from "./../Loader"
-import firebase from "./../Firebase"
 
 const AUTH_QUERY = "?mode=select"
 

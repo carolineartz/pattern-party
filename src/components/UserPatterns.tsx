@@ -11,7 +11,7 @@ import * as ROUTES from "./../constants/routes"
 
 type UserPatternsProps = WithFirebaseProps & RouteComponentProps
 
-const UserPatterns = (props: UserPatternsProps) => {
+const Patterns = (props: UserPatternsProps) => {
   const state = useTrackedState()
   const { userPatterns, fetchPatterns: { user: { startAfter, hasMore } } } = state
   const { firebase, history } = props
@@ -74,4 +74,4 @@ const UserPatterns = (props: UserPatternsProps) => {
   )
 }
 
-export default withRouter(withFirebase(UserPatterns))
+export const UserPatterns = withRouter(withFirebase(Patterns))
