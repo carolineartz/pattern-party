@@ -12,7 +12,6 @@ export const Loader = () => {
   )
 }
 
-
 const rotate = keyframes`
   to {
     transform: rotate(360deg);

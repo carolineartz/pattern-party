@@ -7,7 +7,7 @@ import { withFirebase, WithFirebaseProps } from './Firebase';
 import { WithRouterProps } from './Session';
 import { ScrollablePatternList, PatternGrid, DestroyPatternDialog, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
-import { useDestroyPattern, useHidePattern, useUnhidePattern } from "./../hooks"
+import { useDestroyPattern, useHidePattern, useUnhidePattern, useFetchPatterns } from "./../hooks"
 import { withRouter } from 'react-router-dom';
 import * as ROUTES from "./../constants/routes"
 
@@ -23,6 +23,7 @@ const UserPatterns = (props: UserPatternsProps) => {
   const destroyPattern = useDestroyPattern({ firebase, owner: "user", user: authUser })
   const hidePattern = useHidePattern({ firebase, owner: "user", user: authUser })
   const unhidePattern = useUnhidePattern({ firebase, owner: "user", user: authUser })
+  const fetchPatterns = useFetchPatterns({firebase, user: authUser, owner: "user"})
 
   const [showHidden, setShowHidden] = React.useState<boolean>(false)
 
@@ -50,22 +51,9 @@ const UserPatterns = (props: UserPatternsProps) => {
   return [nextLastVisible, !noMore]
 }
 
-  const fetchInitialPatterns = React.useCallback(async (usr: firebase.User) => {
-    const snapshots = await firebase.userPatterns(usr.uid).get()
-    const docs = snapshots.docs
-    const lastVisible = docs[docs.length - 1];
-
-    setDraft((draft) => {
-      draft.fetchPatterns.user.startAfter = lastVisible
-      draft.userPatterns = docs.map(doc => doc.data())
-    })
-  }, [firebase, setDraft])
-
   React.useEffect(() => {
-    if (!startAfter && authUser) {
-      fetchInitialPatterns(authUser)
-    }
-  }, [startAfter, authUser, fetchInitialPatterns])
+    fetchPatterns(startAfter)
+  }, [startAfter, fetchPatterns])
 
   return (
     <>

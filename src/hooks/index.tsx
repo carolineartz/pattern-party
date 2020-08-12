@@ -7,6 +7,7 @@ import { usePatternSubscription } from "./usePatternSubscription"
 import { useSavePattern } from "./useSavePattern"
 import { useUnhidePattern } from "./useUnhidePattern"
 import { useFirebaseUser } from "./useFirebaseUser"
+import { useFetchPatterns } from "./useFetchPatterns"
 
 export {
   useCreatePattern,
@@ -18,4 +19,5 @@ export {
   useSavePattern,
   useUnhidePattern,
   useFirebaseUser,
+  useFetchPatterns,
 }

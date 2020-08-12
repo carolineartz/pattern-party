@@ -6,7 +6,7 @@ import { withFirebase, WithFirebaseProps } from './Firebase';
 import { WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList, Headline } from './Patterns';
 import { useTrackedState, useSetDraft } from "./../store"
-import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription } from "./../hooks"
+import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription, useFetchPatterns } from "./../hooks"
 import * as ROUTES from "./../constants/routes"
 import uniqBy from "lodash.uniqby"
 
@@ -23,6 +23,7 @@ const CommunityPatterns = ({ history, firebase }: Props): JSX.Element => {
   const destroyPattern = useDestroyPattern({ firebase, owner: "community", user: authUser })
   const hidePattern = useHidePattern({ firebase, owner: "community", user: authUser })
   const savePattern = useSavePattern(firebase, authUser)
+  const fetchPatterns = useFetchPatterns({firebase, owner: "community"})
 
   const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
     const snapshots = await firebase.patterns().startAfter(cursor).limit(16).get()
@@ -42,30 +43,13 @@ const CommunityPatterns = ({ history, firebase }: Props): JSX.Element => {
     return [nextLastVisible, !noMore]
   }
 
-  const fetchInitialPatterns = React.useCallback(
-    async () => {
-      if (!startAfter) {
-        const communitySnapshots = await firebase.patterns(16).get()
-        const featuredPatterns = await firebase.featuredPatterns().get()
-        const docs = communitySnapshots.docs
-        const nextLastVisible = docs[docs.length - 1];
-        setDraft((draft) => {
-          draft.fetchPatterns.community.startAfter = nextLastVisible
-          draft.communityPatterns = docs.map(doc => doc.data())
-          draft.featuredPatterns = featuredPatterns.docs.map(doc => doc.data())
-        })
-      }
-    },
-    [startAfter, setDraft, firebase]
-  )
-
   const subscripionStatus = usePatternSubscription(firebase)
 
   React.useEffect(() => {
     if (subscripionStatus === "subscribed") {
-      fetchInitialPatterns()
+      fetchPatterns(startAfter)
     }
-  }, [subscripionStatus, fetchInitialPatterns])
+  }, [subscripionStatus, fetchPatterns, startAfter])
 
   const featuredPatternGrid = React.useMemo(() => {
     if (isFeaturedPatterns) {
