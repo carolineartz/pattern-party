@@ -13,7 +13,8 @@ export const theme: ThemeType = deepFreeze(deepMerge(grommet, {
       },
       brand: "#f95152",
       "accent-1": "#3BD2D3",
-      "accent-2": "#CBE580"
+      "accent-2": "#CBE580",
+      "accent-3": "#74DEDA"
     }
   },
   anchor: {

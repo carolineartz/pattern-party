@@ -16,7 +16,7 @@ export const PublicInfoPanel = ({ onDismiss, onClickSignIn }: PublicInfoPanelPro
   return (
     <InfoPanel
       onDismiss={onDismiss}
-      color="#74DEDA"
+      color="accent-3"
       headline={<>Welcome to <br /> Pattern Party!</>}
       headlineIcon={Pinata}
     >
@@ -43,7 +43,7 @@ export const UserInfoPanel = ({ onDismiss }: UserInfoPanelProps) => {
   return (
     <InfoPanel
       onDismiss={onDismiss}
-      color="#CBE580"
+      color="accent-2"
       headline={<>Let's get this party started!</>}
       headlineIcon={PartyHat}
     >
@@ -86,7 +86,6 @@ const UserInfoPane = ({ screenShotName, text, children }: UserInfoPaneProps) => 
   )
 }
 
-
 type InfoIconProps = {
   icon: typeof Code
   text: string
@@ -112,7 +111,7 @@ type InfoPanelProps = {
   children?: React.ReactNode
 }
 
-export const InfoPanel = ({ color, onDismiss, headline, children, headlineIcon: HeadlineIcon }: InfoPanelProps) => {
+const InfoPanel = ({ color, onDismiss, headline, children, headlineIcon: HeadlineIcon }: InfoPanelProps) => {
   const size = React.useContext(ResponsiveContext)
   const isSmall = size === "small"
 
