@@ -5,10 +5,9 @@ import { Box } from "grommet"
 import { withFirebase, WithFirebaseProps } from './Firebase';
 import { WithRouterProps } from './Session';
 import { PatternList, PatternGrid, DestroyPatternDialog, ScrollablePatternList, Headline } from './Patterns';
-import { useTrackedState, useSetDraft } from "./../store"
-import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription, useFetchPatterns } from "./../hooks"
+import { useTrackedState } from "./../store"
+import { useDestroyPattern, useHidePattern, useSavePattern, usePatternSubscription, useFetchPatterns, useLoadPatterns } from "./../hooks"
 import * as ROUTES from "./../constants/routes"
-import uniqBy from "lodash.uniqby"
 
 type Props = WithFirebaseProps & WithRouterProps
 
@@ -16,33 +15,14 @@ const CommunityPatterns = ({ history, firebase }: Props): JSX.Element => {
   const authUser = firebase.authUser
   const [patternForDestroy, setPatternForDestroy] = React.useState<PatternType | null>(null)
   const state = useTrackedState()
-  const setDraft = useSetDraft()
   const { featuredPatterns, communityPatterns, fetchPatterns: { community: { startAfter, hasMore } } } = state
   const userIsAdmin = authUser && (authUser as any).roles && (authUser as any).roles.admin
   const isFeaturedPatterns = history.location.pathname === ROUTES.LANDING
   const destroyPattern = useDestroyPattern({ firebase, owner: "community", user: authUser })
   const hidePattern = useHidePattern({ firebase, owner: "community", user: authUser })
   const savePattern = useSavePattern(firebase, authUser)
-  const fetchPatterns = useFetchPatterns({firebase, owner: "community"})
-
-  const loadPatterns = async (cursor: firebase.firestore.QueryDocumentSnapshot<PatternType>): Promise<LoadMoreData<PatternType>> => {
-    const snapshots = await firebase.patterns().startAfter(cursor).limit(16).get()
-    const docs = snapshots.docs;
-    const nextLastVisible = docs[docs.length - 1];
-    const noMore = nextLastVisible === cursor || docs.length < 16
-
-    setDraft((draft) => {
-      draft.fetchPatterns.community.hasMore = !noMore
-      draft.fetchPatterns.community.startAfter = nextLastVisible;
-      draft.communityPatterns = uniqBy([
-        ...draft.communityPatterns,
-        ...docs.map((doc) => doc.data()),
-      ], 'id');
-    });
-
-    return [nextLastVisible, !noMore]
-  }
-
+  const fetchPatterns = useFetchPatterns({ firebase, owner: "community" })
+  const loadPatterns = useLoadPatterns({firebase, owner: "community"})
   const subscripionStatus = usePatternSubscription(firebase)
 
   React.useEffect(() => {

@@ -8,6 +8,7 @@ import { useSavePattern } from "./useSavePattern"
 import { useUnhidePattern } from "./useUnhidePattern"
 import { useFirebaseUser } from "./useFirebaseUser"
 import { useFetchPatterns } from "./useFetchPatterns"
+import { useLoadPatterns } from "./useLoadPatterns"
 
 export {
   useCreatePattern,
@@ -20,4 +21,5 @@ export {
   useUnhidePattern,
   useFirebaseUser,
   useFetchPatterns,
+  useLoadPatterns,
 }
