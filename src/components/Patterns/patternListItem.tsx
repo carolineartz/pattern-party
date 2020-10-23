@@ -39,7 +39,6 @@ export const PatternListItem = (props: PatternListItemProps): JSX.Element => {
     <PatternCard
       key={props.ident}
       ref={patternRef}
-      height="100%"
       round="xsmall"
       width="100%"
       markup={props.markup}
