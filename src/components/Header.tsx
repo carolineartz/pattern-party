@@ -103,6 +103,9 @@ const AuthHeaderComponent = ({ authUser, firebase, history, onClickSignOut, onCl
     />
   )
 
+  const text = !sizeIsSmall || !authUser ? "regular nav" : "mobile nav"
+  console.log("text", text)
+
   return (
     <Header>
       {!sizeIsSmall || !authUser ? nonMobileNav : mobileNav}
@@ -117,6 +120,12 @@ type PublicHeaderProps = RouteComponentProps & {
 }
 
 const PublicHeaderComponent = ({ history, onClickSignIn: handleClickSignIn }: PublicHeaderProps): JSX.Element => {
+  const size = React.useContext(ResponsiveContext)
+  const sizeIsSmall = size === "small"
+  console.log("size", size)
+  const authUser = undefined
+  const text = !sizeIsSmall || !authUser ? "regular nav" : "mobile nav"
+  console.log("text", text)
   const handleClickExplore = () => {
     if (history.location.pathname !== ROUTES.EXPLORE) {
       history.push(ROUTES.EXPLORE)
