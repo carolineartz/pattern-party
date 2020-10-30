@@ -124,6 +124,7 @@ type PatternCardProps = {
 
 const PatternCard = styled(Card)<PatternCardProps>`
   --pattern: ${props => "(background-image: @svg(" + formatSVG(props.markup) + "); border-radius: 6px;);"};
+  min-height: 100%;
 `
 
 type CardButtonProps = Omit<ButtonProps, 'icon'> & {
