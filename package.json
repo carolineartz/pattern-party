@@ -33,7 +33,7 @@
     "firebase-tools": "^8.5.0",
     "grommet": "https://github.com/grommet/grommet/tarball/stable",
     "grommet-icons": "4.4.0",
-    "immer": "^7.0.7",
+    "immer": "^9.0.6",
     "install": "^0.13.0",
     "json-circular-stringify": "^1.0.1",
     "lodash.compact": "^3.0.1",
